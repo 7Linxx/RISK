@@ -1,45 +1,142 @@
 package co.edu.unbosque.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import co.edu.unbosque.dto.UserDTO;
+import co.edu.unbosque.model.User;
+import co.edu.unbosque.repository.UserRepository;
 
+@Service
 public class UserService implements CRUDOperation<UserDTO> {
+
+	@Autowired
+	private UserRepository userRepo;
+
+	@Autowired
+	private ModelMapper modelMapper;
+
+	public UserService() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public int create(UserDTO data) {
-		// TODO Auto-generated method stub
-		return 0;
+		User entity = modelMapper.map(data, User.class);
+		if (findUsernameAlreadyTaken(entity)) {
+			return 1;
+		} else {
+			userRepo.save(entity);
+			return 0;
+		}
 	}
 
 	@Override
 	public List<UserDTO> getAll() {
-		// TODO Auto-generated method stub
-		return null;
+		List<User> entityList = userRepo.findAll();
+		List<UserDTO> dtoList = new ArrayList<>();
+		entityList.forEach((entity) -> {
+
+			UserDTO dto = modelMapper.map(entity, UserDTO.class);
+			dtoList.add(dto);
+		});
+
+		return dtoList;
 	}
 
 	@Override
 	public int deleteById(Long id) {
-		// TODO Auto-generated method stub
-		return 0;
+		Optional<User> found = userRepo.findById(id);
+		if (found.isPresent()) {
+			userRepo.delete(found.get());
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 
 	@Override
 	public int updateById(Long id, UserDTO newData) {
-		// TODO Auto-generated method stub
-		return 0;
+		Optional<User> found = userRepo.findById(id);
+		Optional<User> newFound = userRepo.findByUsername(newData.getUsername());
+
+		if (found.isPresent() && !newFound.isPresent()) {
+			User temp = found.get();
+			temp.setUsername(newData.getUsername());
+			temp.setContrasenia(newData.getContrasenia());
+			temp.setCorreo(newData.getCorreo());
+			temp.setFechaNacimiento(newData.getFechaNacimiento());
+			temp.setNombre(newData.getNombre());
+			userRepo.save(temp);
+			return 0;
+		}
+		if (found.isPresent() && newFound.isPresent()) {
+			return 1;
+		}
+		if (!found.isPresent()) {
+			return 2;
+		} else {
+			return 3;
+		}
 	}
 
 	@Override
 	public long count() {
-		// TODO Auto-generated method stub
-		return 0;
+		return userRepo.count();
 	}
 
 	@Override
 	public boolean exist(Long id) {
-		// TODO Auto-generated method stub
-		return false;
+		return userRepo.existsById(id) ? true : false;
 	}
 
+	public int deleteByUsername(String username) {
+		Optional<User> found = userRepo.findByUsername(username);
+		if (found.isPresent()) {
+			userRepo.delete(found.get());
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+
+	public UserDTO getById(Long id) {
+		Optional<User> found = userRepo.findById(id);
+		if (found.isPresent()) {
+			return modelMapper.map(found.get(), UserDTO.class);
+		} else {
+			return null;
+		}
+	}
+
+	public boolean findUsernameAlreadyTaken(User newUser) {
+		Optional<User> found = userRepo.findByUsername(newUser.getUsername());
+		if (found.isPresent()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public int validateCredentials(String username, String password) {
+		// encriptado del front
+		// username = AESUtil.decrypt("keyfrontfirstenc", "iviviviviviviviv", username);
+		// password = AESUtil.decrypt("keyfrontfirstenc", "iviviviviviviviv", password);
+		// a encriptrado del back
+		// username = AESUtil.encrypt(username);
+		// password = AESUtil.encrypt(password);
+		for (UserDTO u : getAll()) {
+			if (u.getUsername().equals(username)) {
+				if (u.getContrasenia().equals(password)) {
+					return 0;
+				}
+			}
+		}
+		return 1;
+	}
 }

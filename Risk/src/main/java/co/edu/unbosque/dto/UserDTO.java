@@ -17,9 +17,8 @@ public class UserDTO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserDTO(int id, String username, String nombre, String correo, String contrasenia, Date fechaNacimiento) {
+	public UserDTO(String username, String nombre, String correo, String contrasenia, Date fechaNacimiento) {
 		super();
-		this.id = id;
 		this.username = username;
 		this.nombre = nombre;
 		this.correo = correo;
@@ -29,10 +28,6 @@ public class UserDTO {
 
 	public int getId() {
 		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getNombre() {

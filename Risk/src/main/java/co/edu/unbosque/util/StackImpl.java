@@ -3,8 +3,6 @@ package co.edu.unbosque.util;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import doble.MyDequeList;
-
 public class StackImpl<E> implements Stack<E> {
 	private MyDequeList<E> data;
 

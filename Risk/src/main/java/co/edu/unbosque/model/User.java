@@ -16,9 +16,8 @@ public class User {
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(int id, String username, String nombre, String correo, String contrasenia, Date fechaNacimiento) {
+	public User(String username, String nombre, String correo, String contrasenia, Date fechaNacimiento) {
 		super();
-		this.id = id;
 		this.username = username;
 		this.nombre = nombre;
 		this.correo = correo;
@@ -28,10 +27,6 @@ public class User {
 
 	public int getId() {
 		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getNombre() {

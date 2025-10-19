@@ -1,7 +1,5 @@
 package co.edu.unbosque.util;
 
-import doble.MyDequeList;
-
 public class QueueImpl<E> implements Queue<E> {
 	private MyDequeList<E> data;
 

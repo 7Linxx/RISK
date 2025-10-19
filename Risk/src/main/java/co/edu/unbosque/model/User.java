@@ -3,9 +3,17 @@ package co.edu.unbosque.model;
 import java.util.Date;
 import java.util.Objects;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "users")
 public class User {
 
-	private int id;
+	private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
 	private String username;
 	private String nombre;
 	private String correo;

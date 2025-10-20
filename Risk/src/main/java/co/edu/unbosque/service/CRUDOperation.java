@@ -1,11 +1,13 @@
 package co.edu.unbosque.service;
 
 import java.util.List;
+
+import co.edu.unbosque.util.MyLinkedList;
 public interface CRUDOperation<T> {
 	
 	public int create(T data);
 	
-	public List<T> getAll();
+	public MyLinkedList<T> getAll();
 	
 	public int deleteById(Long id);
 	

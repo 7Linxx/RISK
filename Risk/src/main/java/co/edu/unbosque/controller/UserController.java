@@ -1,13 +1,10 @@
 package co.edu.unbosque.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.dto.UserDTO;
 import co.edu.unbosque.service.UserService;
+import co.edu.unbosque.util.MyLinkedList;
 
 @RestController
 @CrossOrigin(origins = { "*" })
@@ -30,141 +27,56 @@ public class UserController {
 	@Autowired
 	private UserService userServ;
 
-	public UserController() {
-	}
-
-	@PostMapping(path = "/createjson", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> createNewWithJSON(@RequestBody UserDTO newUser) {
-		int status = userServ.create(newUser);
-
-		if (status == 0) {
-			return new ResponseEntity<>("{User create successfully}", HttpStatus.CREATED);
+	@PostMapping(path = "/crear")
+	public ResponseEntity<String> crear(@RequestBody UserDTO user) {
+		int estatus = userServ.create(user);
+		if (estatus == 0) {
+			return new ResponseEntity<>("User creado con éxito", HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<>("{Error on created user, maybe username already in use}",
-					HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<>("Error al crear el ave", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 
-	@PostMapping(path = "/create")
-	ResponseEntity<String> createNew(@RequestParam String username, @RequestParam String nombre,
-			@RequestParam String contrasenia, @RequestParam String correo, @RequestParam Date fechaNacimiento) {
-		UserDTO newUser = new UserDTO(username, nombre, correo, contrasenia, fechaNacimiento);
-		int status = userServ.create(newUser);
+	// READ ALL
+	@GetMapping(path = "/listar")
+	public ResponseEntity<List<UserDTO>> listar() {
+		MyLinkedList<UserDTO> lista = userServ.getAll();
+		return new ResponseEntity<>((List<UserDTO>) lista, HttpStatus.OK);
+	}
 
-		if (status == 0) {
-			return new ResponseEntity<>("User create successfully", HttpStatus.CREATED);
+	// UPDATE
+	@PutMapping(path = "/actualizar/{id}")
+	public ResponseEntity<String> actualizar(@PathVariable Long id, @RequestBody UserDTO aveUpdate) {
+		int estatus = userServ.updateById(id, aveUpdate);
+
+		if (estatus == 200) {
+			return new ResponseEntity<>("User actualizado con éxito", HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("Error on created user, maybe username already in use",
-					HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<>("User no encontrado", HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@PostMapping(path = "/checklogin")
-	ResponseEntity<String> checkLogIn(@RequestParam String username, @RequestParam String contrasenia) {
+	// DELETE
+	@DeleteMapping(path = "/eliminar/{id}")
+	public ResponseEntity<String> eliminar(@PathVariable Long id) {
+		int estatus = userServ.deleteById(id);
 
-		int status = userServ.validateCredentials(username, contrasenia);
-
-		if (status == 0) {
-			return new ResponseEntity<>("Correct credendials", HttpStatus.ACCEPTED);
+		if (estatus == 200) {
+			return new ResponseEntity<>("User eliminado con éxito", HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("Username or password incorrect", HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>("User no encontrado", HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@GetMapping("/getall")
-	ResponseEntity<List<UserDTO>> getAll() {
-		List<UserDTO> users = userServ.getAll();
-		if (users.isEmpty()) {
-			return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<>(users, HttpStatus.ACCEPTED);
-		}
+	// COUNT
+	@GetMapping(path = "/count")
+	public ResponseEntity<Long> contar() {
+		return new ResponseEntity<>(userServ.count(), HttpStatus.OK);
 	}
 
-	@GetMapping("/count")
-	ResponseEntity<Long> countAll() {
-		Long count = userServ.count();
-		if (count == 0) {
-			return new ResponseEntity<>(count, HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<>(count, HttpStatus.ACCEPTED);
-		}
+	// EXIST
+	@GetMapping(path = "/exist/{id}")
+	public ResponseEntity<Boolean> existe(@PathVariable Long id) {
+		return new ResponseEntity<>(userServ.exist(id), HttpStatus.OK);
 	}
-
-	@GetMapping("/exists/{id}")
-	ResponseEntity<Boolean> exists(@PathVariable Long id) {
-		boolean found = userServ.exist(id);
-		if (found) {
-			return new ResponseEntity<>(true, HttpStatus.ACCEPTED);
-		} else {
-			return new ResponseEntity<>(false, HttpStatus.NO_CONTENT);
-		}
-	}
-
-	@GetMapping("/getbyid/{id}")
-	ResponseEntity<UserDTO> getById(@PathVariable Long id) {
-		UserDTO found = userServ.getById(id);
-		if (found != null) {
-			return new ResponseEntity<>(found, HttpStatus.ACCEPTED);
-		} else {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@PutMapping(path = "/updatejson", consumes = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> updateNewWithJSON(@RequestParam Long id, @RequestBody UserDTO newUser) {
-
-		int status = userServ.updateById(id, newUser);
-
-		if (status == 0) {
-			return new ResponseEntity<>("User updated successfully", HttpStatus.ACCEPTED);
-		} else if (status == 1) {
-			return new ResponseEntity<>("New username already taken", HttpStatus.IM_USED);
-		} else if (status == 2) {
-			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-		} else {
-			return new ResponseEntity<>("Error on update", HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@PutMapping(path = "/update")
-	ResponseEntity<String> updateNew(@RequestParam long id, @RequestParam String newUsername,
-			@RequestParam String newNombre, @RequestParam String newCorreo, @RequestParam String newContrasenia,
-			@RequestParam Date newFechaNacimiento) {
-		UserDTO newUser = new UserDTO(newUsername, newNombre, newCorreo, newContrasenia, newFechaNacimiento);
-
-		int status = userServ.updateById(id, newUser);
-
-		if (status == 0) {
-			return new ResponseEntity<>("User updated successfully", HttpStatus.ACCEPTED);
-		} else if (status == 1) {
-			return new ResponseEntity<>("New username already taken", HttpStatus.IM_USED);
-		} else if (status == 2) {
-			return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-		} else {
-			return new ResponseEntity<>("Error on update", HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@DeleteMapping("/deletebyid/{id}")
-	ResponseEntity<String> deleteById(@PathVariable Long id) {
-		int status = userServ.deleteById(id);
-
-		if (status == 0) {
-			return new ResponseEntity<>("User deleted successfully", HttpStatus.ACCEPTED);
-		} else {
-			return new ResponseEntity<>("Error on delete", HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@DeleteMapping("/deletebyname")
-	ResponseEntity<String> deleteById(@RequestParam String name) {
-		int status = userServ.deleteByUsername(name);
-		if (status == 0) {
-			return new ResponseEntity<>("User deleted successfully", HttpStatus.ACCEPTED);
-		} else {
-			return new ResponseEntity<>("Error on delete", HttpStatus.NOT_FOUND);
-		}
-	}
-
 }

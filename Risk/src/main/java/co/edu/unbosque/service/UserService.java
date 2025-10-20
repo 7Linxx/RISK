@@ -1,6 +1,5 @@
 package co.edu.unbosque.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +10,8 @@ import org.springframework.stereotype.Service;
 import co.edu.unbosque.dto.UserDTO;
 import co.edu.unbosque.model.User;
 import co.edu.unbosque.repository.UserRepository;
+import co.edu.unbosque.util.MyLinkedList;
+import co.edu.unbosque.util.Node;
 
 @Service
 public class UserService implements CRUDOperation<UserDTO> {
@@ -22,7 +23,6 @@ public class UserService implements CRUDOperation<UserDTO> {
 	private ModelMapper modelMapper;
 
 	public UserService() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -37,14 +37,23 @@ public class UserService implements CRUDOperation<UserDTO> {
 	}
 
 	@Override
-	public List<UserDTO> getAll() {
+	public MyLinkedList<UserDTO> getAll() {
+		// 1. Obtenemos la lista normal del repositorio
 		List<User> entityList = userRepo.findAll();
-		List<UserDTO> dtoList = new ArrayList<>();
-		entityList.forEach((entity) -> {
 
+		// 2. Creamos una MyLinkedList de Users
+		MyLinkedList<User> myEntityList = new MyLinkedList<>();
+		for (User e : entityList) {
+			myEntityList.add(e);
+		}
+
+		// 3. Convertimos MyLinkedList<User> en MyLinkedList<UserDTO>
+		MyLinkedList<UserDTO> dtoList = new MyLinkedList<>();
+		for (int i = 0; i < myEntityList.size(); i++) {
+			Node<User> entity = myEntityList.get(i);
 			UserDTO dto = modelMapper.map(entity, UserDTO.class);
 			dtoList.add(dto);
-		});
+		}
 
 		return dtoList;
 	}
@@ -92,7 +101,7 @@ public class UserService implements CRUDOperation<UserDTO> {
 
 	@Override
 	public boolean exist(Long id) {
-		return userRepo.existsById(id) ? true : false;
+		return userRepo.existsById(id);
 	}
 
 	public int deleteByUsername(String username) {
@@ -107,36 +116,21 @@ public class UserService implements CRUDOperation<UserDTO> {
 
 	public UserDTO getById(Long id) {
 		Optional<User> found = userRepo.findById(id);
-		if (found.isPresent()) {
-			return modelMapper.map(found.get(), UserDTO.class);
-		} else {
-			return null;
-		}
+		return found.map(user -> modelMapper.map(user, UserDTO.class)).orElse(null);
 	}
 
 	public boolean findUsernameAlreadyTaken(User newUser) {
-		Optional<User> found = userRepo.findByUsername(newUser.getUsername());
-		if (found.isPresent()) {
-			return true;
-		} else {
-			return false;
-		}
+		return userRepo.findByUsername(newUser.getUsername()).isPresent();
 	}
 
 	public int validateCredentials(String username, String password) {
-		// encriptado del front
-		// username = AESUtil.decrypt("keyfrontfirstenc", "iviviviviviviviv", username);
-		// password = AESUtil.decrypt("keyfrontfirstenc", "iviviviviviviviv", password);
-		// a encriptrado del back
-		// username = AESUtil.encrypt(username);
-		// password = AESUtil.encrypt(password);
-		for (UserDTO u : getAll()) {
-			if (u.getUsername().equals(username)) {
-				if (u.getContrasenia().equals(password)) {
-					return 0;
-				}
+		MyLinkedList<UserDTO> users = getAll();
+		for (int i = 0; i < users.size(); i++) {
+			Node<UserDTO> u = users.get(i);
+			if (u.getInfo().getUsername().equals(username) && u.getInfo().getContrasenia().equals(password)) {
+				return 0; // credenciales válidas
 			}
 		}
-		return 1;
+		return 1; // credenciales incorrectas
 	}
 }

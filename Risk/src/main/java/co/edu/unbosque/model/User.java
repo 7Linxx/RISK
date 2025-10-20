@@ -33,7 +33,7 @@ public class User {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 

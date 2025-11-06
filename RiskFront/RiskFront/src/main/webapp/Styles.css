@@ -1,0 +1,144 @@
+@charset "UTF-8";
+/* Estilos simples y responsive, paleta tipo mockup */
+:root {
+	--bg-olive: #2d3b26;
+	--accent-olive: #6b8a2e;
+	--sand: #f2e9d7;
+	--orange: #b86b2c;
+	--light: #ffffff;
+	--muted: #9a9a9a;
+	--card-bg: rgba(255, 255, 255, 0.95);
+}
+
+* {
+	box-sizing: border-box;
+	font-family: "Segoe UI", Roboto, Arial, sans-serif
+}
+
+body {
+	margin: 0;
+	background: #111;
+	color: #111;
+	background-image: url('../images/parchment-texture.jpg');
+	background-size: cover
+}
+
+.page-center {
+	display: flex;
+	height: 100vh;
+	align-items: center;
+	justify-content: center
+}
+
+.card {
+	background: var(--card-bg);
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, .6);
+	width: 360px
+}
+
+.auth-card {
+	text-align: center
+}
+
+.logo {
+	font-family: "Old English Text MT", Georgia, serif;
+	font-size: 28px;
+	color: var(--orange);
+	margin-bottom: 12px
+}
+
+.btn {
+	padding: 10px 14px;
+	border-radius: 6px;
+	border: 0;
+	cursor: pointer;
+	margin: 6px
+}
+
+.btn.primary {
+	background: var(--accent-olive);
+	color: var(--light)
+}
+
+.btn.ghost {
+	background: transparent;
+	border: 2px solid var(--accent-olive);
+	color: var(--accent-olive)
+}
+
+.btn.danger {
+	background: #A33;
+	color: #fff
+}
+
+.btn.large {
+	padding: 14px 24px;
+	font-size: 18px
+}
+
+.topbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 20px;
+	background: rgba(255, 255, 255, 0.9)
+}
+
+.brand {
+	font-weight: 700;
+	color: var(--accent-olive)
+}
+
+.container {
+	padding: 20px
+}
+
+.hero {
+	background: rgba(255, 255, 255, 0.9);
+	padding: 20px;
+	border-radius: 8px
+}
+
+.game-screen {
+	display: flex;
+	gap: 20px
+}
+
+.map-area {
+	flex: 2
+}
+
+.sidebar {
+	flex: 1;
+	background: rgba(255, 255, 255, 0.9);
+	padding: 10px;
+	border-radius: 8px;
+	height: 70vh;
+	overflow: auto
+}
+
+.map-placeholder {
+	border: 4px solid rgba(107, 138, 46, 0.2);
+	border-radius: 8px;
+	padding: 6px;
+	background: rgba(255, 255, 255, 0.4)
+}
+
+.log {
+	background: #f8f8f8;
+	border-radius: 6px;
+	padding: 6px;
+	margin-top: 6px;
+	font-size: 12px
+}
+
+@media ( max-width :900px) {
+	.game-screen {
+		flex-direction: column
+	}
+	.sidebar {
+		height: auto
+	}
+}

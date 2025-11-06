@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+  <meta charset="UTF-8"/>
+  <title>Registro - Risk</title>
+  <h:outputStylesheet name="css/styles.css" library="css"/>
+</h:head>
+<h:body class="page-center">
+  <div class="card auth-card">
+    <h1>Registro</h1>
+    <h:form>
+      <h:outputLabel for="user" value="Usuario" />
+      <h:inputText id="user" value="#{registerBean.username}" required="true"/>
+      <h:outputLabel for="pass" value="Contraseña" />
+      <h:inputSecret id="pass" value="#{registerBean.password}" required="true"/>
+      <h:outputLabel for="pass2" value="Verificar Contraseña" />
+      <h:inputSecret id="pass2" value="#{registerBean.passwordConfirm}" required="true"/>
+      <h:commandButton value="Registrarme" action="#{registerBean.register}" styleClass="btn primary"/>
+      <h:messages globalOnly="true"/>
+    </h:form>
+    <div class="small-link"><a href="login.xhtml">Ya tengo cuenta</a></div>
+  </div>
+</h:body>
+</html>

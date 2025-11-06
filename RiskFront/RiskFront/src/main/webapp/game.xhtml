@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+  <meta charset="UTF-8"/>
+  <title>Juego - Risk</title>
+  <h:outputStylesheet name="css/styles.css" library="css"/>
+  <h:outputScript name="js/game-map.js" library="js"/>
+</h:head>
+<h:body>
+  <header class="topbar">
+    <div class="brand">Risk</div>
+    <div class="actions">
+      <h:form>
+        <h:commandButton value="Guardar" action="#{gameBean.saveGame}" styleClass="btn small"/>
+        <h:commandButton value="Salir" action="main.xhtml?faces-redirect=true" styleClass="btn small ghost"/>
+      </h:form>
+    </div>
+  </header>
+
+  <main class="container game-screen">
+    <section class="map-area">
+      <!-- Aquí iría un <svg> del mapa con territorios identificados por id -->
+      <div id="mapPlaceholder" class="map-placeholder" onclick="gameMap.onMapClick(event)">
+        <img src="resources/images/world-map-placeholder.jpg" alt="Mapa" style="max-width:100%;"/>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <h3>Turno actual: #{gameBean.gameState.currentPlayer.name}</h3>
+      <p>Tropas disponibles: #{gameBean.gameState.currentPlayer.availableReinforcements}</p>
+
+      <h4>Acciones</h4>
+      <h:form>
+        <h:commandButton value="Reforzar" action="#{gameBean.reinforcePhase}" styleClass="btn"/>
+        <h:commandButton value="Atacar" action="#{gameBean.attackPhase}" styleClass="btn"/>
+        <h:commandButton value="Finalizar turno" action="#{gameBean.endTurn}" styleClass="btn primary"/>
+      </h:form>
+
+      <h4>Log</h4>
+      <div class="log">
+        <ui:repeat value="#{gameBean.log}" var="line">
+          <div>#{line}</div>
+        </ui:repeat>
+      </div>
+    </aside>
+  </main>
+</h:body>
+</html>

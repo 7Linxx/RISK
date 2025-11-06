@@ -6,6 +6,53 @@
   <packaging>war</packaging>
   <name>RIsk</name>
   <description>El juego de mesa RISK esta adpatado a Web, hace uso de exactamente las mismas reglas originalews del juego de Hasbro y de su estetica.</description>
+  
+  
+  <properties>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+  </properties>
+
+  <dependencies>
+    <!-- JSF (Mojarra) -->
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.faces</artifactId>
+      <version>2.3.14</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- CDI (Weld) si necesitas embeddable en algunos entornos -->
+    <dependency>
+      <groupId>org.jboss.weld.se</groupId>
+      <artifactId>weld-se-core</artifactId>
+      <version>3.1.6.Final</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- JSON (para serializar/parsear peticiones REST) -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.12.5</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.32</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.32</version>
+    </dependency>
+  </dependencies>
+
+  
   <build>
     <plugins>
       <plugin>

@@ -5,16 +5,20 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-<ui:composition template="">
-	<ui:define name="header">
-	    Add your header here or delete to use the default
-	</ui:define>
-	<ui:define name="content">
-	    Add your content here or delete to use the default
-	</ui:define>
-	<ui:define name="footer">
-	    Add your footer here or delete to use the default
-	</ui:define>
-</ui:composition>
+	
+	
+<h:head>
+  <meta charset="UTF-8" />
+  <title>Risk - Inicio</title>
+  <h:outputStylesheet name="css/styles.css" library="css" />
+</h:head>
+<h:body class="page-center">
+  <div class="card auth-card">
+    <h1 class="logo">Risk - Global Domination</h1>
+    <h:form>
+      <h:commandButton value="Ingresar" action="login.xhtml?faces-redirect=true" styleClass="btn primary"/>
+      <h:commandButton value="Registrarse" action="register.xhtml?faces-redirect=true" styleClass="btn ghost"/>
+    </h:form>
+  </div>
+</h:body>
 </html>

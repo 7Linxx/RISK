@@ -1,144 +1,96 @@
+/* Custom styles adjusted to work with Bootstrap and preserve the Figma look */
+/* Keep in resources/css/styles.css and referenced via h:outputStylesheet library="css" */
+
 @charset "UTF-8";
-/* Estilos simples y responsive, paleta tipo mockup */
-:root {
-	--bg-olive: #2d3b26;
-	--accent-olive: #6b8a2e;
-	--sand: #f2e9d7;
-	--orange: #b86b2c;
-	--light: #ffffff;
-	--muted: #9a9a9a;
-	--card-bg: rgba(255, 255, 255, 0.95);
+
+:root{
+  --bg-olive: #2d3b26;
+  --accent-olive: #6b8a2e;
+  --sand: #f2e9d7;
+  --orange: #b86b2c;
+  --light: #ffffff;
+  --muted: #9a9a9a;
+  --card-bg: rgba(255,255,255,0.95);
 }
 
-* {
-	box-sizing: border-box;
-	font-family: "Segoe UI", Roboto, Arial, sans-serif
-}
-
+/* Default body background (parchment texture). Bootstrap body bg will be overridden. */
 body {
-	margin: 0;
-	background: #111;
-	color: #111;
-	background-image: url('../images/parchment-texture.jpg');
-	background-size: cover
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-image: url('../images/parchment-texture.jpg');
+  background-size: cover;
+  color: #222;
 }
 
-.page-center {
-	display: flex;
-	height: 100vh;
-	align-items: center;
-	justify-content: center
-}
-
-.card {
-	background: var(--card-bg);
-	padding: 20px;
-	border-radius: 10px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, .6);
-	width: 360px
-}
-
-.auth-card {
-	text-align: center
-}
-
+/* Logo style (styled like mockup) */
 .logo {
-	font-family: "Old English Text MT", Georgia, serif;
-	font-size: 28px;
-	color: var(--orange);
-	margin-bottom: 12px
+  font-family: "Old English Text MT", Georgia, serif;
+  color: var(--orange);
+  letter-spacing: 1px;
 }
 
-.btn {
-	padding: 10px 14px;
-	border-radius: 6px;
-	border: 0;
-	cursor: pointer;
-	margin: 6px
+/* Card overrides to keep slightly translucent parchment look */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(250,245,235,0.9));
+  border-radius: 10px;
 }
 
-.btn.primary {
-	background: var(--accent-olive);
-	color: var(--light)
+/* Auth card special */
+.auth-card {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.45);
 }
 
-.btn.ghost {
-	background: transparent;
-	border: 2px solid var(--accent-olive);
-	color: var(--accent-olive)
+/* Buttons - keep bootstrap but tune colors */
+.btn-success {
+  background-color: var(--accent-olive);
+  border-color: var(--accent-olive);
+  color: var(--light);
+}
+.btn-success:hover, .btn-success:focus {
+  background-color: #5f7f25;
+  border-color: #5f7f25;
 }
 
-.btn.danger {
-	background: #A33;
-	color: #fff
+/* Outlined light link for auth pages */
+.link-light {
+  color: rgba(184,107,44,0.95);
 }
 
-.btn.large {
-	padding: 14px 24px;
-	font-size: 18px
-}
-
-.topbar {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 10px 20px;
-	background: rgba(255, 255, 255, 0.9)
-}
-
-.brand {
-	font-weight: 700;
-	color: var(--accent-olive)
-}
-
-.container {
-	padding: 20px
-}
-
-.hero {
-	background: rgba(255, 255, 255, 0.9);
-	padding: 20px;
-	border-radius: 8px
-}
-
-.game-screen {
-	display: flex;
-	gap: 20px
-}
-
-.map-area {
-	flex: 2
-}
-
-.sidebar {
-	flex: 1;
-	background: rgba(255, 255, 255, 0.9);
-	padding: 10px;
-	border-radius: 8px;
-	height: 70vh;
-	overflow: auto
-}
-
+/* Map placeholder specific look */
 .map-placeholder {
-	border: 4px solid rgba(107, 138, 46, 0.2);
-	border-radius: 8px;
-	padding: 6px;
-	background: rgba(255, 255, 255, 0.4)
+  border: 6px solid rgba(107,138,46,0.12);
+  padding: 6px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 8px;
 }
 
+/* Sidebar log */
 .log {
-	background: #f8f8f8;
-	border-radius: 6px;
-	padding: 6px;
-	margin-top: 6px;
-	font-size: 12px
+  background: rgba(255,255,255,0.9);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 12px;
 }
 
-@media ( max-width :900px) {
-	.game-screen {
-		flex-direction: column
-	}
-	.sidebar {
-		height: auto
-	}
+/* Territory badge */
+.badge-territory {
+  background: var(--orange);
+  color: #fff;
+}
+
+/* Small utility adjustments */
+.small-link {
+  margin-top: 8px;
+  display:block;
+  text-align:center;
+}
+
+/* Make inputs a little taller for the retro look */
+.form-control {
+  border-radius: 6px;
+}
+
+/* Responsive tweaks */
+@media (max-width:900px) {
+  .map-placeholder { margin-bottom: 12px; }
+  .sidebar { height: auto !important; }
 }

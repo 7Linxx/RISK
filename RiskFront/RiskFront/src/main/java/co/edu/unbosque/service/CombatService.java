@@ -33,7 +33,9 @@ public class CombatService {
 
     private static int[] roll(int n) {
         int[] r = new int[n];
-        for (int i = 0; i < n; i++) r[i] = RAND.nextInt(6) + 1;
+        for (int i = 0; i < n; i++) {
+			r[i] = RAND.nextInt(6) + 1;
+		}
         return r;
     }
 

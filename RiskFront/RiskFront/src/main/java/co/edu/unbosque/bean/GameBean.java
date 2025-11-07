@@ -1,13 +1,19 @@
 package co.edu.unbosque.bean;
 
-import co.edu.unbosque.model.*;
-import co.edu.unbosque.service.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
-import java.io.Serializable;
-import java.util.*;
+
+import co.edu.unbosque.model.GameState;
+import co.edu.unbosque.model.Player;
+import co.edu.unbosque.model.Territory;
+import co.edu.unbosque.service.CombatService;
 
 @Named("gameBean")
 @SessionScoped
@@ -86,7 +92,9 @@ public class GameBean implements Serializable {
     }
 
     public String onTerritorySelected() {
-        if (selectedTerritory == null || selectedTerritory.isEmpty()) return null;
+        if (selectedTerritory == null || selectedTerritory.isEmpty()) {
+			return null;
+		}
         String id = selectedTerritory;
         addLog("Click en: " + id);
         Player current = gameState.getCurrentPlayer();
@@ -152,7 +160,9 @@ public class GameBean implements Serializable {
                             // move at least one army from from to to (simplified move 1)
                             int move = Math.max(1, attDice - res.attackerLosses);
                             move = Math.min(move, from.getArmies() - 1);
-                            if (move < 1) move = 1;
+                            if (move < 1) {
+								move = 1;
+							}
                             from.setArmies(from.getArmies() - move);
                             to.setArmies(move);
                             addLog("Moviste " + move + " tropas a " + to.getName());
@@ -182,7 +192,9 @@ public class GameBean implements Serializable {
 
     private void addLog(String line) {
         log.add(0, "[" + new Date() + "] " + line);
-        if (log.size() > 200) log = log.subList(0, 200);
+        if (log.size() > 200) {
+			log = log.subList(0, 200);
+		}
     }
 
     // getters/setters

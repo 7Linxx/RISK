@@ -8,7 +8,7 @@ import java.util.Objects;
 public class Player implements Serializable {
     private String id;
     private String name;
-    private String color;	
+    private String color;
     private int availableReinforcements;
     private List<Territory> territories = new ArrayList<>();
 
@@ -37,8 +37,12 @@ public class Player implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+			return true;
+		}
+        if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
 
         Player player = (Player) o;
         return Objects.equals(id, player.id);

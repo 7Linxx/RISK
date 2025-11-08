@@ -4,13 +4,13 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import co.edu.unbosque.exception.FileNotFoundException;
-import co.edu.unbosque.exception.InvalidEmailException;
-import co.edu.unbosque.exception.InvalidFileTypeException;
-import co.edu.unbosque.exception.InvalidStringException;
-import co.edu.unbosque.exception.NegativeNumberException;
-import co.edu.unbosque.exception.PasswordValidateException;
-import co.edu.unbosque.exception.UserNameValidateException;
+import co.edu.unbosque.backRisk.exception.FileNotFoundException;
+import co.edu.unbosque.backRisk.exception.InvalidEmailException;
+import co.edu.unbosque.backRisk.exception.InvalidFileTypeException;
+import co.edu.unbosque.backRisk.exception.InvalidStringException;
+import co.edu.unbosque.backRisk.exception.NegativeNumberException;
+import co.edu.unbosque.backRisk.exception.PasswordValidateException;
+import co.edu.unbosque.backRisk.exception.UserNameValidateException;
 
 public class ExceptionChecker {
 

@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unbosque.dto.UserDTO;
-import co.edu.unbosque.service.UserService;
-import co.edu.unbosque.util.MyLinkedList;
+import co.edu.unbosque.backRisk.dto.UserDTO;
+import co.edu.unbosque.backRisk.service.UserService;
+import co.edu.unbosque.backRisk.util.MyLinkedList;
 
 @RestController
 @CrossOrigin(origins = { "*" })

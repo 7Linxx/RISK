@@ -50,7 +50,7 @@ public class UserService implements CRUDOperation<UserDTO> {
 		// 3. Convertimos MyLinkedList<User> en MyLinkedList<UserDTO>
 		MyLinkedList<UserDTO> dtoList = new MyLinkedList<>();
 		for (int i = 0; i < myEntityList.size(); i++) {
-			Node<User> entity = myEntityList.get(i);
+			User entity = myEntityList.get(i).getInfo(); // obtiene el objeto User real
 			UserDTO dto = modelMapper.map(entity, UserDTO.class);
 			dtoList.add(dto);
 		}
@@ -124,13 +124,7 @@ public class UserService implements CRUDOperation<UserDTO> {
 	}
 
 	public int validateCredentials(String username, String password) {
-		MyLinkedList<UserDTO> users = getAll();
-		for (int i = 0; i < users.size(); i++) {
-			Node<UserDTO> u = users.get(i);
-			if (u.getInfo().getUsername().equals(username) && u.getInfo().getContrasenia().equals(password)) {
-				return 0; // credenciales válidas
-			}
-		}
-		return 1; // credenciales incorrectas
+		return userRepo.findByUsernameAndContrasenia(username, password).isPresent() ? 0 : 1;
 	}
+
 }

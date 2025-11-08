@@ -1,5 +1,6 @@
 package co.edu.unbosque.backRisk.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,7 +97,7 @@ public class JugadorService implements CRUDOperation<JugadorDTO> {
 			Jugador temp = found.get();
 			temp.setNombre(newData.getNombre());
 			temp.setColor(newData.getColor());
-			MyLinkedList<Territorio> newTerritorio = new MyLinkedList<>();
+			List<Territorio> newTerritorio = new ArrayList<>();
 			for (int i = 0; i < newData.getTerritoriosPertenecientes().size(); i++) {
 				newTerritorio.add(modelMapper.map(newData.getTerritoriosPertenecientes().get(i), Territorio.class));
 			}

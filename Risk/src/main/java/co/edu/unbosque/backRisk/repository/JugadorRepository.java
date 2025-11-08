@@ -8,6 +8,7 @@ import co.edu.unbosque.backRisk.model.Jugador;
 
 public interface JugadorRepository extends JpaRepository<Jugador, Long> {
 
+	
 	public Optional<Jugador> findByName(String name);
 
 	public void deleteByName(String name);

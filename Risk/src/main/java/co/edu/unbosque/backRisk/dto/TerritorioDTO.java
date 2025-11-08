@@ -7,7 +7,7 @@ import co.edu.unbosque.backRisk.util.MyLinkedList;
 public class TerritorioDTO {
 
 	private Long id;
-	private String nombre;
+	private String name;
 	private Jugador duenio;
 	private int cantidadTropas;
 	private MyLinkedList<Territorio> territoriosAdyacentes;
@@ -20,7 +20,7 @@ public class TerritorioDTO {
 			MyLinkedList<Territorio> territoriosAdyacentes) {
 		super();
 		this.id = id;
-		this.nombre = nombre;
+		this.name = nombre;
 		this.duenio = duenio;
 		this.cantidadTropas = cantidadTropas;
 		this.territoriosAdyacentes = territoriosAdyacentes;
@@ -35,11 +35,11 @@ public class TerritorioDTO {
 	}
 
 	public String getNombre() {
-		return nombre;
+		return name;
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre;
+		this.name = nombre;
 	}
 
 	public Jugador getDuenio() {

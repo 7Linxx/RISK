@@ -1,10 +1,13 @@
 package co.edu.unbosque.backRisk.model;
 
-import co.edu.unbosque.backRisk.util.MyLinkedList;
+import java.util.List;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -12,21 +15,24 @@ import jakarta.persistence.Table;
 public class Jugador {
 
 	private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	private User user;
-	private String nombre;
+	private String name;
 	private String color;
-	private MyLinkedList<Territorio> territoriosPertenecientes;
+	@OneToMany
+	private List<Territorio> territoriosPertenecientes;
 	private int tropasDisponibles;
 
 	public Jugador() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Jugador(User user, String nombre, String color, MyLinkedList<Territorio> territoriosPertenecientes,
+	public Jugador(User user, String nombre, String color, List<Territorio> territoriosPertenecientes,
 			int tropasDisponibles) {
 		super();
 		this.user = user;
-		this.nombre = nombre;
+		this.name = nombre;
 		this.color = color;
 		this.territoriosPertenecientes = territoriosPertenecientes;
 		this.tropasDisponibles = tropasDisponibles;
@@ -41,11 +47,11 @@ public class Jugador {
 	}
 
 	public String getNombre() {
-		return nombre;
+		return name;
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre;
+		this.name = nombre;
 	}
 
 	public String getColor() {
@@ -56,11 +62,11 @@ public class Jugador {
 		this.color = color;
 	}
 
-	public MyLinkedList<Territorio> getTerritoriosPertenecientes() {
+	public List<Territorio> getTerritoriosPertenecientes() {
 		return territoriosPertenecientes;
 	}
 
-	public void setTerritoriosPertenecientes(MyLinkedList<Territorio> territoriosPertenecientes) {
+	public void setTerritoriosPertenecientes(List<Territorio> territoriosPertenecientes) {
 		this.territoriosPertenecientes = territoriosPertenecientes;
 	}
 

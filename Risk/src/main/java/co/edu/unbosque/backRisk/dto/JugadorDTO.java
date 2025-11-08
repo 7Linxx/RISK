@@ -8,7 +8,7 @@ public class JugadorDTO {
 
 	private Long id;
 	private UserDTO userDTO;
-	private String nombre;
+	private String name;
 	private String color;
 	private MyLinkedList<TerritorioDTO> territoriosPertenecientes;
 	private int tropasDisponibles;
@@ -21,7 +21,7 @@ public class JugadorDTO {
 			MyLinkedList<TerritorioDTO> territoriosPertenecientes, int tropasDisponibles) {
 		super();
 		this.userDTO = userDTO;
-		this.nombre = nombre;
+		this.name = nombre;
 		this.color = color;
 		this.territoriosPertenecientes = territoriosPertenecientes;
 		this.tropasDisponibles = tropasDisponibles;
@@ -36,11 +36,11 @@ public class JugadorDTO {
 	}
 
 	public String getNombre() {
-		return nombre;
+		return name;
 	}
 
 	public void setNombre(String nombre) {
-		this.nombre = nombre;
+		this.name = nombre;
 	}
 
 	public String getColor() {

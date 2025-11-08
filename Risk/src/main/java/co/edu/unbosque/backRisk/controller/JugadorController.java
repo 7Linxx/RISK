@@ -24,9 +24,9 @@ public class JugadorController {
 	public ResponseEntity<String> crear(@RequestBody JugadorDTO jugador) {
 		int estatus = jugadorServ.create(jugador);
 		if (estatus == 0) {
-			return new ResponseEntity<>("User creado con éxito", HttpStatus.CREATED);
+			return new ResponseEntity<>("Jugador creado con éxito", HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<>("Error al crear el ave", HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<>("Error al crear el jugador", HttpStatus.NOT_ACCEPTABLE);
 		}
-	}	
+	}
 }

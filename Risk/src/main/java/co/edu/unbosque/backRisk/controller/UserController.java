@@ -31,7 +31,7 @@ public class UserController {
 		if (estatus == 0) {
 			return new ResponseEntity<>("User creado con éxito", HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<>("Error al crear el ave", HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<>("Error al crear el user", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 

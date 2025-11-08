@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:head>
+	<link rel="stylesheet" href="styles/menu.css"></link>
+
+	<title>Risk Game</title>
+</h:head>
+
+
+<h:body>
+ <div class="login-container">
+        <div class="risk-logo">
+           <img src="images/logo.png" alt="Risk Icon" class="risk-icon"/>
+        </div>
+        <h:form>
+            <div class="input-row">
+                <label class="input-label" for="usuario">Usuario</label>
+                <h:inputText id="usuario" styleClass="risk-input" required="true" requiredMessage="Usuario requerido"/>
+            </div>
+            <div class="input-row">
+                <label class="input-label" for="contra">Contraseña</label>
+                <h:inputSecret id="contra" styleClass="risk-input" required="true" requiredMessage="Contraseña requerida"/>
+            </div>
+            <div style="text-align:center; width: 100%; margin-top: 10px;">
+                <h:commandButton value="Ingresar" styleClass="ingresar-btn" action="#{MapBean.login}"/>
+            </div>
+        </h:form>
+    </div>
+
+
+
+	<div class="content">
+		<p:graphicImage xmlns:p="http://primefaces.org/ui"
+			library="primeblocks-app" alt="logo" height="200"
+			styleClass="mb-3" value="images/logo.png" />
+		<div class="boton-group">
+			<h:commandButton styleClass="boton" value="Start New Game"
+				onclick="showNumberPlayers()" />
+			<p:commandButton styleClass="rounded-button ui-button-warning"
+				value="Continue Previous Game" action="#{MapBean.loadHashCodes}"
+				update="shash" oncomplete="showSelectHash()" />
+			<p:commandButton
+				styleClass="rounded-button ui-button-warning boton-margin"
+				value="About Game" oncomplete="PF('aboutDialog').show()" />
+		</div>
+	</div>
+
+
+	<h:form id="nplayers">
+		<div id="dnplayers" class="login center-items accommodate">
+			<button class="close-btn" onclick="closeNumberPlayers()">x</button>
+			<div class="ui-fluid formgrid grid">
+				<div class="field col-12 md:col-1">
+					<h:panelGrid columns="1" cellpadding="4">
+						<label>Select number players</label>
+						<p:spinner id="numberp" value="#{MapBean.numPlayers}"
+							buttons="vertical" upButtonStyleClass="ui-button-secondary"
+							downButtonStyleClass="ui-button-secondary" min="2" max="4" />
+					</h:panelGrid>
+				</div>
+			</div>
+			<p:commandButton styleClass="btn login-btn" value="Continue"
+				update="flogin" oncomplete="showLogin()" />
+		</div>
+	</h:form>
+	<h:form id="flogin">
+		<p:growl id="growl" showDetail="true" />
+		<p:growl id="growl-sticky" for="sticky-key" showDetail="true"
+			sticky="true" />
+		<div id="login" class="login">
+			<button class="close-btn" onclick="closeLogin()">x</button>
+			<div class="information">
+				<label>Information Player 1:</label>
+				<h:panelGrid columns="2" cellpadding="4">
+					<h5>Email</h5>
+					<span class="ui-float-label"> <p:inputText id="email1"
+							value="#{MapBean.emails[0]}" placeholder="email" />
+					</span>
+					<h5>Name</h5>
+					<span class="ui-float-label"> <p:inputText id="name1"
+							value="#{MapBean.names[0]}" placeholder="name" />
+					</span>
+					<h5>Color</h5>
+					<p:colorPicker id="thumbnail1" value="#{MapBean.colors[0]}"
+						swatchesOnly="true" theme="polaroid" clearButton="true"
+						closeButton="true" inline="true"
+						swatches="#F35B04, #F5BB00, #A755C2, #016FB9, #61C9A8, #F09B59">
+					</p:colorPicker>
+				</h:panelGrid>
+			</div>
+			<p:divider layout="vertical"></p:divider>
+			<div class="information">
+
+				<label>Information Player 2:</label>
+				<h:panelGrid columns="2" cellpadding="4">
+					<h5>Email</h5>
+					<span class="ui-float-label"> <p:inputText id="email2"
+							value="#{MapBean.emails[1]}" placeholder="email" />
+					</span>
+					<h5>Name</h5>
+					<span class="ui-float-label"> <p:inputText id="name2"
+							value="#{MapBean.names[1]}" placeholder="name" />
+					</span>
+					<h5>Color</h5>
+					<p:colorPicker id="thumbnail2" value="#{MapBean.colors[1]}"
+						swatchesOnly="true" theme="polaroid" clearButton="true"
+						closeButton="true" inline="true"
+						swatches="#F35B04, #F5BB00, #A755C2, #016FB9, #61C9A8, #F09B59">
+					</p:colorPicker>
+				</h:panelGrid>
+			</div>
+			<c:if test="#{MapBean.numPlayers>=3}">
+				<p:divider layout="vertical"></p:divider>
+				<div class="information">
+
+					<label>Information Player 3:</label>
+					<h:panelGrid columns="2" cellpadding="4">
+						<h5>Email</h5>
+						<span class="ui-float-label"> <p:inputText id="email3"
+								value="#{MapBean.emails[2]}" placeholder="email" />
+						</span>
+						<h5>Name</h5>
+						<span class="ui-float-label"> <p:inputText id="name3"
+								value="#{MapBean.names[2]}" placeholder="name" />
+						</span>
+						<h5>Color</h5>
+						<p:colorPicker id="thumbnail3" value="#{MapBean.colors[2]}"
+							swatchesOnly="true" theme="polaroid" clearButton="true"
+							closeButton="true" inline="true"
+							swatches="#F35B04, #F5BB00, #A755C2, #016FB9, #61C9A8, #F09B59">
+						</p:colorPicker>
+					</h:panelGrid>
+				</div>
+			</c:if>
+			<c:if test="#{MapBean.numPlayers==4}">
+				<p:divider layout="vertical"></p:divider>
+				<div class="information">
+
+					<label>Information Player 4:</label>
+					<h:panelGrid columns="2" cellpadding="4">
+						<h5>Email</h5>
+						<span class="ui-float-label"> <p:inputText id="email4"
+								value="#{MapBean.emails[3]}" placeholder="email" />
+						</span>
+						<h5>Name</h5>
+						<span class="ui-float-label"> <p:inputText id="name4"
+								value="#{MapBean.names[3]}" placeholder="name" />
+						</span>
+						<h5>Color</h5>
+						<p:colorPicker id="thumbnail4" value="#{MapBean.colors[3]}"
+							swatchesOnly="true" theme="polaroid" clearButton="true"
+							closeButton="true" inline="true"
+							swatches="#F35B04, #F5BB00, #A755C2, #016FB9, #61C9A8, #F09B59">
+						</p:colorPicker>
+					</h:panelGrid>
+				</div>
+			</c:if>
+			<p:commandButton
+				styleClass="rounded-button ui-button-warning login-btn"
+				value="Continue" action="#{MapBean.init}" update="growl" />
+		</div>
+	</h:form>
+	<h:form id="shash">
+		<p:growl id="ehash" showDetail="true" />
+		<div id="scode" class="login hash-modal">
+			<div class="information">
+				<button class="close-btn" onclick="closeSelectHash()">x</button>
+				<c:choose>
+					<c:when test="#{MapBean.sizeHashes>0}">
+						<label>Select game hash code:</label>
+						<h:panelGrid columns="1" cellpadding="4">
+							<p:selectOneListbox id="hashcodes" value="#{MapBean.hashCode}"
+								filter="true" filterMatchMode="contains" filterNormalize="true">
+								<f:selectItems value="#{MapBean.hashCodes}"></f:selectItems>
+							</p:selectOneListbox>
+							<p:commandButton
+								styleClass="rounded-button ui-button-warning hash-button"
+								value="Continue" action="#{MapBean.loadGame}" update="ehash" />
+						</h:panelGrid>
+					</c:when>
+					<c:otherwise>
+						<div class="col-12 md:col-4">
+							<p:staticMessage severity="info" summary="No saved games"
+								detail="No saved games were found." style="width: 100%" />
+						</div>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</div>
+	</h:form>
+	<p:dialog header="About Risk" widgetVar="aboutDialog" resizable="false"
+		modal="true" styleClass="dialog">
+		<h:outputText
+			value="Risk is a strategy board game of diplomacy, conflict and conquest for two to six players. The standard version is played on a board depicting a political map of the world, divided into forty-two territories, which are grouped into six continents. Turn rotates among players who control armies of playing pieces with which they attempt to capture territories from other players, with results determined by dice rolls." />
+	</p:dialog>
+	<script src="js/menu.js"></script>
+</h:body>
+</html>

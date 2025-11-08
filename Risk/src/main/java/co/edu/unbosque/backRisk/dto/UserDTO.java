@@ -6,7 +6,7 @@ import java.util.Objects;
 import co.edu.unbosque.backRisk.model.User;
 
 public class UserDTO {
-	private int id;
+	private Long id;
 	private String username;
 	private String nombre;
 	private String correo;
@@ -26,7 +26,7 @@ public class UserDTO {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 

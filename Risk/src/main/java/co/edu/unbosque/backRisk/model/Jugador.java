@@ -1,9 +1,17 @@
 package co.edu.unbosque.backRisk.model;
 
 import co.edu.unbosque.backRisk.util.MyLinkedList;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "jugadores")
 public class Jugador {
 
+	private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
 	private User user;
 	private String nombre;
 	private String color;

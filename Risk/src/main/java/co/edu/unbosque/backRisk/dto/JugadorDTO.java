@@ -6,6 +6,7 @@ import co.edu.unbosque.backRisk.util.MyLinkedList;
 
 public class JugadorDTO {
 
+	private Long id;
 	private UserDTO userDTO;
 	private String nombre;
 	private String color;

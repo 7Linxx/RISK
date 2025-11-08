@@ -1,10 +1,17 @@
 package co.edu.unbosque.backRisk.model;
 
 import co.edu.unbosque.backRisk.util.MyLinkedList;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "territorios")
 public class Territorio {
 
-	private Long id;
+	private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
 	private String nombre;
 	private Jugador duenio;
 	private int cantidadTropas;

@@ -1,0 +1,96 @@
+/* Custom styles adjusted to work with Bootstrap and preserve the Figma look */
+/* Keep in resources/css/styles.css and referenced via h:outputStylesheet library="css" */
+
+@charset "UTF-8";
+
+:root{
+  --bg-olive: #2d3b26;
+  --accent-olive: #6b8a2e;
+  --sand: #f2e9d7;
+  --orange: #b86b2c;
+  --light: #ffffff;
+  --muted: #9a9a9a;
+  --card-bg: rgba(255,255,255,0.95);
+}
+
+/* Default body background (parchment texture). Bootstrap body bg will be overridden. */
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background-image: url('../images/parchment-texture.jpg');
+  background-size: cover;
+  color: #222;
+}
+
+/* Logo style (styled like mockup) */
+.logo {
+  font-family: "Old English Text MT", Georgia, serif;
+  color: var(--orange);
+  letter-spacing: 1px;
+}
+
+/* Card overrides to keep slightly translucent parchment look */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(250,245,235,0.9));
+  border-radius: 10px;
+}
+
+/* Auth card special */
+.auth-card {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+}
+
+/* Buttons - keep bootstrap but tune colors */
+.btn-success {
+  background-color: var(--accent-olive);
+  border-color: var(--accent-olive);
+  color: var(--light);
+}
+.btn-success:hover, .btn-success:focus {
+  background-color: #5f7f25;
+  border-color: #5f7f25;
+}
+
+/* Outlined light link for auth pages */
+.link-light {
+  color: rgba(184,107,44,0.95);
+}
+
+/* Map placeholder specific look */
+.map-placeholder {
+  border: 6px solid rgba(107,138,46,0.12);
+  padding: 6px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 8px;
+}
+
+/* Sidebar log */
+.log {
+  background: rgba(255,255,255,0.9);
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 12px;
+}
+
+/* Territory badge */
+.badge-territory {
+  background: var(--orange);
+  color: #fff;
+}
+
+/* Small utility adjustments */
+.small-link {
+  margin-top: 8px;
+  display:block;
+  text-align:center;
+}
+
+/* Make inputs a little taller for the retro look */
+.form-control {
+  border-radius: 6px;
+}
+
+/* Responsive tweaks */
+@media (max-width:900px) {
+  .map-placeholder { margin-bottom: 12px; }
+  .sidebar { height: auto !important; }
+}

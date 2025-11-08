@@ -1,4 +1,4 @@
-package co.edu.unbosque.controller;
+package co.edu.unbosque.backRisk.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.dto.JugadorDTO;
-import co.edu.unbosque.dto.UserDTO;
-import co.edu.unbosque.model.Jugador;
 import co.edu.unbosque.service.JugadorService;
-import co.edu.unbosque.service.UserService;
 
 @RestController
 @CrossOrigin(origins = { "*" })
@@ -25,7 +22,6 @@ public class JugadorController {
 
 	@PostMapping(path = "/crear")
 	public ResponseEntity<String> crear(@RequestBody JugadorDTO jugador) {
-		int estatus = jugadorServ.create(jugador);
 		int estatus = jugadorServ.create(jugador);
 		if (estatus == 0) {
 			return new ResponseEntity<>("User creado con éxito", HttpStatus.CREATED);

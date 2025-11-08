@@ -1,6 +1,4 @@
-package co.edu.unbosque.controller;
-
-import java.util.List;
+package co.edu.unbosque.backRisk.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,21 +13,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.unbosque.dto.UserDTO;
-import co.edu.unbosque.service.UserService;
+import co.edu.unbosque.dto.TerritorioDTO;
+import co.edu.unbosque.service.TerritorioService;
 import co.edu.unbosque.util.MyLinkedList;
 
 @RestController
 @CrossOrigin(origins = { "*" })
-@RequestMapping(path = { "/user" })
-public class UserController {
+@RequestMapping(path = { "/territorio" })
+public class TerritorioController {
 
 	@Autowired
-	private UserService userServ;
+	private TerritorioService territorioServ;
 
 	@PostMapping(path = "/crear")
-	public ResponseEntity<String> crear(@RequestBody UserDTO user) {
-		int estatus = userServ.create(user);
+	public ResponseEntity<String> crear(@RequestBody TerritorioDTO territorio) {
+		int estatus = territorioServ.create(territorio);
 		if (estatus == 0) {
 			return new ResponseEntity<>("User creado con éxito", HttpStatus.CREATED);
 		} else {
@@ -39,44 +37,44 @@ public class UserController {
 
 	// READ ALL
 	@GetMapping(path = "/listar")
-	public ResponseEntity<MyLinkedList<UserDTO>> listar() {
-		MyLinkedList<UserDTO> lista = userServ.getAll();
+	public ResponseEntity<MyLinkedList<TerritorioDTO>> listar() {
+		MyLinkedList<TerritorioDTO> lista = territorioServ.getAll();
 		return new ResponseEntity(lista, HttpStatus.OK);
 	}
 
 	// UPDATE
 	@PutMapping(path = "/actualizar/{id}")
-	public ResponseEntity<String> actualizar(@PathVariable Long id, @RequestBody UserDTO aveUpdate) {
-		int estatus = userServ.updateById(id, aveUpdate);
+	public ResponseEntity<String> actualizar(@PathVariable Long id, @RequestBody TerritorioDTO aveUpdate) {
+		int estatus = territorioServ.updateById(id, aveUpdate);
 
 		if (estatus == 200) {
-			return new ResponseEntity<>("User actualizado con éxito", HttpStatus.OK);
+			return new ResponseEntity<>("Territorio actualizado con éxito", HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("User no encontrado", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Territorio no encontrado", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	// DELETE
 	@DeleteMapping(path = "/eliminar/{id}")
 	public ResponseEntity<String> eliminar(@PathVariable Long id) {
-		int estatus = userServ.deleteById(id);
+		int estatus = territorioServ.deleteById(id);
 
 		if (estatus == 200) {
-			return new ResponseEntity<>("User eliminado con éxito", HttpStatus.OK);
+			return new ResponseEntity<>("Territorio eliminado con éxito", HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>("User no encontrado", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("Territorio no encontrado", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	// COUNT
 	@GetMapping(path = "/count")
 	public ResponseEntity<Long> contar() {
-		return new ResponseEntity<>(userServ.count(), HttpStatus.OK);
+		return new ResponseEntity<>(territorioServ.count(), HttpStatus.OK);
 	}
 
 	// EXIST
 	@GetMapping(path = "/exist/{id}")
 	public ResponseEntity<Boolean> existe(@PathVariable Long id) {
-		return new ResponseEntity<>(userServ.exist(id), HttpStatus.OK);
+		return new ResponseEntity<>(territorioServ.exist(id), HttpStatus.OK);
 	}
 }

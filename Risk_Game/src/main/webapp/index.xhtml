@@ -13,31 +13,39 @@
 
 
 <h:body>
- <div class="login-container">
-        <div class="risk-logo">
-           <img src="images/logo.png" alt="Risk Icon" class="risk-icon"/>
-        </div>
-        <h:form>
-            <div class="input-row">
-                <label class="input-label" for="usuario">Usuario</label>
-                <h:inputText id="usuario" styleClass="risk-input" required="true" requiredMessage="Usuario requerido"/>
-            </div>
-            <div class="input-row">
-                <label class="input-label" for="contra">Contraseña</label>
-                <h:inputSecret id="contra" styleClass="risk-input" required="true" requiredMessage="Contraseña requerida"/>
-            </div>
-            <div style="text-align:center; width: 100%; margin-top: 10px;">
-                <h:commandButton value="Ingresar" styleClass="ingresar-btn" action="#{MapBean.login}"/>
-            </div>
-        </h:form>
-    </div>
+	<div></div>
+	<div class="login-container">
+		<div class="risk-logo">
+			<img src="images/logo.png" alt="Risk Icon" class="risk-icon" />
+		</div>
+		<h:form>
+			<div class="input-row">
+				<label class="input-label" for="usuario">Usuario</label>
+				<h:inputText id="usuario" styleClass="risk-input" required="true"
+					requiredMessage="Usuario requerido"
+					value="#{MapBean.username}" />
+			</div>
+			<div class="input-row">
+				<label class="input-label" for="contra">Contraseña</label>
+				<h:inputSecret id="contra" styleClass="risk-input" required="true"
+					requiredMessage="Contraseña requerida"
+					value="#{MapBean.password}" />
+			</div>
+			<div style="text-align: center; width: 100%; margin-top: 10px;">
+				<h:commandButton value="Ingresar" styleClass="ingresar-btn"
+					action="#{MapBean.login}" />
+			</div>
+			<br />
+			<h:outputLink value="register.xhtml">¿No tienes cuenta? Regístrate</h:outputLink>
+		</h:form>
+	</div>
 
 
-
+//NO BORRAR
 	<div class="content">
 		<p:graphicImage xmlns:p="http://primefaces.org/ui"
-			library="primeblocks-app" alt="logo" height="200"
-			styleClass="mb-3" value="images/logo.png" />
+			library="primeblocks-app" alt="logo" height="200" styleClass="mb-3"
+			value="images/logo.png" />
 		<div class="boton-group">
 			<h:commandButton styleClass="boton" value="Start New Game"
 				onclick="showNumberPlayers()" />

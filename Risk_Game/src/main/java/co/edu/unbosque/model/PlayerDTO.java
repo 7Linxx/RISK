@@ -9,16 +9,28 @@ public class PlayerDTO {
 	private String name;
 	private String color;
 	private String email;
+	private String password;
 	private MyDoubleLinkedList<String> territories;
 	
 	
 	public PlayerDTO() {}
 
-	public PlayerDTO(String name, String color,String email) {
+	public PlayerDTO(String name, String password, String color,String email) {
 		this.name = name;
 		this.color = color;
+		this.password = password;
 		this.email=email;
 		this.territories = new MyDoubleLinkedList<>();
+	}
+
+	
+	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getName() {

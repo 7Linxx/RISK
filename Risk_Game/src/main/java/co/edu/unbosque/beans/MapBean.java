@@ -1,5 +1,7 @@
 package co.edu.unbosque.beans;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Objects;
@@ -49,6 +51,7 @@ public class MapBean {
 	private String colors[];
 	private String names[];
 	private String emails[];
+	private String passwords[];
 	private int[] disesA, disesE;
 	private int numPlayers;
 	private String hashCode;
@@ -65,6 +68,7 @@ public class MapBean {
 		colors = new String[4];
 		names = new String[4];
 		emails = new String[4];
+		passwords = new String[4];
 		reforzed = false;
 		territories = new String[] { "Alaska", "Northwest_Territory", "Alberta", "Ontario", "Western_United_States",
 				"Quebec", "Eastern_United_States", "Central_America", "Venezuela", "Peru", "Brazil", "Argentina",
@@ -148,6 +152,14 @@ public class MapBean {
 
 	public void setTroopsObtained(int troopsObtained) {
 		this.troopsObtained = troopsObtained;
+	}
+
+	public String[] getPasswords() {
+		return passwords;
+	}
+
+	public void setPasswords(String[] passwords) {
+		this.passwords = passwords;
 	}
 
 	public int getAssignTroops() {
@@ -565,7 +577,7 @@ public class MapBean {
 				calcNumDices();
 			}
 		} else if (phase.equals("Phase 3: Strengthen")) {
-			if(reforzed) {
+			if (reforzed) {
 				return;
 			}
 			if (selectedTerritory == null && pDao.getPlayers().get(selectedPlayer).containsTerritory(territory)
@@ -928,10 +940,10 @@ public class MapBean {
 		if (selectedPlayer == pDao.getPlayers().getSize()) {
 			selectedPlayer = 0;
 		}
-		while(pDao.getPlayers().get(selectedPlayer).getTerritories().getSize()==0) {
+		while (pDao.getPlayers().get(selectedPlayer).getTerritories().getSize() == 0) {
 			selectedPlayer++;
-			if(selectedPlayer==pDao.getPlayers().getSize()) {
-				selectedPlayer=0;
+			if (selectedPlayer == pDao.getPlayers().getSize()) {
+				selectedPlayer = 0;
 			}
 		}
 	}
@@ -988,7 +1000,7 @@ public class MapBean {
 			} else {
 				vColor.put(colors[i], true);
 			}
-			pDao.getPlayers().add(new PlayerDTO(names[i], colors[i], emails[i]));
+			pDao.getPlayers().add(new PlayerDTO(names[i], passwords[i], colors[i], emails[i]));
 		}
 		return required;
 	}
@@ -1071,8 +1083,8 @@ public class MapBean {
 		HttpClientSynchronous.doPost("http://localhost:8081/gamedetails/create",
 				"{\"hashCode\": \"" + hashCode + "\",\"phase\": \"" + phase + "\",\"playerTurn\": " + selectedPlayer
 						+ ",\"gameInfo\": \"" + gameInfo + "\"}");
-		
-		addMessage(FacesMessage.SEVERITY_INFO, "Game saved.","Game successfully saved.");
+
+		addMessage(FacesMessage.SEVERITY_INFO, "Game saved.", "Game successfully saved.");
 	}
 
 	public void loadHashCodes() {
@@ -1117,12 +1129,11 @@ public class MapBean {
 				.split(";");
 		for (String object : jsPlayers) {
 			String[] attributes = object.split(",");
-			PlayerDTO player = new PlayerDTO(attributes[1], attributes[2], attributes[3]);
+			PlayerDTO player = new PlayerDTO(attributes[1], attributes[2], attributes[3], attributes[4]);
 			int index = Integer.parseInt(attributes[4]);
-			if(pTerritory.containsKey(index)) {
+			if (pTerritory.containsKey(index)) {
 				player.setTerritories(pTerritory.getValue(index));
-			}
-			else {
+			} else {
 				player.setTerritories(new MyDoubleLinkedList<String>());
 			}
 			pPlayers.put(index, player);
@@ -1159,20 +1170,18 @@ public class MapBean {
 		for (int i = 0; i < pDao.getPlayers().getSize(); i++) {
 			lplayers[i + 1] = pDao.getPlayers().get(i).getName() + ". " + (i == selectedPlayer ? "Winner." : "Loser");
 		}
-		String content2="Game hashcode: "+hashCode;
-		FileHandler.generateZIP(pathPdf, pathZip, pathImg, header, content,content2, lplayers);
+		String content2 = "Game hashcode: " + hashCode;
+		FileHandler.generateZIP(pathPdf, pathZip, pathImg, header, content, content2, lplayers);
 	}
-	
-	
 
 	public String exitGame() {
 		return "index.xhtml?faces-redirect=true";
 	}
-	
+
 	public String endGame() {
 		for (int i = 0; i < pDao.getPlayers().getSize(); i++) {
-			PlayerDTO current=pDao.getPlayers().get(i);
-			sendEmailToPlayers(current.getName(), current.getEmail(), i==selectedPlayer);
+			PlayerDTO current = pDao.getPlayers().get(i);
+			sendEmailToPlayers(current.getName(), current.getEmail(), i == selectedPlayer);
 		}
 		String exist = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/existhash/" + hashCode);
 		if (!exist.equals("No")) {
@@ -1182,35 +1191,129 @@ public class MapBean {
 		}
 		return "index.xhtml?faces-redirect=true";
 	}
-	
+
 	public void sendEmailToPlayers(String name, String email, boolean isWinner) {
-		String content="Thank you for playing the game.\n\n";
-		if(isWinner) {
+		String content = "Thank you for playing the game.\n\n";
+		if (isWinner) {
 			int totalTroops = 0;
 			for (String aux : territories)
 				totalTroops += tDao.getTerrritories().getValue(aux).getNumberTroops();
-			content+="Congratulations "+name+" on your victory in the game! Your strategy and tactical skills took you to the top of the board."+
-		    " You are a true master of conquest and territorial control.You have conquered all the terrain with a total of "+totalTroops+" troops."
-					+"\n\nGeneral results:\n\n";
-		}
-		else {
-			content+="Although this time you did not achieve victory "+name+", I want to highlight your bravery and strategic approach."
-		    +" Your participation showed your dedication and tactical skills, and it is evident that you faced challenges with determination."
-			+"\n\nGeneral results:\n\n";
+			content += "Congratulations " + name
+					+ " on your victory in the game! Your strategy and tactical skills took you to the top of the board."
+					+ " You are a true master of conquest and territorial control.You have conquered all the terrain with a total of "
+					+ totalTroops + " troops." + "\n\nGeneral results:\n\n";
+		} else {
+			content += "Although this time you did not achieve victory " + name
+					+ ", I want to highlight your bravery and strategic approach."
+					+ " Your participation showed your dedication and tactical skills, and it is evident that you faced challenges with determination."
+					+ "\n\nGeneral results:\n\n";
 		}
 		for (int i = 0; i < pDao.getPlayers().getSize(); i++) {
-			content+=pDao.getPlayers().get(i).getName() + ". " + (i == selectedPlayer ? "Winner.\n" : "Loser\n");
+			content += pDao.getPlayers().get(i).getName() + ". " + (i == selectedPlayer ? "Winner.\n" : "Loser\n");
 		}
 		try {
 			MailSender.sendEamil(email, content);
-		}catch (MessagingException e) {
+		} catch (MessagingException e) {
 			System.err.println("Error sending mail");
 		}
 	}
-	
 
 	public String generarHash(int password) {
 		return HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/generatehash/" + password);
+	}
+
+	private String username;
+	private String password;
+	private String email;
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String register() {
+		if (username == null || username.isEmpty() || password == null || password.isEmpty() || email == null
+				|| email.isEmpty()) {
+			addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Todos los campos son obligatorios.");
+			return null;
+		}
+		if (!email.matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
+			addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Email no válido.");
+			return null;
+		}
+		for (PlayerDTO p : pDao.getPlayers()) {
+			if (p.getName().equals(username)) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Usuario ya existe.");
+				return null;
+			}
+		}
+		String hashedPassword = hashPassword(password);
+		PlayerDTO nuevo = new PlayerDTO(username, hashedPassword, email, "white");
+		pDao.create(nuevo);
+		sendRegisterEmail(email, username);
+		addMessage(FacesMessage.SEVERITY_INFO, "Registro exitoso", "Bienvenido, " + username);
+		username = "";
+		password = "";
+		email = "";
+		return "Login.xhtml?faces-redirect=true";
+	}
+
+	public String login() {
+		if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+			addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Usuario y contraseña requeridos.");
+			return null;
+		}
+		String hashed = hashPassword(password);
+		for (PlayerDTO p : pDao.getPlayers()) {
+			if (p.getName().equals(username) && p.getPassword().equals(hashed)) {
+				addMessage(FacesMessage.SEVERITY_INFO, "Bienvenido", "Acceso correcto");
+				return "game.xhtml?faces-redirect=true";
+			}
+		}
+		addMessage(FacesMessage.SEVERITY_ERROR, "Acceso denegado", "Credenciales incorrectas.");
+		return null;
+	}
+
+	private String hashPassword(String password) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
+			StringBuilder hex = new StringBuilder();
+			for (byte b : hash)
+				hex.append(String.format("%02x", b));
+			return hex.toString();
+		} catch (Exception e) {
+			return password;
+		}
+	}
+
+	private void sendRegisterEmail(String email, String username) {
+		String msg = "¡Bienvenido a Risk!\n\nTu usuario (" + username
+				+ ") ha sido registrado exitosamente.\n¡Disfruta el juego!";
+		try {
+			MailSender.sendEamil(email, msg);
+		} catch (MessagingException e) {
+			System.err.println("Error enviando correo de registro");
+		}
 	}
 
 }

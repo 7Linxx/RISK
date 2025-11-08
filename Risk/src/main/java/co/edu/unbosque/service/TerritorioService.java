@@ -7,13 +7,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import co.edu.unbosque.dto.TerritorioDTO;
 import co.edu.unbosque.model.Territorio;
 import co.edu.unbosque.repository.TerritorioRepository;
 import co.edu.unbosque.util.MyLinkedList;
 import co.edu.unbosque.util.Node;
 
 @Service
-public class TerritorioService implements CRUDOperation<Territorio> {
+public class TerritorioService implements CRUDOperation<TerritorioDTO> {
 
 	@Autowired
 	private TerritorioRepository territorioRepo;
@@ -25,18 +26,7 @@ public class TerritorioService implements CRUDOperation<Territorio> {
 	}
 
 	@Override
-	public int create(Territorio data) {
-		Territorio entity = modelMapper.map(data, Territorio.class);
-		if (findTerritorioAlreadyExists(entity)) {
-			return 1; // Ya existe
-		} else {
-			territorioRepo.save(entity);
-			return 0; // Creado correctamente
-		}
-	}
-
-	@Override
-	public MyLinkedList<Territorio> getAll() {
+	public MyLinkedList<TerritorioDTO> getAll() {
 		List<Territorio> entityList = territorioRepo.findAll();
 
 		MyLinkedList<Territorio> myEntityList = new MyLinkedList<>();
@@ -44,10 +34,10 @@ public class TerritorioService implements CRUDOperation<Territorio> {
 			myEntityList.add(e);
 		}
 
-		MyLinkedList<Territorio> dtoList = new MyLinkedList<>();
+		MyLinkedList<TerritorioDTO> dtoList = new MyLinkedList<>();
 		for (int i = 0; i < myEntityList.size(); i++) {
 			Node<Territorio> entity = myEntityList.get(i);
-			Territorio territorio = modelMapper.map(entity.getInfo(), Territorio.class);
+			TerritorioDTO territorio = modelMapper.map(entity.getInfo(), TerritorioDTO.class);
 			dtoList.add(territorio);
 		}
 
@@ -62,29 +52,6 @@ public class TerritorioService implements CRUDOperation<Territorio> {
 			return 0;
 		} else {
 			return 1;
-		}
-	}
-
-	@Override
-	public int updateById(Long id, Territorio newData) {
-		Optional<Territorio> found = territorioRepo.findById(id);
-		Optional<Territorio> newFound = territorioRepo.findByName(newData.getNombre());
-
-		if (found.isPresent() && !newFound.isPresent()) {
-			Territorio temp = found.get();
-			temp.setNombre(newData.getNombre());
-			temp.setCantidadTropas(newData.getCantidadTropas());
-			temp.setDuenio(newData.getDuenio());
-			territorioRepo.save(temp);
-			return 0;
-		}
-		if (found.isPresent() && newFound.isPresent()) {
-			return 1; // Nombre duplicado
-		}
-		if (!found.isPresent()) {
-			return 2; // No encontrado
-		} else {
-			return 3;
 		}
 	}
 
@@ -105,5 +72,39 @@ public class TerritorioService implements CRUDOperation<Territorio> {
 
 	public boolean findTerritorioAlreadyExists(Territorio newTerritorio) {
 		return territorioRepo.findByName(newTerritorio.getNombre()).isPresent();
+	}
+
+	@Override
+	public int create(TerritorioDTO data) {
+		Territorio entity = modelMapper.map(data, Territorio.class);
+		if (findTerritorioAlreadyExists(entity)) {
+			return 1; // Ya existe
+		} else {
+			territorioRepo.save(entity);
+			return 0; // Creado correctamente
+		}
+	}
+
+	@Override
+	public int updateById(Long id, TerritorioDTO newData) {
+		Optional<Territorio> found = territorioRepo.findById(id);
+		Optional<Territorio> newFound = territorioRepo.findByName(newData.getNombre());
+
+		if (found.isPresent() && !newFound.isPresent()) {
+			Territorio temp = found.get();
+			temp.setNombre(newData.getNombre());
+			temp.setCantidadTropas(newData.getCantidadTropas());
+			temp.setDuenio(newData.getDuenio());
+			territorioRepo.save(temp);
+			return 0;
+		}
+		if (found.isPresent() && newFound.isPresent()) {
+			return 1; // Nombre duplicado
+		}
+		if (!found.isPresent()) {
+			return 2; // No encontrado
+		} else {
+			return 3;
+		}
 	}
 }

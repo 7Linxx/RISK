@@ -7,13 +7,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import co.edu.unbosque.dto.JugadorDTO;
 import co.edu.unbosque.model.Jugador;
+import co.edu.unbosque.model.Territorio;
+import co.edu.unbosque.model.User;
 import co.edu.unbosque.repository.JugadorRepository;
 import co.edu.unbosque.util.MyLinkedList;
 import co.edu.unbosque.util.Node;
 
 @Service
-public class JugadorService implements CRUDOperation<Jugador> {
+public class JugadorService implements CRUDOperation<JugadorDTO> {
 
 	@Autowired
 	private JugadorRepository jugadorRepo;
@@ -25,7 +28,7 @@ public class JugadorService implements CRUDOperation<Jugador> {
 	}
 
 	@Override
-	public int create(Jugador data) {
+	public int create(JugadorDTO data) {
 		Jugador entity = modelMapper.map(data, Jugador.class);
 		if (findJugadorAlreadyExists(entity)) {
 			return 1; // Ya existe
@@ -36,7 +39,7 @@ public class JugadorService implements CRUDOperation<Jugador> {
 	}
 
 	@Override
-	public MyLinkedList<Jugador> getAll() {
+	public MyLinkedList<JugadorDTO> getAll() {
 		List<Jugador> entityList = jugadorRepo.findAll();
 
 		MyLinkedList<Jugador> myEntityList = new MyLinkedList<>();
@@ -44,10 +47,10 @@ public class JugadorService implements CRUDOperation<Jugador> {
 			myEntityList.add(e);
 		}
 
-		MyLinkedList<Jugador> dtoList = new MyLinkedList<>();
+		MyLinkedList<JugadorDTO> dtoList = new MyLinkedList<>();
 		for (int i = 0; i < myEntityList.size(); i++) {
 			Node<Jugador> entity = myEntityList.get(i);
-			Jugador jugador = modelMapper.map(entity.getInfo(), Jugador.class);
+			JugadorDTO jugador = modelMapper.map(entity.getInfo(), JugadorDTO.class);
 			dtoList.add(jugador);
 		}
 
@@ -62,31 +65,6 @@ public class JugadorService implements CRUDOperation<Jugador> {
 			return 0; // Eliminado correctamente
 		} else {
 			return 1; // No encontrado
-		}
-	}
-
-	@Override
-	public int updateById(Long id, Jugador newData) {
-		Optional<Jugador> found = jugadorRepo.findById(id);
-		Optional<Jugador> newFound = jugadorRepo.findByName(newData.getNombre());
-
-		if (found.isPresent() && !newFound.isPresent()) {
-			Jugador temp = found.get();
-			temp.setNombre(newData.getNombre());
-			temp.setColor(newData.getColor());
-			temp.setTerritoriosPertenecientes(newData.getTerritoriosPertenecientes());
-			temp.setTropasDisponibles(newData.getTropasDisponibles());
-			temp.setUser(newData.getUser());
-			jugadorRepo.save(temp);
-			return 0;
-		}
-		if (found.isPresent() && newFound.isPresent()) {
-			return 1; // nombre ya existente
-		}
-		if (!found.isPresent()) {
-			return 2; // no encontrado
-		} else {
-			return 3; // error genérico
 		}
 	}
 
@@ -107,5 +85,35 @@ public class JugadorService implements CRUDOperation<Jugador> {
 
 	public boolean findJugadorAlreadyExists(Jugador newJugador) {
 		return jugadorRepo.findByName(newJugador.getNombre()).isPresent();
+	}
+
+	@Override
+	public int updateById(Long id, JugadorDTO newData) {
+		Optional<Jugador> found = jugadorRepo.findById(id);
+		Optional<Jugador> newFound = jugadorRepo.findByName(newData.getNombre());
+
+		if (found.isPresent() && !newFound.isPresent()) {
+			Jugador temp = found.get();
+			temp.setNombre(newData.getNombre());
+			temp.setColor(newData.getColor());
+			MyLinkedList<Territorio> newTerritorio = new MyLinkedList<>();
+			for (int i = 0; i < newData.getTerritoriosPertenecientes().size(); i++) {
+				newTerritorio.add(modelMapper.map(newData.getTerritoriosPertenecientes().get(i), Territorio.class));
+			}
+			temp.setTerritoriosPertenecientes(newTerritorio);
+			temp.setTropasDisponibles(newData.getTropasDisponibles());
+			User newUser = modelMapper.map(newData.getUserDTO(), User.class);
+			temp.setUser(newUser);
+			jugadorRepo.save(temp);
+			return 0;
+		}
+		if (found.isPresent() && newFound.isPresent()) {
+			return 1; // nombre ya existente
+		}
+		if (!found.isPresent()) {
+			return 2; // no encontrado
+		} else {
+			return 3; // error genérico
+		}
 	}
 }

@@ -39,9 +39,9 @@ public class UserController {
 
 	// READ ALL
 	@GetMapping(path = "/listar")
-	public ResponseEntity<List<UserDTO>> listar() {
+	public ResponseEntity<MyLinkedList<UserDTO>> listar() {
 		MyLinkedList<UserDTO> lista = userServ.getAll();
-		return new ResponseEntity<>((List<UserDTO>) lista, HttpStatus.OK);
+		return new ResponseEntity(lista, HttpStatus.OK);
 	}
 
 	// UPDATE

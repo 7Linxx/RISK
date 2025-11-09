@@ -22,7 +22,63 @@
 			menu.style.display = (menu.style.display === "block") ? "none"
 					: "block";
 		}
-		
+		let selectedMode = "";
+
+		function showGameModes() {
+			document.getElementById('btn-jugar').style.display = 'none';
+			document.getElementById('game-mode-panel').style.display = 'block';
+		}
+		function backToMainPanel() {
+			document.getElementById('game-mode-panel').style.display = 'none';
+			document.getElementById('btn-jugar').style.display = 'block';
+			document.getElementById('player-count-panel').style.display = 'none';
+			selectedMode = "";
+		}
+
+		function selectMode(mode) {
+			selectedMode = mode; // Guardamos la selección
+			document.getElementById('game-mode-panel').style.display = 'none';
+			document.getElementById('player-count-panel').style.display = 'block';
+			// Cambia el título si quieres que se vea el modo elegido
+			document.getElementById('player-count-title').textContent = "¿Cuántos jugadores van a jugar "
+					+ mode + "?";
+		}
+
+		function choosePlayers(count) {
+			// Redirección según el modo y cantidad de jugadores
+			let modePage = "";
+			if (selectedMode === "Conquista") {
+				if (count == 2)
+					modePage = "conquista2.xhtml";
+				else if (count == 3)
+					modePage = "conquista3.xhtml";
+				else if (count == 4)
+					modePage = "conquista4.xhtml";
+				else if (count == 1)
+					modePage = "conquistaSolo.xhtml";
+			} else if (selectedMode === "Secreta") {
+				if (count == 2)
+					modePage = "mision2.xhtml";
+				else if (count == 3)
+					modePage = "mision3.xhtml";
+				else if (count == 4)
+					modePage = "mision4.xhtml";
+				else if (count == 1)
+					modePage = "misionSolo.xhtml";
+			} else if (selectedMode === "Capitales") {
+				if (count == 2)
+					modePage = "capitales2.xhtml";
+				else if (count == 3)
+					modePage = "capitales3.xhtml";
+				else if (count == 4)
+					modePage = "capitales4.xhtml";
+				else if (count == 1)
+					modePage = "capitalesSolo.xhtml";
+			}
+			if (modePage !== "") {
+				window.location = modePage; // Redirige al archivo correspondiente
+			}
+		}
 	</script>
 </h:head>
 <h:body>
@@ -49,29 +105,43 @@
 			<h:commandButton id="btn-jugar" styleClass="play-btn" value="JUGAR"
 				onclick="showGameModes(); return false;" />
 
-			<div id="game-mode-panel" style="display: none;">
-
+			<div id="game-mode-panel">
 				<button type="button" class="back-arrow-btn"
 					onclick="backToMainPanel()">
 					<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
 						points="30,4 11,21 30,38" /> </svg>
 				</button>
-
 				<div class="game-mode-header">
-					<span class="game-mode-title"> Escoge un modo de juego </span>
-				</div>
-
-				<div class="game-modes-row">
-					<h:commandButton styleClass="mode-btn" value="Conquista el mundo"
-						action="conquista.xhtml?faces-redirect=true" />
-					<h:commandButton styleClass="mode-btn" value="Mision Secreta"
-						action="mision.xhtml?faces-redirect=true" />
+					<span class="game-mode-title">Escoge un modo de juego</span>
 				</div>
 				<div class="game-modes-row">
-					<h:commandButton styleClass="mode-btn" value="Capitales"
-						action="capitales.xhtml?faces-redirect=true" />
+					<button class="mode-btn" onclick="selectMode('Conquista')">Conquista
+						el mundo</button>
+					<button class="mode-btn" onclick="selectMode('Secreta')">Mision
+						Secreta</button>
+					<button class="mode-btn" onclick="selectMode('Capitales')">Capitales</button>
 				</div>
-				<br />
+			</div>
+		</div>
+		<!-- Panel de preguntas de cantidad de jugadores -->
+		<div id="player-count-panel">
+			<button type="button" class="back-arrow-btn"
+				onclick="backToMainPanel()">
+				<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
+					points="30,4 11,21 30,38" /> </svg>
+			</button>
+			<div class="player-count-header">
+				<span class="player-count-title" id="player-count-title">
+					¿Cuántos jugadores van a jugar? </span>
+			</div>
+			<div class="player-count-row">
+				<button class="count-btn" onclick="choosePlayers(2)">2
+					jugadores</button>
+				<button class="count-btn" onclick="choosePlayers(3)">3
+					jugadores</button>
+				<button class="count-btn" onclick="choosePlayers(4)">4
+					jugadores</button>
+				<button class="count-btn" onclick="choosePlayers(1)">Solitario</button>
 			</div>
 		</div>
 	</div>

@@ -7,8 +7,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:head>
 	<link rel="stylesheet" href="styles/menu.css"></link>
-
-	<title>Risk Game</title>
+	<title>Risk Global Domination</title>
 </h:head>
 
 
@@ -22,26 +21,28 @@
 			<div class="input-row">
 				<label class="input-label" for="usuario">Usuario</label>
 				<h:inputText id="usuario" styleClass="risk-input" required="true"
-					requiredMessage="Usuario requerido"
-					value="#{MapBean.username}" />
+					requiredMessage="Usuario requerido" value="#{MapBean.username}" />
 			</div>
 			<div class="input-row">
 				<label class="input-label" for="contra">Contraseña</label>
 				<h:inputSecret id="contra" styleClass="risk-input" required="true"
-					requiredMessage="Contraseña requerida"
-					value="#{MapBean.password}" />
+					requiredMessage="Contraseña requerida" value="#{MapBean.password}" />
 			</div>
 			<div style="text-align: center; width: 100%; margin-top: 10px;">
 				<h:commandButton value="Ingresar" styleClass="ingresar-btn"
-					action="#{MapBean.login}" />
+					action="#{MapBean.login}"/>
 			</div>
 			<br />
-			<h:outputLink value="register.xhtml">¿No tienes cuenta? Regístrate</h:outputLink>
+			<div style="text-align: center;">
+
+				<h:outputLink class="link" value="register.xhtml">¿No tienes cuenta? Regístrate</h:outputLink>
+			</div>
 		</h:form>
 	</div>
 
 
-//NO BORRAR
+
+
 	<div class="content">
 		<p:graphicImage xmlns:p="http://primefaces.org/ui"
 			library="primeblocks-app" alt="logo" height="200" styleClass="mb-3"

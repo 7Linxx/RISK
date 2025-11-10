@@ -2,83 +2,18 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
 <h:head>
 	<title>Risk Global Domination</title>
 	<link rel="stylesheet" href="styles/jugar.css"></link>
 	<script src="js/menu.js"></script>
 	<script>
-		function showGameModes() {
-			document.getElementById('btn-jugar').style.display = 'none';
-			document.getElementById('game-mode-panel').style.display = 'block';
-		}
-		function backToMainPanel() {
-			document.getElementById('game-mode-panel').style.display = 'none';
-			document.getElementById('btn-jugar').style.display = 'block';
-		}
-		function toggleMenu() {
-			const menu = document.getElementById("settingsMenu");
-			menu.style.display = (menu.style.display === "block") ? "none"
-					: "block";
-		}
-		let selectedMode = "";
-
-		function showGameModes() {
-			document.getElementById('btn-jugar').style.display = 'none';
-			document.getElementById('game-mode-panel').style.display = 'block';
-		}
-		function backToMainPanel() {
-			document.getElementById('game-mode-panel').style.display = 'none';
-			document.getElementById('btn-jugar').style.display = 'block';
-			document.getElementById('player-count-panel').style.display = 'none';
-			selectedMode = "";
-		}
-
-		function selectMode(mode) {
-			selectedMode = mode; // Guardamos la selección
-			document.getElementById('game-mode-panel').style.display = 'none';
-			document.getElementById('player-count-panel').style.display = 'block';
-			// Cambia el título si quieres que se vea el modo elegido
-			document.getElementById('player-count-title').textContent = "¿Cuántos jugadores van a jugar "
-					+ mode + "?";
-		}
-
-		function choosePlayers(count) {
-			// Redirección según el modo y cantidad de jugadores
-			let modePage = "";
-			if (selectedMode === "Conquista") {
-				if (count == 2)
-					modePage = "conquista2.xhtml";
-				else if (count == 3)
-					modePage = "conquista3.xhtml";
-				else if (count == 4)
-					modePage = "conquista4.xhtml";
-				else if (count == 1)
-					modePage = "conquistaSolo.xhtml";
-			} else if (selectedMode === "Secreta") {
-				if (count == 2)
-					modePage = "mision2.xhtml";
-				else if (count == 3)
-					modePage = "mision3.xhtml";
-				else if (count == 4)
-					modePage = "mision4.xhtml";
-				else if (count == 1)
-					modePage = "misionSolo.xhtml";
-			} else if (selectedMode === "Capitales") {
-				if (count == 2)
-					modePage = "capitales2.xhtml";
-				else if (count == 3)
-					modePage = "capitales3.xhtml";
-				else if (count == 4)
-					modePage = "capitales4.xhtml";
-				else if (count == 1)
-					modePage = "capitalesSolo.xhtml";
-			}
-			if (modePage !== "") {
-				window.location = modePage; // Redirige al archivo correspondiente
-			}
-		}
+		 
 	</script>
 </h:head>
 <h:body>
@@ -105,7 +40,7 @@
 			<h:commandButton id="btn-jugar" styleClass="play-btn" value="JUGAR"
 				onclick="showGameModes(); return false;" />
 
-			<div id="game-mode-panel">
+			<div id="game-mode-panel" style="display: none;">
 				<button type="button" class="back-arrow-btn"
 					onclick="backToMainPanel()">
 					<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
@@ -115,35 +50,145 @@
 					<span class="game-mode-title">Escoge un modo de juego</span>
 				</div>
 				<div class="game-modes-row">
-					<button class="mode-btn" onclick="selectMode('Conquista')">Conquista
+					<button class="mode-btn"
+						onclick="selectMode('Conquista'); return false;">Conquista
 						el mundo</button>
-					<button class="mode-btn" onclick="selectMode('Secreta')">Mision
+					<button class="mode-btn"
+						onclick="selectMode('Secreta'); return false;">Misión
 						Secreta</button>
-					<button class="mode-btn" onclick="selectMode('Capitales')">Capitales</button>
+					<button class="mode-btn"
+						onclick="selectMode('Capitales'); return false;">Capitales</button>
 				</div>
 			</div>
-		</div>
-		<!-- Panel de preguntas de cantidad de jugadores -->
-		<div id="player-count-panel">
-			<button type="button" class="back-arrow-btn"
-				onclick="backToMainPanel()">
-				<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
-					points="30,4 11,21 30,38" /> </svg>
-			</button>
-			<div class="player-count-header">
-				<span class="player-count-title" id="player-count-title">
-					¿Cuántos jugadores van a jugar? </span>
+
+			<div id="player-count-panel" style="display: none;">
+				<button type="button" class="back-arrow-btn"
+					onclick="backToModePanel()">
+					<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
+						points="30,4 11,21 30,38" /> </svg>
+				</button>
+				<div class="game-mode-header">
+					<span class="game-mode-title" id="player-count-title">
+						¿Cuántos jugadores van a jugar? </span>
+				</div>
+				<h:form id="playersForm">
+					<h:inputHidden id="selectedMode" value="#{MapBean.selectedMode}" />
+					<div class="game-modes-row">
+						<h:commandButton value="2 jugadores" styleClass="mode-btn"
+							update="flogin" oncomplete="showLogin()"
+							action="#{MapBean.setNumPlayers(2)}" />
+						<h:commandButton value="3 jugadores" styleClass="mode-btn"
+							action="#{MapBean.setPlayersAndGo(3)}" onclick="showUsersInfo()" />
+					</div>
+					<div class="game-modes-row">
+						<h:commandButton value="4 jugadores" styleClass="mode-btn"
+							action="#{MapBean.setPlayersAndGo(4)}" onclick="showUsersInfo()" />
+						<h:commandButton value="Solitario" styleClass="mode-btn"
+							action="#{MapBean.setPlayersAndGo(1)}" onclick="showUsersInfo()" />
+					</div>
+				</h:form>
 			</div>
-			<div class="player-count-row">
-				<button class="count-btn" onclick="choosePlayers(2)">2
-					jugadores</button>
-				<button class="count-btn" onclick="choosePlayers(3)">3
-					jugadores</button>
-				<button class="count-btn" onclick="choosePlayers(4)">4
-					jugadores</button>
-				<button class="count-btn" onclick="choosePlayers(1)">Solitario</button>
-			</div>
+			<h:form id="flogin">
+				<p:growl id="growl" showDetail="true" />
+				<p:growl id="growl-sticky" for="sticky-key" showDetail="true"
+					sticky="true" />
+				<div id="user-info" style="display: none;">
+					<div id="login" class="login">
+						<button class="close-btn" type="button" onclick="closeLogin()">x</button>
+
+						<!-- Jugador 1 siempre: usuario actual, campo readonly -->
+						<c:if test="#{MapBean.numPlayers gt 1}">
+							<div class="information">
+								<label>Información Jugador 1:</label>
+								<h:panelGrid columns="2" cellpadding="4">
+									<h5>Tu usuario</h5>
+									<span class="ui-float-label"> <p:inputText id="name1"
+											value="#{MapBean.names[0]}" readonly="true"
+											styleClass="risk-input" placeholder="usuario"
+											style="background-color:#eee;color:#333;font-weight:bold;" />
+									</span>
+									<h5>Color</h5>
+									<p:colorPicker id="thumbnail1" value="#{MapBean.colors[0]}"
+										swatchesOnly="true" theme="polaroid" clearButton="true"
+										closeButton="true" inline="true"
+										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59">
+									</p:colorPicker>
+								</h:panelGrid>
+							</div>
+						</c:if>
+						<!-- Jugador 2 -->
+						<c:if test="#{MapBean.numPlayers ge 2}">
+							<p:divider layout="vertical" />
+							<div class="information">
+								<label>Información Jugador 2:</label>
+								<h:panelGrid columns="2" cellpadding="4">
+									<h5>Nombre</h5>
+									<span class="ui-float-label"> <p:inputText id="name2"
+											value="#{MapBean.names[1]}" styleClass="risk-input"
+											placeholder="nombre" />
+									</span>
+									<h5>Color</h5>
+									<p:colorPicker id="thumbnail2" value="#{MapBean.colors[1]}"
+										swatchesOnly="true" theme="polaroid" clearButton="true"
+										closeButton="true" inline="true"
+										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59">
+									</p:colorPicker>
+								</h:panelGrid>
+							</div>
+						</c:if>
+						<!-- Jugador 3 -->
+						<c:if test="#{MapBean.numPlayers ge 3}">
+							<p:divider layout="vertical" />
+							<div class="information">
+								<label>Información Jugador 3:</label>
+								<h:panelGrid columns="2" cellpadding="4">
+									<h5>Nombre</h5>
+									<span class="ui-float-label"> <p:inputText id="name3"
+											value="#{MapBean.names[2]}" styleClass="risk-input"
+											placeholder="nombre" />
+									</span>
+									<h5>Color</h5>
+									<p:colorPicker id="thumbnail3" value="#{MapBean.colors[2]}"
+										swatchesOnly="true" theme="polaroid" clearButton="true"
+										closeButton="true" inline="true"
+										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59">
+									</p:colorPicker>
+								</h:panelGrid>
+							</div>
+						</c:if>
+						<!-- Jugador 4 -->
+						<c:if test="#{MapBean.numPlayers eq 4}">
+							<p:divider layout="vertical" />
+							<div class="information">
+								<label>Información Jugador 4:</label>
+								<h:panelGrid columns="2" cellpadding="4">
+									<h5>Nombre</h5>
+									<span class="ui-float-label"> <p:inputText id="name4"
+											value="#{MapBean.names[3]}" styleClass="risk-input"
+											placeholder="nombre" />
+									</span>
+									<h5>Color</h5>
+									<p:colorPicker id="thumbnail4" value="#{MapBean.colors[3]}"
+										swatchesOnly="true" theme="polaroid" clearButton="true"
+										closeButton="true" inline="true"
+										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59">
+									</p:colorPicker>
+								</h:panelGrid>
+							</div>
+						</c:if>
+
+						<!-- Botón continuar -->
+						<p:commandButton
+							styleClass="rounded-button ui-button-warning login-btn"
+							value="Continuar" action="#{MapBean.init}" update="growl" />
+					</div>
+				</div>
+
+			</h:form>
+
 		</div>
+
 	</div>
+
 </h:body>
 </html>

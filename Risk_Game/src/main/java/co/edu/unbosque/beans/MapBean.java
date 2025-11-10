@@ -1316,4 +1316,59 @@ public class MapBean {
 		}
 	}
 
+	private String selectedMode;
+
+	public String getSelectedMode() {
+		return selectedMode;
+	}
+
+	public void setSelectedMode(String selectedMode) {
+		this.selectedMode = selectedMode;
+	}
+
+	public String setPlayersAndGo(int number) {
+		numPlayers = number;
+		if (selectedMode == null)
+			selectedMode = "Conquista"; 
+		switch (selectedMode) {
+		case "Conquista":
+			switch (numPlayers) {
+			case 2:
+				return "conquista2.xhtml?faces-redirect=true";
+			case 3:
+				return "conquista3.xhtml?faces-redirect=true";
+			case 4:
+				return "conquista4.xhtml?faces-redirect=true";
+			case 1:
+				return "conquistaSolo.xhtml?faces-redirect=true";
+			}
+			break;
+		case "Secreta":
+			switch (numPlayers) {
+			case 2:
+				return "mision2.xhtml?faces-redirect=true";
+			case 3:
+				return "mision3.xhtml?faces-redirect=true";
+			case 4:
+				return "mision4.xhtml?faces-redirect=true";
+			case 1:
+				return "misionSolo.xhtml?faces-redirect=true";
+			}
+			break;
+		case "Capitales":
+			switch (numPlayers) {
+			case 2:
+				return "capitales2.xhtml?faces-redirect=true";
+			case 3:
+				return "capitales3.xhtml?faces-redirect=true";
+			case 4:
+				return "capitales4.xhtml?faces-redirect=true";
+			case 1:
+				return "capitalesSolo.xhtml?faces-redirect=true";
+			}
+			break;
+		}
+		return null;
+	}
+
 }

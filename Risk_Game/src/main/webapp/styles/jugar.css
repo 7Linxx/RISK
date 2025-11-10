@@ -200,6 +200,7 @@ scale(
 }
 
 .game-mode-title {
+	margin-top: 50px;
 	font-family: 'Berkshire Swash', cursive, Impact, sans-serif;
 	font-size: 64px;
 	color: #ffffff;
@@ -306,4 +307,170 @@ scale(
 .count-btn:hover {
 	transform: scale(1.07);
 	box-shadow: 0 8px 30px #c9752750;
+}
+/* Opciones y modal personalizado para Risk */
+.options-btn {
+    background: #f5ecdd;
+    color: #7DA028;
+    border: 3px solid #a4551c;
+    border-radius: 16px;
+    padding: 10px 44px;
+    cursor: pointer;
+    font-size: 1.45em;
+    font-family: 'Berkshire Swash', cursive, Impact, sans-serif;
+    position: absolute;
+    right: 32px;
+    top: 26px;
+    z-index: 10;
+    box-shadow: 0 4px 16px #002b0044;
+}
+
+.options-btn:hover {
+    background: #7DA028;
+    color: #fff;
+}
+
+.icon-bars {
+    font-size: 1.7em;
+    vertical-align: middle;
+    margin-right: 12px;
+}
+
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    background: rgba(60, 44, 33, 0.28);
+    justify-content: center;
+    align-items: center;
+}
+
+.open-modal {
+    display: flex !important;
+}
+
+.custom-modal-content {
+    background: #eab676;
+    margin: auto;
+    padding: 35px 44px 25px 35px;
+    border: 4px solid #7DA028;
+    border-radius: 22px;
+    width: 370px;
+    box-shadow: 0 0 27px #7DA02860;
+    font-family: 'Berkshire Swash', cursive, Impact, sans-serif;
+}
+
+.custom-modal-title {
+    font-size: 2.2em;
+    color: #7DA028;
+}
+
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.custom-modal-body {
+    margin-top: 4px;
+}
+
+.close-btn {
+    background: #a4551c;
+    color: #fff;
+    border-radius: 13px;
+    font-size: 1.2em;
+    padding: 3px 11px;
+    border: none;
+    cursor: pointer;
+}
+.dialog-options {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+    margin-top: 17px;
+    margin-bottom: 12px;
+}
+
+.rounded-button {
+    font-family: 'Berkshire Swash', cursive, Impact, sans-serif;
+    font-size: 1.15em;
+    border-radius: 13px;
+    border: 3px solid #7DA028;
+    padding: 10px 30px;
+    cursor: pointer;
+    margin-bottom: 6px;
+    background: #f5ecdd;
+    color: #7DA028;
+    box-shadow: 0 2px 14px #002b0025;
+    transition: background 0.16s, color 0.13s;
+}
+
+.save-btn {
+    background: #7DA028;
+    color: #fff;
+}
+
+.save-btn:hover, .confirm-btn:hover {
+    background: #225E23;
+    color: #fff;
+}
+
+.exit-btn {
+    background: #bb2222;
+    color: #fff;
+}
+
+.exit-btn:hover, .cancel-btn:hover {
+    background: #c97527;
+    color: #fff;
+}
+
+.confirm-btn { background: #bb2222; color: #fff; }
+.cancel-btn { background: #eab676; color: #7DA028; }
+
+/* Panel jugadores */
+.info-player {
+    margin: 26px auto 9px auto;
+    display: flex;
+    flex-direction: column;
+    width: 330px;
+    background: rgba(240,240,240,0.7);
+    border-radius: 15px;
+    border: 3px solid #7DA028;
+    box-shadow: 0 2px 18px #002b0033;
+    padding: 12px;
+}
+.player-row {
+    display: flex;
+    align-items: center;
+    padding: 7px 0;
+}
+.player-chip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.2em;
+}
+.color-player {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 3px solid #444;
+    display: inline-block;
+    margin-right: 10px;
+    box-shadow: 0 0 5px #bbb;
+}
+.player-name {
+    font-family: 'Berkshire Swash', cursive, Impact, sans-serif;
+    color: #7DA028;
+    font-weight: 700;
+    letter-spacing: 1px;
 }

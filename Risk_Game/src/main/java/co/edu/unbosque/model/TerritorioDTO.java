@@ -2,19 +2,19 @@ package co.edu.unbosque.model;
 
 import co.edu.unbosque.util.MyDoubleLinkedList;
 
-public class Territorio {
+public class TerritorioDTO {
 
 	private String nombre;
 	private int cantidadTropas;
-	private Jugador duenio;
-	private MyDoubleLinkedList<Territorio> territoriosAdyacentes;
+	private JugadorDTO duenio;
+	private MyDoubleLinkedList<TerritorioDTO> territoriosAdyacentes;
 
-	public Territorio() {
+	public TerritorioDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Territorio(String nombre, int cantidadTropas, Jugador duenio,
-			MyDoubleLinkedList<Territorio> territoriosAdyacentes) {
+	public TerritorioDTO(String nombre, int cantidadTropas, JugadorDTO duenio,
+			MyDoubleLinkedList<TerritorioDTO> territoriosAdyacentes) {
 		super();
 		this.nombre = nombre;
 		this.cantidadTropas = cantidadTropas;
@@ -38,19 +38,19 @@ public class Territorio {
 		this.cantidadTropas = cantidadTropas;
 	}
 
-	public Jugador getDuenio() {
+	public JugadorDTO getDuenio() {
 		return duenio;
 	}
 
-	public void setDuenio(Jugador duenio) {
+	public void setDuenio(JugadorDTO duenio) {
 		this.duenio = duenio;
 	}
 
-	public MyDoubleLinkedList<Territorio> getTerritoriosAdyacentes() {
+	public MyDoubleLinkedList<TerritorioDTO> getTerritoriosAdyacentes() {
 		return territoriosAdyacentes;
 	}
 
-	public void setTerritoriosAdyacentes(MyDoubleLinkedList<Territorio> territoriosAdyacentes) {
+	public void setTerritoriosAdyacentes(MyDoubleLinkedList<TerritorioDTO> territoriosAdyacentes) {
 		this.territoriosAdyacentes = territoriosAdyacentes;
 	}
 

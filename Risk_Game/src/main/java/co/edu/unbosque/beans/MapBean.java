@@ -58,6 +58,7 @@ public class MapBean {
 	private String[] hashCodes;
 	private int sizeHashes;
 	private StreamedContent file;
+	private static final int MAX_PLAYERS = 6;
 
 	public MapBean() {
 		tDao = new TerritoryDAO();
@@ -82,6 +83,33 @@ public class MapBean {
 		initGraph();
 	}
 
+	private void ensurePlayerArrays() {
+		if (colors == null || colors.length < MAX_PLAYERS) {
+			String[] tmp = new String[MAX_PLAYERS];
+			Arrays.fill(tmp, "");
+			if (colors != null) System.arraycopy(colors, 0, tmp, 0, Math.min(colors.length, tmp.length));
+			colors = tmp;
+		}
+		if (names == null || names.length < MAX_PLAYERS) {
+			String[] tmp = new String[MAX_PLAYERS];
+			Arrays.fill(tmp, "");
+			if (names != null) System.arraycopy(names, 0, tmp, 0, Math.min(names.length, tmp.length));
+			names = tmp;
+		}
+		if (emails == null || emails.length < MAX_PLAYERS) {
+			String[] tmp = new String[MAX_PLAYERS];
+			Arrays.fill(tmp, "");
+			if (emails != null) System.arraycopy(emails, 0, tmp, 0, Math.min(emails.length, tmp.length));
+			emails = tmp;
+		}
+		if (passwords == null || passwords.length < MAX_PLAYERS) {
+			String[] tmp = new String[MAX_PLAYERS];
+			Arrays.fill(tmp, "");
+			if (passwords != null) System.arraycopy(passwords, 0, tmp, 0, Math.min(passwords.length, tmp.length));
+			passwords = tmp;
+		}
+	}
+	
 	public TerritoryDAO gettDao() {
 		return tDao;
 	}
@@ -160,6 +188,7 @@ public class MapBean {
 
 	public void setPasswords(String[] passwords) {
 		this.passwords = passwords;
+		ensurePlayerArrays();
 	}
 
 	public int getAssignTroops() {
@@ -353,6 +382,8 @@ public class MapBean {
 
 	public void setNumPlayers(int numPlayers) {
 		this.numPlayers = numPlayers;
+		// ensure arrays are ready for the view when numPlayers changes
+		ensurePlayerArrays();
 	}
 
 	public String[] getColors() {
@@ -1327,48 +1358,10 @@ public class MapBean {
 	}
 
 	public String setPlayersAndGo(int number) {
-		numPlayers = number;
-		if (selectedMode == null)
-			selectedMode = "Conquista"; 
-		switch (selectedMode) {
-		case "Conquista":
-			switch (numPlayers) {
-			case 2:
-				return "conquista2.xhtml?faces-redirect=true";
-			case 3:
-				return "conquista3.xhtml?faces-redirect=true";
-			case 4:
-				return "conquista4.xhtml?faces-redirect=true";
-			case 1:
-				return "conquistaSolo.xhtml?faces-redirect=true";
-			}
-			break;
-		case "Secreta":
-			switch (numPlayers) {
-			case 2:
-				return "mision2.xhtml?faces-redirect=true";
-			case 3:
-				return "mision3.xhtml?faces-redirect=true";
-			case 4:
-				return "mision4.xhtml?faces-redirect=true";
-			case 1:
-				return "misionSolo.xhtml?faces-redirect=true";
-			}
-			break;
-		case "Capitales":
-			switch (numPlayers) {
-			case 2:
-				return "capitales2.xhtml?faces-redirect=true";
-			case 3:
-				return "capitales3.xhtml?faces-redirect=true";
-			case 4:
-				return "capitales4.xhtml?faces-redirect=true";
-			case 1:
-				return "capitalesSolo.xhtml?faces-redirect=true";
-			}
-			break;
-		}
-		return null;
+		// ensure arrays ready and set number of players
+		ensurePlayerArrays();
+		this.numPlayers = Math.max(1, Math.min(number, MAX_PLAYERS));
+		return "game.xhtml?faces-redirect=true";
 	}
 
 }

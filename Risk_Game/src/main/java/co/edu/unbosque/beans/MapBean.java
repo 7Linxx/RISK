@@ -548,7 +548,7 @@ public class MapBean {
 				return;
 			if (pDao.getPlayers().get(selectedPlayer).containsTerritory(territory)) {
 				selectedTerritory = tDao.getTerrritories().getValue(territory);
-				tDao.getTerrritories().getValue(territory).setColor("#75FA61");
+				tDao.getTerrritories().getValue(territory).setColor("#7da028");
 				error1 = false;
 			} else {
 				error1 = true;
@@ -564,7 +564,7 @@ public class MapBean {
 					&& tDao.getTerrritories().getValue(territory).getNumberTroops() > 1) {
 				offTargetEnemies();
 				selectedTerritory = tDao.getTerrritories().getValue(territory);
-				tDao.getTerrritories().getValue(territory).setColor("#75FA61");
+				tDao.getTerrritories().getValue(territory).setColor("#7da028");
 				targetEnemies(territory);
 				error1 = false;
 				if (enemiesTarget.getSize() == 0) {
@@ -590,7 +590,7 @@ public class MapBean {
 			} else if (selectedTerritory == null && pDao.getPlayers().get(selectedPlayer).containsTerritory(territory)
 					&& tDao.getTerrritories().getValue(territory).getNumberTroops() > 1) {
 				selectedTerritory = tDao.getTerrritories().getValue(territory);
-				tDao.getTerrritories().getValue(territory).setColor("#75FA61");
+				tDao.getTerrritories().getValue(territory).setColor("#7da028");
 				targetTerritory = null;
 				targetAllies(territory);
 				error1 = false;
@@ -605,7 +605,7 @@ public class MapBean {
 				maxTroops = selectedTerritory.getNumberTroops() - 1;
 				targetTerritory = null;
 				offTargetAllies();
-				tDao.getTerrritories().getValue(territory).setColor("#75FA61");
+				tDao.getTerrritories().getValue(territory).setColor("#7da028");
 				targetAllies(territory);
 				error1 = false;
 				error2 = false;
@@ -624,7 +624,7 @@ public class MapBean {
 				maxTroops = selectedTerritory.getNumberTroops() - 1;
 				targetTerritory = null;
 				offTargetAllies();
-				tDao.getTerrritories().getValue(territory).setColor("#75FA61");
+				tDao.getTerrritories().getValue(territory).setColor("#7da028");
 				targetAllies(territory);
 				error1 = false;
 				error2 = false;
@@ -725,7 +725,7 @@ public class MapBean {
 		for (String aux : territories) {
 			if (!pDao.getPlayers().get(selectedPlayer).containsTerritory(aux)) {
 				if (bfs.obtainDistance(aux) == 1) {
-					tDao.getTerrritories().getValue(aux).setColor("#F79A9A");
+					tDao.getTerrritories().getValue(aux).setColor("#7da028");
 					enemiesTarget.add(aux);
 				}
 			}
@@ -746,7 +746,7 @@ public class MapBean {
 	public void offTargetEnemies(String territory) {
 		for (String aux : enemiesTarget) {
 			if (aux.equals(territory)) {
-				tDao.getTerrritories().getValue(aux).setColor("#F79A9A");
+				tDao.getTerrritories().getValue(aux).setColor("#7da028");
 				continue;
 			}
 			tDao.getTerrritories().getValue(aux).setColor(playerTerritory(aux).getColor());
@@ -890,7 +890,7 @@ public class MapBean {
 		for (String aux : territories) {
 			if (pDao.getPlayers().get(selectedPlayer).containsTerritory(aux)) {
 				if (bfs.obtainDistance(aux) != -1 && !aux.equals(territory)) {
-					tDao.getTerrritories().getValue(aux).setColor("#C0C0C0");
+					tDao.getTerrritories().getValue(aux).setColor("#ccd9c1");
 					alliesTarget.add(aux);
 				}
 			}
@@ -911,7 +911,7 @@ public class MapBean {
 	public void offTargetAllies(String territory) {
 		for (String aux : alliesTarget) {
 			if (aux.equals(territory)) {
-				tDao.getTerrritories().getValue(aux).setColor("#C0C0C0");
+				tDao.getTerrritories().getValue(aux).setColor("#ccd9c1");
 				continue;
 			}
 			tDao.getTerrritories().getValue(aux).setColor(playerTerritory(aux).getColor());

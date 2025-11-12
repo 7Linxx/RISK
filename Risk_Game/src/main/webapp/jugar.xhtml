@@ -10,173 +10,220 @@
 
 <h:head>
 	<title>Risk Global Domination</title>
-	<link rel="stylesheet" href="styles/jugar.css"></link>
+	<link rel="stylesheet" href="styles/jugar.css" />
 	<script src="js/menu.js"></script>
 	<script>
-		
+		/* espacio para JS adicional */
 	</script>
 </h:head>
+
 <h:body>
-	<div class="container">
-		<div class="header">
-			<img class="logo-risk" src="images/logo.png" alt="Risk Logo" />
-			<div class="settings-area">
-				<button class="gear" id="gearBtn" type="button"
-					aria-label="Configuración"
-					onclick="toggleMenu(); event.stopPropagation();">
-					<img src="images/setting.png" class="gear-img" alt="Configuración" />
-				</button>
-				<div id="settingsMenu" class="settings-menu">
-					<div class="settings-menu-item"
-						onclick="window.location='historial.xhtml'">Historial</div>
-					<div class="settings-menu-item"
-						onclick="window.location='reglas.xhtml'">Reglas</div>
-					<div class="settings-menu-item"
-						onclick="window.location='index.xhtml'">Cerrar sesión</div>
+	<f:view>
+		<div class="container">
+			<div class="header">
+				<img class="logo-risk" src="images/logo.png" alt="Risk Logo" />
+				<div class="settings-area">
+					<button class="gear" id="gearBtn" type="button"
+						aria-label="Configuración"
+						onclick="toggleMenu(); event.stopPropagation();">
+						<img src="images/setting.png" class="gear-img" alt="Configuración" />
+					</button>
+					<div id="settingsMenu" class="settings-menu">
+						<div class="settings-menu-item"
+							onclick="window.location='historial.xhtml'">Historial</div>
+						<div class="settings-menu-item"
+							onclick="window.location='reglas.xhtml'">Reglas</div>
+						<div class="settings-menu-item"
+							onclick="window.location='index.xhtml'">Cerrar sesión</div>
+					</div>
 				</div>
 			</div>
-		</div>
 
-		<div class="map-section">
-			<h:commandButton id="btn-jugar" styleClass="play-btn" value="JUGAR"
-				onclick="showGameModes(); return false;" />
+			<div class="map-section">
+				<h:commandButton id="btn-jugar" styleClass="play-btn" value="JUGAR"
+					onclick="showGameModes(); return false;" />
 
-			<div id="game-mode-panel" style="display: none;">
-				<button type="button" class="back-arrow-btn"
-					onclick="backToMainPanel()">
-					<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
-						points="30,4 11,21 30,38" /> </svg>
-				</button>
+				<!-- Panel de selección de modo: reemplazado por spinner (1-6) -->
+				<div id="game-mode-panel" style="display: none;">
+					<button type="button" class="back-arrow-btn"
+						onclick="backToMainPanel()">
+						<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
+							points="30,4 11,21 30,38" /> </svg>
+					</button>
 
-				<div class="game-mode-header">
-					<span class="game-mode-title" id="player-count-title">
-						¿Cuántos jugadores van a jugar? </span>
-				</div>
-				<h:form id="playersForm">
-					<h:inputHidden id="selectedMode" value="#{MapBean.selectedMode}" />
-					<div class="game-modes-row">
-						<h:commandButton value="2 jugadores" styleClass="mode-btn"
-							update="flogin" oncomplete="showLogin()"
-							action="#{MapBean.setNumPlayers(2)}" />
-						<h:commandButton value="3 jugadores" styleClass="mode-btn"
-							action="#{MapBean.setPlayersAndGo(3)}" onclick="showUsersInfo()" />
+					<div class="game-mode-header">
+						<span class="game-mode-title" id="player-count-title">
+							¿Cuántos jugadores van a jugar? </span>
 					</div>
-					<div class="game-modes-row">
-						<h:commandButton value="4 jugadores" styleClass="mode-btn"
-							action="#{MapBean.setPlayersAndGo(4)}" onclick="showUsersInfo()" />
-						<h:commandButton value="Solitario" styleClass="mode-btn"
-							action="#{MapBean.setPlayersAndGo(1)}" onclick="showUsersInfo()" />
+
+					<h:form id="playersForm">
+						<h:inputHidden id="selectedMode" value="#{MapBean.selectedMode}" />
+
+						<div class="game-mode-spinner-row"
+							style="margin-top: 30px; color: white; font-weight: bold; font-size: 28px;">
+							<!-- PrimeFaces spinner que permite escoger entre 1 y 6 -->
+							<h:outputLabel for="playerSpinner" value="Jugadores:" style="" />
+							<p:spinner id="playerSpinner" value="#{MapBean.numPlayers}"
+								min="1" max="6" step="1" styleClass="mode-spinner"
+								title="Elige el número de jugadores (1-6)" />
+						</div>
+
+						<div class="game-mode-actions">
+							<!-- Botón confirmar: llama al bean con el número elegido -->
+							<h:commandButton value="Aceptar" style="margin-top: 20px;"
+								styleClass="mode-btn accept-btn" update="flogin"
+								oncomplete="showLogin();" onclick="return true;" />
+						</div>
+					</h:form>
+				</div>
+
+				<div id="player-count-panel" style="display: none;">
+					<button type="button" class="back-arrow-btn"
+						onclick="backToModePanel()">
+						<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
+							points="30,4 11,21 30,38" /> </svg>
+					</button>
+				</div>
+
+				<h:form id="flogin">
+					<p:growl id="growl" showDetail="true" />
+					<p:growl id="growl-sticky" for="sticky-key" showDetail="true"
+						sticky="true" />
+
+					<div id="user-info" style="display: none;">
+						<div id="login" class="login">
+							<button class="close-btn" type="button" onclick="closeLogin()">x</button>
+
+							<!-- Jugador 1 siempre: usuario actual, campo readonly -->
+							<c:if test="#{MapBean.numPlayers gt 1}">
+								<div class="information">
+									<label>Información Jugador 1:</label>
+									<h:panelGrid columns="2" cellpadding="4">
+										<h5>Tu usuario</h5>
+										<span class="ui-float-label"> <p:inputText id="name1"
+												value="#{MapBean.names[0]}" readonly="true"
+												styleClass="risk-input" placeholder="usuario"
+												style="background-color:#eee;color:#333;font-weight:bold;" />
+										</span>
+										<h5>Color</h5>
+										<p:colorPicker id="thumbnail1" value="#{MapBean.colors[0]}"
+											swatchesOnly="true" theme="polaroid" clearButton="true"
+											closeButton="true" inline="true"
+											swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
+									</h:panelGrid>
+								</div>
+							</c:if>
+
+							<!-- Jugador 2 -->
+							<c:if test="#{MapBean.numPlayers ge 2}">
+								<p:divider layout="vertical" />
+								<div class="information">
+									<label>Información Jugador 2:</label>
+									<h:panelGrid columns="2" cellpadding="4">
+										<h5>Nombre</h5>
+										<span class="ui-float-label"> <p:inputText id="name2"
+												value="#{MapBean.names[1]}" styleClass="risk-input"
+												placeholder="nombre" />
+										</span>
+										<h5>Color</h5>
+										<p:colorPicker id="thumbnail2" value="#{MapBean.colors[1]}"
+											swatchesOnly="true" theme="polaroid" clearButton="true"
+											closeButton="true" inline="true"
+											swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
+									</h:panelGrid>
+								</div>
+							</c:if>
+
+							<!-- Jugador 3 -->
+							<c:if test="#{MapBean.numPlayers ge 3}">
+								<p:divider layout="vertical" />
+								<div class="information">
+									<label>Información Jugador 3:</label>
+									<h:panelGrid columns="2" cellpadding="4">
+										<h5>Nombre</h5>
+										<span class="ui-float-label"> <p:inputText id="name3"
+												value="#{MapBean.names[2]}" styleClass="risk-input"
+												placeholder="nombre" />
+										</span>
+										<h5>Color</h5>
+										<p:colorPicker id="thumbnail3" value="#{MapBean.colors[2]}"
+											swatchesOnly="true" theme="polaroid" clearButton="true"
+											closeButton="true" inline="true"
+											swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
+									</h:panelGrid>
+								</div>
+							</c:if>
+
+							<!-- Jugador 4 -->
+							<c:if test="#{MapBean.numPlayers ge 4}">
+								<p:divider layout="vertical" />
+								<div class="information">
+									<label>Información Jugador 4:</label>
+									<h:panelGrid columns="2" cellpadding="4">
+										<h5>Nombre</h5>
+										<span class="ui-float-label"> <p:inputText id="name4"
+												value="#{MapBean.names[3]}" styleClass="risk-input"
+												placeholder="nombre" />
+										</span>
+										<h5>Color</h5>
+										<p:colorPicker id="thumbnail4" value="#{MapBean.colors[3]}"
+											swatchesOnly="true" theme="polaroid" clearButton="true"
+											closeButton="true" inline="true"
+											swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
+									</h:panelGrid>
+								</div>
+							</c:if>
+
+							<!-- Jugador 5 -->
+							<c:if test="#{MapBean.numPlayers ge 5}">
+								<p:divider layout="vertical" />
+								<div class="information">
+									<label>Información Jugador 5:</label>
+									<h:panelGrid columns="2" cellpadding="4">
+										<h5>Nombre</h5>
+										<span class="ui-float-label"> <p:inputText id="name5"
+												value="#{MapBean.names[4]}" styleClass="risk-input"
+												placeholder="nombre" />
+										</span>
+										<h5>Color</h5>
+										<p:colorPicker id="thumbnail5" value="#{MapBean.colors[4]}"
+											swatchesOnly="true" theme="polaroid" clearButton="true"
+											closeButton="true" inline="true"
+											swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
+									</h:panelGrid>
+								</div>
+							</c:if>
+
+							<!-- Jugador 6 -->
+							<c:if test="#{MapBean.numPlayers eq 6}">
+								<p:divider layout="vertical" />
+								<div class="information">
+									<label>Información Jugador 6:</label>
+									<h:panelGrid columns="2" cellpadding="4">
+										<h5>Nombre</h5>
+										<span class="ui-float-label"> <p:inputText id="name6"
+												value="#{MapBean.names[5]}" styleClass="risk-input"
+												placeholder="nombre" />
+										</span>
+										<h5>Color</h5>
+										<p:colorPicker id="thumbnail6" value="#{MapBean.colors[5]}"
+											swatchesOnly="true" theme="polaroid" clearButton="true"
+											closeButton="true" inline="true"
+											swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
+									</h:panelGrid>
+								</div>
+							</c:if>
+
+							<p:commandButton
+								styleClass="rounded-button ui-button-warning login-btn"
+								value="Continuar" action="#{MapBean.init}" update="growl" />
+						</div>
 					</div>
 				</h:form>
 
 			</div>
 
-			<div id="player-count-panel" style="display: none;">
-				<button type="button" class="back-arrow-btn"
-					onclick="backToModePanel()">
-					<svg class="arrow-svg" viewBox="0 0 42 42"> <polyline
-						points="30,4 11,21 30,38" /> </svg>
-				</button>
-
-			</div>
-			<h:form id="flogin">
-				<p:growl id="growl" showDetail="true" />
-				<p:growl id="growl-sticky" for="sticky-key" showDetail="true"
-					sticky="true" />
-				<div id="user-info" style="display: none;">
-					<div id="login" class="login">
-						<button class="close-btn" type="button" onclick="closeLogin()">x</button>
-
-						<!-- Jugador 1 siempre: usuario actual, campo readonly -->
-						<c:if test="#{MapBean.numPlayers gt 1}">
-							<div class="information">
-								<label>Información Jugador 1:</label>
-								<h:panelGrid columns="2" cellpadding="4">
-									<h5>Tu usuario</h5>
-									<span class="ui-float-label"> <p:inputText id="name1"
-											value="#{MapBean.names[0]}" readonly="true"
-											styleClass="risk-input" placeholder="usuario"
-											style="background-color:#eee;color:#333;font-weight:bold;" />
-									</span>
-									<h5>Color</h5>
-									<p:colorPicker id="thumbnail1" value="#{MapBean.colors[0]}"
-										swatchesOnly="true" theme="polaroid" clearButton="true"
-										closeButton="true" inline="true"
-										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59">
-									</p:colorPicker>
-								</h:panelGrid>
-							</div>
-						</c:if>
-						<!-- Jugador 2 -->
-						<c:if test="#{MapBean.numPlayers ge 2}">
-							<p:divider layout="vertical" />
-							<div class="information">
-								<label>Información Jugador 2:</label>
-								<h:panelGrid columns="2" cellpadding="4">
-									<h5>Nombre</h5>
-									<span class="ui-float-label"> <p:inputText id="name2"
-											value="#{MapBean.names[1]}" styleClass="risk-input"
-											placeholder="nombre" />
-									</span>
-									<h5>Color</h5>
-									<p:colorPicker id="thumbnail2" value="#{MapBean.colors[1]}"
-										swatchesOnly="true" theme="polaroid" clearButton="true"
-										closeButton="true" inline="true"
-										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59">
-									</p:colorPicker>
-								</h:panelGrid>
-							</div>
-						</c:if>
-						<!-- Jugador 3 -->
-						<c:if test="#{MapBean.numPlayers ge 3}">
-							<p:divider layout="vertical" />
-							<div class="information">
-								<label>Información Jugador 3:</label>
-								<h:panelGrid columns="2" cellpadding="4">
-									<h5>Nombre</h5>
-									<span class="ui-float-label"> <p:inputText id="name3"
-											value="#{MapBean.names[2]}" styleClass="risk-input"
-											placeholder="nombre" />
-									</span>
-									<h5>Color</h5>
-									<p:colorPicker id="thumbnail3" value="#{MapBean.colors[2]}"
-										swatchesOnly="true" theme="polaroid" clearButton="true"
-										closeButton="true" inline="true"
-										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59">
-									</p:colorPicker>
-								</h:panelGrid>
-							</div>
-						</c:if>
-						<!-- Jugador 4 -->
-						<c:if test="#{MapBean.numPlayers eq 4}">
-							<p:divider layout="vertical" />
-							<div class="information">
-								<label>Información Jugador 4:</label>
-								<h:panelGrid columns="2" cellpadding="4">
-									<h5>Nombre</h5>
-									<span class="ui-float-label"> <p:inputText id="name4"
-											value="#{MapBean.names[3]}" styleClass="risk-input"
-											placeholder="nombre" />
-									</span>
-									<h5>Color</h5>
-									<p:colorPicker id="thumbnail4" value="#{MapBean.colors[3]}"
-										swatchesOnly="true" theme="polaroid" clearButton="true"
-										closeButton="true" inline="true"
-										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59">
-									</p:colorPicker>
-								</h:panelGrid>
-							</div>
-						</c:if>
-
-						<!-- Botón continuar -->
-						<p:commandButton
-							styleClass="rounded-button ui-button-warning login-btn"
-							value="Continuar" action="#{MapBean.init}" update="growl" />
-					</div>
-				</div>
-
-			</h:form>
-
 		</div>
+	</f:view>
 </h:body>
 </html>

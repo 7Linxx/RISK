@@ -58,6 +58,7 @@ public class MapBean {
 	private String[] hashCodes;
 	private int sizeHashes;
 	private StreamedContent file;
+	private static final int MAX_PLAYERS = 6;
 
 	public MapBean() {
 		tDao = new TerritoryDAO();
@@ -81,6 +82,7 @@ public class MapBean {
 		}
 		initGraph();
 	}
+
 
 	public TerritoryDAO gettDao() {
 		return tDao;
@@ -1326,49 +1328,5 @@ public class MapBean {
 		this.selectedMode = selectedMode;
 	}
 
-	public String setPlayersAndGo(int number) {
-		numPlayers = number;
-		if (selectedMode == null)
-			selectedMode = "Conquista"; 
-		switch (selectedMode) {
-		case "Conquista":
-			switch (numPlayers) {
-			case 2:
-				return "conquista2.xhtml?faces-redirect=true";
-			case 3:
-				return "conquista3.xhtml?faces-redirect=true";
-			case 4:
-				return "conquista4.xhtml?faces-redirect=true";
-			case 1:
-				return "conquistaSolo.xhtml?faces-redirect=true";
-			}
-			break;
-		case "Secreta":
-			switch (numPlayers) {
-			case 2:
-				return "mision2.xhtml?faces-redirect=true";
-			case 3:
-				return "mision3.xhtml?faces-redirect=true";
-			case 4:
-				return "mision4.xhtml?faces-redirect=true";
-			case 1:
-				return "misionSolo.xhtml?faces-redirect=true";
-			}
-			break;
-		case "Capitales":
-			switch (numPlayers) {
-			case 2:
-				return "capitales2.xhtml?faces-redirect=true";
-			case 3:
-				return "capitales3.xhtml?faces-redirect=true";
-			case 4:
-				return "capitales4.xhtml?faces-redirect=true";
-			case 1:
-				return "capitalesSolo.xhtml?faces-redirect=true";
-			}
-			break;
-		}
-		return null;
-	}
 
 }

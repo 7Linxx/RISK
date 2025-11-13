@@ -1,25 +1,22 @@
 package co.edu.unbosque.model.persistence;
 
-import java.util.ArrayList;
-import java.util.Objects;
 import co.edu.unbosque.model.Jugador;
 import co.edu.unbosque.model.JugadorDTO;
+import co.edu.unbosque.model.Usuario;
 import co.edu.unbosque.util.DNode;
 import co.edu.unbosque.util.MyDoubleLinkedList;
-import co.edu.unbosque.util.MyLinkedList;
 
 public class JugadorDAO implements CRUDOperation<JugadorDTO, Jugador> {
 
 	private MyDoubleLinkedList<Jugador> jugadores;
-	private final String TEXT_FILE_NAME = "calles.csv";
-	private final String SERIAL_FILE_NAME = "calles.dat";
+	private final String TEXT_FILE_NAME = "jugadores.csv";
+	private final String SERIAL_FILE_NAME = "jugadores.dat";
 
 	public JugadorDAO() {
 		jugadores = new MyDoubleLinkedList<>();
 	}
 
 	public JugadorDAO(MyDoubleLinkedList<Jugador> jugadores) {
-		super();
 		this.jugadores = jugadores;
 	}
 
@@ -30,6 +27,10 @@ public class JugadorDAO implements CRUDOperation<JugadorDTO, Jugador> {
 	public void setJugadores(MyDoubleLinkedList<Jugador> jugadores) {
 		this.jugadores = jugadores;
 	}
+
+	// ===========================================================
+	// CRUD
+	// ===========================================================
 
 	@Override
 	public boolean crear(JugadorDTO nuevoDato) {
@@ -50,13 +51,16 @@ public class JugadorDAO implements CRUDOperation<JugadorDTO, Jugador> {
 	private boolean eliminarRec(DNode<Jugador> nodo, String nombre) {
 		if (nodo == null)
 			return false;
-		Jugador c = nodo.getInfo();
-		if (c.getName().equalsIgnoreCase(nombre)) {
+
+		Jugador j = nodo.getInfo();
+
+		if (j.getName().equalsIgnoreCase(nombre)) {
 			jugadores.extract();
 			escribirArchivo();
 			escribirArchivoSerializado();
 			return true;
 		}
+
 		return eliminarRec(nodo.getNext(), nombre);
 	}
 
@@ -68,22 +72,23 @@ public class JugadorDAO implements CRUDOperation<JugadorDTO, Jugador> {
 	private String mostrarRecursivo(DNode<Jugador> nodo, int numero, String acumulado) {
 		if (nodo == null)
 			return acumulado;
-		acumulado += "#" + numero + " " + nodo.getInfo().toString() + "\n";
+
+		acumulado += "#" + numero + " " + nodo.getInfo().getName() + "\n";
 		return mostrarRecursivo(nodo.getNext(), numero + 1, acumulado);
 	}
 
 	@Override
 	public MyDoubleLinkedList<JugadorDTO> getAll() {
-		MyDoubleLinkedList<JugadorDTO> listaDTO = new MyDoubleLinkedList<>();
-		getAllRecursivo(jugadores.getHead(), listaDTO);
-		return listaDTO;
+		MyDoubleLinkedList<JugadorDTO> lista = new MyDoubleLinkedList<>();
+		getAllRec(jugadores.getHead(), lista);
+		return lista;
 	}
 
-	private void getAllRecursivo(DNode<Jugador> nodo, MyDoubleLinkedList<JugadorDTO> listaDTO) {
+	private void getAllRec(DNode<Jugador> nodo, MyDoubleLinkedList<JugadorDTO> lista) {
 		if (nodo == null)
 			return;
-		listaDTO.add(DataMapper.jugadorToJugadorDTO(nodo.getInfo()));
-		getAllRecursivo(nodo.getNext(), listaDTO);
+		lista.insert(DataMapper.jugadorToJugadorDTO(nodo.getInfo()));
+		getAllRec(nodo.getNext(), lista);
 	}
 
 	@Override
@@ -91,40 +96,45 @@ public class JugadorDAO implements CRUDOperation<JugadorDTO, Jugador> {
 		return buscarNombreRec(jugadores.getHead(), nombre);
 	}
 
-	private Jugador buscarNombreRec(DNode<Jugador> n, String nombre) {
-		if (n == null)
+	private Jugador buscarNombreRec(DNode<Jugador> nodo, String nombre) {
+		if (nodo == null)
 			return null;
-		if (n.getInfo().getName().equalsIgnoreCase(nombre))
-			return n.getInfo();
-		return buscarNombreRec(n.getNext(), nombre);
+
+		if (nodo.getInfo().getName().equalsIgnoreCase(nombre))
+			return nodo.getInfo();
+
+		return buscarNombreRec(nodo.getNext(), nombre);
 	}
 
 	@Override
 	public JugadorDTO buscarPorId(int id) {
-		JugadorDTO nuevo = null;
-		return nuevo;
+		// Jugador no tiene ID, queda sin implementación.
+		return null;
 	}
+
+	// ===========================================================
+	// ARCHIVOS
+	// ===========================================================
 
 	@Override
 	public void escribirArchivo() {
 		StringBuilder sb = new StringBuilder();
-		escribirJugadorRecursivo(jugadores.getHead(), sb);
+		escribirJugadorRec(jugadores.getHead(), sb);
 		FileManager.escribirEnArchivoTexto(TEXT_FILE_NAME, sb.toString());
 	}
 
-	private void escribirJugadorRecursivo(DNode<Jugador> nodoJugador, StringBuilder sb) {
-		if (nodoJugador == null)
+	private void escribirJugadorRec(DNode<Jugador> nodo, StringBuilder sb) {
+		if (nodo == null)
 			return;
 
-		Jugador c = nodoJugador.getInfo();
-		sb.append(c.getName()).append("\n");
-		sb.append(c.getColor()).append("\n");
-		sb.append(c.getTropasDisponibles()).append("\n");
-		sb.append(c.getUser()).append("\n");
-		sb.append(0);
-		sb.append("---\n"); // separador
+		Jugador j = nodo.getInfo();
 
-		escribirJugadorRecursivo(nodoJugador.getNext(), sb);
+		sb.append(j.getName()).append(";");
+		sb.append(j.getColor()).append(";");
+		sb.append(j.getTropasDisponibles()).append(";");
+		sb.append(j.getUser().getUsername()).append("\n"); // Ajustar formateo según desees
+
+		escribirJugadorRec(nodo.getNext(), sb);
 	}
 
 	@Override
@@ -134,45 +144,41 @@ public class JugadorDAO implements CRUDOperation<JugadorDTO, Jugador> {
 			return;
 
 		String[] lineas = contenido.split("\n");
-		cargarRecursivo(lineas, 0);
+		cargarRec(lineas, 0);
 	}
 
-	private void cargarRecursivo(String[] lineas, int pos) {
+	private void cargarRec(String[] lineas, int pos) {
 		if (pos >= lineas.length)
 			return;
 
-		String linea = lineas[pos];
-		if (linea.equals("---") || linea.isBlank()) {
-			cargarRecursivo(lineas, pos + 1);
+		String[] datos = lineas[pos].split(";");
+		if (datos.length < 4) {
+			cargarRec(lineas, pos + 1);
 			return;
 		}
 
-		String[] cabecera = linea.split(";");
-		Long id = Long.parseLong(cabecera[0]);
-		String nombre = cabecera[1];
+		String nombre = datos[0];
+		String color = datos[1];
+		int tropas = Integer.parseInt(datos[2]);
+		String username = datos[3];
 
-		double distancia = Double.parseDouble(lineas[pos + 1]);
-		Paradero a = stringToParadero(lineas[pos + 2]);
-		Paradero b = stringToParadero(lineas[pos + 3]);
+		Jugador nuevo = new Jugador(nombre, color, new Usuario(username), tropas, new MyDoubleLinkedList<>());
+		jugadores.insert(nuevo);
 
-		Calle c = new Calle(nombre, distancia, a, b, true);
-		listaCalles.insert(c);
-
-		cargarRecursivo(lineas, pos + 5); // salta a la siguiente después del bloque
+		cargarRec(lineas, pos + 1);
 	}
 
 	@Override
 	public void escribirArchivoSerializado() {
-		FileManager.escribirArchivoSerializado(SERIAL_FILE_NAME, listaCalles);
+		FileManager.escribirArchivoSerializado(SERIAL_FILE_NAME, jugadores);
 	}
 
 	@Override
 	public void leerArchivoSerializado() {
-		MyDoubleLinkedList<Calle> data = (MyDoubleLinkedList<Calle>) FileManager
+		MyDoubleLinkedList<Jugador> data = (MyDoubleLinkedList<Jugador>) FileManager
 				.leerArchivoSerializado(SERIAL_FILE_NAME);
-		if (data != null) {
-			listaCalles = data;
-		}
-	}
 
+		if (data != null)
+			jugadores = data;
+	}
 }

@@ -6,14 +6,14 @@ public class TerritorioDTO {
 
 	private String nombre;
 	private int cantidadTropas;
-	private JugadorDTO duenio;
+	private Jugador duenio;
 	private MyDoubleLinkedList<TerritorioDTO> territoriosAdyacentes;
 
 	public TerritorioDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public TerritorioDTO(String nombre, int cantidadTropas, JugadorDTO duenio,
+	public TerritorioDTO(String nombre, int cantidadTropas, Jugador duenio,
 			MyDoubleLinkedList<TerritorioDTO> territoriosAdyacentes) {
 		super();
 		this.nombre = nombre;
@@ -38,11 +38,11 @@ public class TerritorioDTO {
 		this.cantidadTropas = cantidadTropas;
 	}
 
-	public JugadorDTO getDuenio() {
+	public Jugador getDuenio() {
 		return duenio;
 	}
 
-	public void setDuenio(JugadorDTO duenio) {
+	public void setDuenio(Jugador duenio) {
 		this.duenio = duenio;
 	}
 

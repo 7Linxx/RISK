@@ -162,7 +162,10 @@ public class JugadorDAO implements CRUDOperation<JugadorDTO, Jugador> {
 		int tropas = Integer.parseInt(datos[2]);
 		String username = datos[3];
 
-		Jugador nuevo = new Jugador(nombre, color, new Usuario(username), tropas, new MyDoubleLinkedList<>());
+		Usuario user = new Usuario(null, username, null, null, null);
+
+		Jugador nuevo = new Jugador(nombre, color, user, tropas, new MyDoubleLinkedList<>());
+
 		jugadores.insert(nuevo);
 
 		cargarRec(lineas, pos + 1);

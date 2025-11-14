@@ -22,16 +22,16 @@
 			<div class="input-row">
 				<label class="input-label" for="usuario">Usuario</label>
 				<h:inputText id="usuario" styleClass="risk-input" required="true"
-					requiredMessage="Usuario requerido" value="#{MapBean.username}" />
+					requiredMessage="Usuario requerido" value="#{authBean.username}" />
 			</div>
 			<div class="input-row">
 				<label class="input-label" for="contra">Contraseña</label>
 				<h:inputSecret id="contra" styleClass="risk-input" required="true"
-					requiredMessage="Contraseña requerida" value="#{MapBean.password}" />
+					requiredMessage="Contraseña requerida" value="#{authBean.password}" />
 			</div>
 			<div style="text-align: center; width: 100%; margin-top: 10px;">
 				<h:commandButton value="Ingresar" styleClass="ingresar-btn"
-					action="#{MapBean.login}" />
+					action="#{AuthBean.login}" />
 			</div>
 			<br />
 			<div style="text-align: center;">
@@ -77,7 +77,7 @@
 				update="flogin" oncomplete="showLogin()" />
 		</div>
 	</h:form>
-	
+
 	<h:form id="flogin">
 
 		<p:growl id="growl" showDetail="true" />
@@ -209,6 +209,6 @@
 		<h:outputText
 			value="Risk is a strategy board game of diplomacy, conflict and conquest for two to six players. The standard version is played on a board depicting a political map of the world, divided into forty-two territories, which are grouped into six continents. Turn rotates among players who control armies of playing pieces with which they attempt to capture territories from other players, with results determined by dice rolls." />
 	</p:dialog>
-	
+
 </h:body>
 </html>

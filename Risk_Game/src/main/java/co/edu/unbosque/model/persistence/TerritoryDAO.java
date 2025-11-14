@@ -48,6 +48,5 @@ public class TerritoryDAO implements CRUDOperation<String, TerritoryDTO> {
 	public int hashCode() {
 		return Objects.hash(terrritories);
 	}
-	
 
 }

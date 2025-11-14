@@ -4,6 +4,21 @@ import java.util.ArrayList;
 
 import co.edu.unbosque.util.MyDoubleLinkedList;
 
+/**
+ * Interfaz genérica que define operaciones CRUD y métodos de persistencia
+ * esperados por los DAOs de la aplicación.
+ *
+ * <p>
+ * D representa el tipo DTO (Data Transfer Object) manejado por el DAO y E la
+ * entidad de dominio correspondiente.
+ * </p>
+ * 
+ * @param <D> Tipo DTO usado para entrada/salida en las operaciones
+ * @param <E> Tipo de entidad de dominio gestionada por el DAO
+ * 
+ * @author Mariana Pineda
+ * @since 1.0
+ */
 public interface CRUDOperation<D, E> {
 
 	/**
@@ -51,8 +66,6 @@ public interface CRUDOperation<D, E> {
 	 * @return DTO correspondiente o null si no existe
 	 */
 	public D buscarPorId(int id);
-
-	// ================== Persistencia ==================
 
 	/** Escribe todos los registros en un archivo de texto. */
 	public void escribirArchivo();

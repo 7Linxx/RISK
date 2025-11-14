@@ -12,250 +12,277 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Clase que gestiona la lectura y escritura de archivos de texto y serializados.
- * Incluye métodos para crear carpetas, escribir y leer archivos,
- * así como registrar inicios de sesión en archivos CSV y DAT.
+ * Utilidad para la gestión de archivos de la aplicación.
+ *
+ * <p>
+ * Proporciona métodos estáticos para:
+ * <ul>
+ * <li>Crear la carpeta de almacenamiento si no existe.</li>
+ * <li>Escribir y leer archivos de texto.</li>
+ * <li>Escribir y leer objetos serializados (.dat).</li>
+ * <li>Registrar inicios de sesión tanto en CSV como en un archivo
+ * serializado.</li>
+ * <li>Obtener la fecha y hora actual en un formato estandarizado.</li>
+ * </ul>
+ * </p>
+ *
+ * Nota: todos los métodos y atributos son estáticos y la clase no mantiene
+ * estado compartido más allá de referencias a streams/archivos temporales.
+ *
+ * @author Mariana Pineda
+ * @since 1.0
  */
 public class FileManager {
 
-    /**
-     * Archivo de texto general para operaciones de lectura y escritura.
-     */
-    private static File archivo;
+	/**
+	 * Archivo o carpeta general usado internamente para operaciones.
+	 */
+	private static File archivo;
 
-    /**
-     * Scanner para leer archivos de texto.
-     */
-    private static Scanner lectorArchivoTexto;
+	/**
+	 * Scanner para lectura de archivos de texto.
+	 */
+	private static Scanner lectorArchivoTexto;
 
-    /**
-     * PrintWriter para escribir archivos de texto.
-     */
-    private static PrintWriter escritorArchivoTexto;
+	/**
+	 * PrintWriter para escritura en archivos de texto.
+	 */
+	private static PrintWriter escritorArchivoTexto;
 
-    /**
-     * Ruta de la carpeta donde se almacenan los archivos.
-     */
-    private static final String RUTA_CARPETA = "src/archivos";
+	/**
+	 * Ruta de la carpeta donde se almacenan los archivos de la aplicación.
+	 */
+	private static final String RUTA_CARPETA = "src/archivos";
 
-    /**
-     * FileOutputStream para escribir archivos serializados.
-     */
-    private static FileOutputStream fos;
+	/**
+	 * FileOutputStream para escritura de archivos serializados.
+	 */
+	private static FileOutputStream fos;
 
-    /**
-     * ObjectOutputStream para escribir objetos serializados.
-     */
-    private static ObjectOutputStream oos;
+	/**
+	 * ObjectOutputStream para escritura de objetos serializados.
+	 */
+	private static ObjectOutputStream oos;
 
-    /**
-     * FileInputStream para leer archivos serializados.
-     */
-    private static FileInputStream fis;
+	/**
+	 * FileInputStream para lectura de archivos serializados.
+	 */
+	private static FileInputStream fis;
 
-    /**
-     * ObjectInputStream para leer objetos serializados.
-     */
-    private static ObjectInputStream ois;
+	/**
+	 * ObjectInputStream para lectura de objetos serializados.
+	 */
+	private static ObjectInputStream ois;
 
-    /**
-     * Crea la carpeta donde se almacenan los archivos si no existe.
-     */
-    private static void crearCarpeta() {
-        archivo = new File(RUTA_CARPETA);
-        if (!archivo.exists() || !archivo.isDirectory()) {
-            archivo.mkdir();
-        }
-    }
+	/**
+	 * Crea la carpeta de almacenamiento (RUTA_CARPETA) si no existe.
+	 */
+	private static void crearCarpeta() {
+		archivo = new File(RUTA_CARPETA);
+		if (!archivo.exists() || !archivo.isDirectory()) {
+			archivo.mkdir();
+		}
+	}
 
-    /**
-     * Escribe contenido en un archivo de texto.
-     * 
-     * @param nombreArchivo Nombre del archivo donde se escribirá.
-     * @param contenido     Texto que se escribirá en el archivo.
-     */
-    public static void escribirEnArchivoTexto(String nombreArchivo, String contenido) {
-        try {
-            archivo = new File(RUTA_CARPETA + "/" + nombreArchivo);
-            if (!archivo.exists()) {
-                archivo.createNewFile();
-            }
-            escritorArchivoTexto = new PrintWriter(archivo);
-            escritorArchivoTexto.println(contenido);
-            escritorArchivoTexto.close();
-        } catch (IOException e) {
-            System.out.println("Error al crear el archivo (escritura)");
-            e.printStackTrace();
-        }
-    }
+	/**
+	 * Escribe el contenido proporcionado en un archivo de texto dentro de la
+	 * carpeta de la aplicación. Si el archivo no existe se crea.
+	 *
+	 * @param nombreArchivo nombre del archivo (por ejemplo "miarchivo.txt")
+	 * @param contenido     texto que se escribirá en el archivo
+	 */
+	public static void escribirEnArchivoTexto(String nombreArchivo, String contenido) {
+		try {
+			archivo = new File(RUTA_CARPETA + "/" + nombreArchivo);
+			if (!archivo.exists()) {
+				archivo.createNewFile();
+			}
+			escritorArchivoTexto = new PrintWriter(archivo);
+			escritorArchivoTexto.println(contenido);
+			escritorArchivoTexto.close();
+		} catch (IOException e) {
+			System.out.println("Error al crear el archivo (escritura)");
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * Escribe un objeto serializado en un archivo.
-     * 
-     * @param nombreArchivo Nombre del archivo serializado.
-     * @param contenido     Objeto que se va a serializar y guardar.
-     */
-    public static void escribirArchivoSerializado(String nombreArchivo, Object contenido) {
-        try {
-            archivo = new File(RUTA_CARPETA + "/" + nombreArchivo);
-            if (!archivo.exists()) {
-                archivo.createNewFile();
-            }
-            fos = new FileOutputStream(archivo);
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(contenido);
-            oos.close();
-            fos.close();
-        } catch (Exception e) {
-            System.out.println("Error en la escritura del archivo serializado");
-            e.printStackTrace();
-        }
-    }
+	/**
+	 * Serializa un objeto y lo escribe en un archivo dentro de la carpeta de la
+	 * aplicación. Si el archivo no existe se crea.
+	 *
+	 * @param nombreArchivo nombre del archivo serializado (por ejemplo "datos.dat")
+	 * @param contenido     objeto a serializar y guardar
+	 */
+	public static void escribirArchivoSerializado(String nombreArchivo, Object contenido) {
+		try {
+			archivo = new File(RUTA_CARPETA + "/" + nombreArchivo);
+			if (!archivo.exists()) {
+				archivo.createNewFile();
+			}
+			fos = new FileOutputStream(archivo);
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(contenido);
+			oos.close();
+			fos.close();
+		} catch (Exception e) {
+			System.out.println("Error en la escritura del archivo serializado");
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * Lee el contenido de un archivo de texto y lo retorna como String.
-     * 
-     * @param nombreArchivo Nombre del archivo de texto a leer.
-     * @return Contenido completo del archivo como String, o null si hay error.
-     */
-    public static String leerArchivoTexto(String nombreArchivo) {
-        try {
-            archivo = new File(RUTA_CARPETA + "/" + nombreArchivo);
-            if (!archivo.exists()) {
-                archivo.createNewFile();
-            }
-            lectorArchivoTexto = new Scanner(archivo);
-            String contenido = "";
-            while (lectorArchivoTexto.hasNext()) {
-                contenido += lectorArchivoTexto.nextLine() + "\n";
-            }
-            lectorArchivoTexto.close();
-            return contenido;
-        } catch (IOException e) {
-            System.out.println("Error al crear el archivo (lectura)");
-            e.printStackTrace();
-        }
-        return null;
-    }
+	/**
+	 * Lee el contenido completo de un archivo de texto dentro de la carpeta de la
+	 * aplicación. Si el archivo no existe se crea y se devuelve una cadena vacía (o
+	 * null si ocurre un error).
+	 *
+	 * @param nombreArchivo nombre del archivo de texto a leer
+	 * @return contenido completo del archivo (con saltos de línea) o null si ocurre
+	 *         un error
+	 */
+	public static String leerArchivoTexto(String nombreArchivo) {
+		try {
+			archivo = new File(RUTA_CARPETA + "/" + nombreArchivo);
+			if (!archivo.exists()) {
+				archivo.createNewFile();
+			}
+			lectorArchivoTexto = new Scanner(archivo);
+			String contenido = "";
+			while (lectorArchivoTexto.hasNext()) {
+				contenido += lectorArchivoTexto.nextLine() + "\n";
+			}
+			lectorArchivoTexto.close();
+			return contenido;
+		} catch (IOException e) {
+			System.out.println("Error al crear el archivo (lectura)");
+			e.printStackTrace();
+		}
+		return null;
+	}
 
-    /**
-     * Registra un inicio de sesión en un archivo CSV con formato "Usuario,Contraseña,FechaHora".
-     * 
-     * @param usuario    Nombre de usuario.
-     * @param contraseña Contraseña del usuario.
-     */
-    public static void registrarInicioSesion(String usuario, String contraseña) {
-        File archivo = new File(RUTA_CARPETA + "/" + "registro_logins.csv");
-        PrintWriter escritorArchivoTexto = null;
+	/**
+	 * Registra un intento de inicio de sesión en formato CSV (archivo
+	 * "registro_logins.csv") con la cabecera "Usuario,Contraseña,FechaHora".
+	 *
+	 * @param usuario    nombre de usuario
+	 * @param contraseña contraseña asociada (tener precaución por seguridad)
+	 */
+	public static void registrarInicioSesion(String usuario, String contraseña) {
+		File archivo = new File(RUTA_CARPETA + "/" + "registro_logins.csv");
+		PrintWriter escritorArchivoTexto = null;
 
-        try {
-            boolean archivoNuevo = !archivo.exists();
+		try {
+			boolean archivoNuevo = !archivo.exists();
 
-            if (archivoNuevo) {
-                archivo.createNewFile();
-            }
+			if (archivoNuevo) {
+				archivo.createNewFile();
+			}
 
-            escritorArchivoTexto = new PrintWriter(new FileOutputStream(archivo, true));
+			escritorArchivoTexto = new PrintWriter(new FileOutputStream(archivo, true));
 
-            if (archivoNuevo) {
-                escritorArchivoTexto.println("Usuario,Contraseña,FechaHora");
-            }
+			if (archivoNuevo) {
+				escritorArchivoTexto.println("Usuario,Contraseña,FechaHora");
+			}
 
-            if (usuario != null && contraseña != null) {
-                escritorArchivoTexto.println(usuario + "," + contraseña + "," + obtenerFechaHora());
-            }
+			if (usuario != null && contraseña != null) {
+				escritorArchivoTexto.println(usuario + "," + contraseña + "," + obtenerFechaHora());
+			}
 
-        } catch (IOException e) {
-            System.out.println("Error al escribir en el archivo de registros.");
-            e.printStackTrace();
-        } finally {
-            if (escritorArchivoTexto != null) {
-                escritorArchivoTexto.close();
-            }
-        }
-    }
+		} catch (IOException e) {
+			System.out.println("Error al escribir en el archivo de registros.");
+			e.printStackTrace();
+		} finally {
+			if (escritorArchivoTexto != null) {
+				escritorArchivoTexto.close();
+			}
+		}
+	}
 
-    /**
-     * Registra un inicio de sesión en un archivo serializado .dat como lista de strings.
-     * 
-     * @param usuario    Nombre de usuario.
-     * @param contraseña Contraseña del usuario.
-     */
-    public static void registrarInicioSesionDat(String usuario, String contraseña) {
-        try {
-            archivo = new File(RUTA_CARPETA + "/" + "registro_logins.dat");
+	/**
+	 * Registra un intento de inicio de sesión en un archivo serializado (.dat). Se
+	 * almacena una lista de strings donde cada elemento tiene la forma:
+	 * "usuario,contraseña,fechaHora".
+	 *
+	 * @param usuario    nombre de usuario
+	 * @param contraseña contraseña asociada
+	 */
+	@SuppressWarnings("unchecked")
+	public static void registrarInicioSesionDat(String usuario, String contraseña) {
+		try {
+			archivo = new File(RUTA_CARPETA + "/" + "registro_logins.dat");
 
-            if (!archivo.exists()) {
-                archivo.createNewFile();
-            }
+			if (!archivo.exists()) {
+				archivo.createNewFile();
+			}
 
-            List<String> registros = new ArrayList<>();
-            if (archivo.length() > 0) {
-                fis = new FileInputStream(archivo);
-                ois = new ObjectInputStream(fis);
-                registros = (List<String>) ois.readObject();
-                ois.close();
-                fis.close();
-            }
+			List<String> registros = new ArrayList<>();
+			if (archivo.length() > 0) {
+				fis = new FileInputStream(archivo);
+				ois = new ObjectInputStream(fis);
+				registros = (List<String>) ois.readObject();
+				ois.close();
+				fis.close();
+			}
 
-            if (usuario != null && contraseña != null) {
-                registros.add(usuario + "," + contraseña + "," + obtenerFechaHora());
-            }
+			if (usuario != null && contraseña != null) {
+				registros.add(usuario + "," + contraseña + "," + obtenerFechaHora());
+			}
 
-            fos = new FileOutputStream(archivo);
-            oos = new ObjectOutputStream(fos);
-            oos.writeObject(registros);
-            oos.close();
-            fos.close();
+			fos = new FileOutputStream(archivo);
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(registros);
+			oos.close();
+			fos.close();
 
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error al manejar el archivo de registros .dat.");
-            e.printStackTrace();
-        }
-    }
+		} catch (IOException | ClassNotFoundException e) {
+			System.out.println("Error al manejar el archivo de registros .dat.");
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * Obtiene la fecha y hora actual en formato "yyyy-MM-dd HH:mm:ss".
-     * 
-     * @return Fecha y hora actual formateada.
-     */
-    public static String obtenerFechaHora() {
-        return java.time.LocalDateTime.now()
-                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
+	/**
+	 * Obtiene la fecha y hora local actual formateada como "yyyy-MM-dd HH:mm:ss".
+	 *
+	 * @return fecha y hora actual formateada
+	 */
+	public static String obtenerFechaHora() {
+		return java.time.LocalDateTime.now()
+				.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+	}
 
-    /**
-     * Lee un archivo serializado y devuelve su contenido como objeto.
-     * 
-     * @param nombreArchivo Nombre del archivo serializado a leer.
-     * @return Objeto leído del archivo, o null si el archivo no existe o está vacío.
-     */
-    public static Object leerArchivoSerializado(String nombreArchivo) {
-        Object contenido = null;
-        try {
-            archivo = new File(RUTA_CARPETA + "/" + nombreArchivo);
-            if (!archivo.exists()) {
-                archivo.createNewFile();
-                return null;
-            }
-            if (archivo.length() == 0) {
-                return null;
-            }
+	/**
+	 * Lee un archivo serializado dentro de la carpeta de la aplicación y devuelve
+	 * el objeto leído (por ejemplo una lista o estructura serializada).
+	 *
+	 * @param nombreArchivo nombre del archivo serializado (por ejemplo "datos.dat")
+	 * @return objeto leído del archivo, o null si el archivo no existe, está vacío
+	 *         o hay error
+	 */
+	public static Object leerArchivoSerializado(String nombreArchivo) {
+		Object contenido = null;
+		try {
+			archivo = new File(RUTA_CARPETA + "/" + nombreArchivo);
+			if (!archivo.exists()) {
+				archivo.createNewFile();
+				return null;
+			}
+			if (archivo.length() == 0) {
+				return null;
+			}
 
-            fis = new FileInputStream(archivo);
-            ois = new ObjectInputStream(fis);
-            contenido = ois.readObject();
-            fis.close();
-            ois.close();
-        } catch (IOException e) {
-            System.out.println("Error al leer archivo serializado");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.out.println("Error al contener el archivo del archivo");
-            e.printStackTrace();
-        }
+			fis = new FileInputStream(archivo);
+			ois = new ObjectInputStream(fis);
+			contenido = ois.readObject();
+			fis.close();
+			ois.close();
+		} catch (IOException e) {
+			System.out.println("Error al leer archivo serializado");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.out.println("Error al contener el archivo del archivo");
+			e.printStackTrace();
+		}
 
-        return contenido;
-    }
+		return contenido;
+	}
 
 }

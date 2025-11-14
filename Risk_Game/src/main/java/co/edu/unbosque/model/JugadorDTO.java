@@ -156,4 +156,13 @@ public class JugadorDTO {
 		}
 		return false;
 	}
+
+	public void removeTerritory(String terrytorio) {
+		for (int i = 0; i < territorios.getSize(); i++) {
+			if (terrytorio.equals(territorios.get(i))) {
+				territorios.remove(i);
+				return;
+			}
+		}
+	}
 }

@@ -5,24 +5,67 @@ import co.edu.unbosque.model.UsuarioDTO;
 import co.edu.unbosque.util.MyDoubleLinkedList;
 import co.edu.unbosque.util.DNode;
 
+/**
+ * DAO (Data Access Object) para la gestión de {@link Usuario}.
+ *
+ * <p>
+ * Implementa las operaciones CRUD definidas por {@link CRUDOperation} para
+ * UsuarioDTO/Usuario. Mantiene en memoria una lista doblemente enlazada de
+ * usuarios y proporciona persistencia tanto en formato texto como serializado.
+ * </p>
+ *
+ * <p>
+ * Archivos usados:
+ * <ul>
+ * <li>TEXT_FILE_NAME: "usuarios.csv" (texto legible)</li>
+ * <li>SERIAL_FILE_NAME: "usuarios.dat" (serializado)</li>
+ * </ul>
+ * </p>
+ *
+ * @author Mariana Pineda
+ * @since 1.0
+ */
 public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 
+	/** Lista interna de usuarios en memoria */
 	private MyDoubleLinkedList<Usuario> usuarios;
+
+	/** Nombre del archivo de texto para persistencia legible */
 	private final String TEXT_FILE_NAME = "usuarios.csv";
+
+	/** Nombre del archivo serializado para persistencia binaria */
 	private final String SERIAL_FILE_NAME = "usuarios.dat";
 
+	/**
+	 * Constructor por defecto que inicializa la lista de usuarios vacía.
+	 */
 	public UsuarioDAO() {
 		usuarios = new MyDoubleLinkedList<>();
 	}
 
+	/**
+	 * Constructor que permite inyectar una lista de usuarios (útil para pruebas).
+	 *
+	 * @param usuarios lista de usuarios a usar internamente
+	 */
 	public UsuarioDAO(MyDoubleLinkedList<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
 
+	/**
+	 * Devuelve la lista interna de usuarios.
+	 *
+	 * @return lista de usuarios
+	 */
 	public MyDoubleLinkedList<Usuario> getUsuarios() {
 		return usuarios;
 	}
 
+	/**
+	 * Establece la lista interna de usuarios.
+	 *
+	 * @param usuarios nueva lista de usuarios
+	 */
 	public void setUsuarios(MyDoubleLinkedList<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
@@ -31,6 +74,14 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 	// CRUD
 	// ===========================================================
 
+	/**
+	 * Crea un nuevo usuario a partir de su DTO si no existe otro con el mismo
+	 * username. Persiste los cambios en archivos de texto y serializados.
+	 *
+	 * @param nuevoDato DTO con los datos del usuario a crear
+	 * @return true si se creó correctamente, false si ya existía un usuario con ese
+	 *         username
+	 */
 	@Override
 	public boolean crear(UsuarioDTO nuevoDato) {
 		if (findByNombre(nuevoDato.getUsername()) == null) {
@@ -42,6 +93,12 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 		return false;
 	}
 
+	/**
+	 * Elimina un usuario buscándolo por username.
+	 *
+	 * @param nombre username del usuario a eliminar
+	 * @return true si se eliminó; false si no se encontró
+	 */
 	@Override
 	public boolean eliminarPorNombre(String nombre) {
 		return eliminarRec(usuarios.getHead(), nombre);
@@ -63,6 +120,11 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 		return eliminarRec(nodo.getNext(), nombre);
 	}
 
+	/**
+	 * Devuelve una cadena con todos los usuarios en formato enumerado.
+	 *
+	 * @return representación textual de todos los usuarios
+	 */
 	@Override
 	public String mostrarTodo() {
 		return mostrarRec(usuarios.getHead(), 1, "");
@@ -78,6 +140,11 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 		return mostrarRec(nodo.getNext(), n + 1, acum);
 	}
 
+	/**
+	 * Devuelve todos los usuarios como una lista de DTOs.
+	 *
+	 * @return MyDoubleLinkedList con UsuarioDTO
+	 */
 	@Override
 	public MyDoubleLinkedList<UsuarioDTO> getAll() {
 		MyDoubleLinkedList<UsuarioDTO> lista = new MyDoubleLinkedList<>();
@@ -93,6 +160,12 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 		getAllRec(nodo.getNext(), lista);
 	}
 
+	/**
+	 * Busca un usuario por su username (case-insensitive).
+	 *
+	 * @param nombre username a buscar
+	 * @return Usuario encontrado o null si no existe
+	 */
 	@Override
 	public Usuario findByNombre(String nombre) {
 		return buscarNombreRec(usuarios.getHead(), nombre);
@@ -108,6 +181,12 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 		return buscarNombreRec(nodo.getNext(), nombre);
 	}
 
+	/**
+	 * Busca un DTO de usuario por su id.
+	 *
+	 * @param id identificador numérico del usuario
+	 * @return UsuarioDTO correspondiente o null si no existe
+	 */
 	@Override
 	public UsuarioDTO buscarPorId(int id) {
 		return buscarPorIdRec(usuarios.getHead(), id);
@@ -127,6 +206,10 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 	// ARCHIVOS
 	// ===========================================================
 
+	/**
+	 * Escribe la representación textual (CSV/semicolon) de los usuarios en el
+	 * archivo TEXT_FILE_NAME.
+	 */
 	@Override
 	public void escribirArchivo() {
 		StringBuilder sb = new StringBuilder();
@@ -146,6 +229,11 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 		escribirRec(nodo.getNext(), sb);
 	}
 
+	/**
+	 * Carga usuarios desde el archivo de texto (TEXT_FILE_NAME) y los inserta en la
+	 * lista. Si el contenido no tiene el formato esperado, las líneas malformadas
+	 * se ignoran.
+	 */
 	@Override
 	public void cargarDesdeArchivo() {
 		String contenido = FileManager.leerArchivoTexto(TEXT_FILE_NAME);
@@ -178,11 +266,19 @@ public class UsuarioDAO implements CRUDOperation<UsuarioDTO, Usuario> {
 		cargarRec(lineas, pos + 1);
 	}
 
+	/**
+	 * Escribe la estructura completa de usuarios en formato serializado.
+	 */
 	@Override
 	public void escribirArchivoSerializado() {
 		FileManager.escribirArchivoSerializado(SERIAL_FILE_NAME, usuarios);
 	}
 
+	/**
+	 * Lee la estructura serializada desde disco y la asigna a la lista interna si
+	 * existe.
+	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void leerArchivoSerializado() {
 		Object data = FileManager.leerArchivoSerializado(SERIAL_FILE_NAME);

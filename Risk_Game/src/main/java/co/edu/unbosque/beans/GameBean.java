@@ -1,99 +1,126 @@
 package co.edu.unbosque.beans;
 
 import java.io.Serializable;
-
 import jakarta.faces.view.ViewScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 
-import co.edu.unbosque.model.JugadorDTO;
-import co.edu.unbosque.model.TerritorioDTO;
-import co.edu.unbosque.model.UsuarioDTO;
-import co.edu.unbosque.service.JugadorService;
-import co.edu.unbosque.service.TerritorioService;
-import co.edu.unbosque.service.GameService;
+import co.edu.unbosque.model.PlayerDTO;
+import co.edu.unbosque.model.TerritoryDTO;
+import co.edu.unbosque.model.persistence.JugadorDAO;
+import co.edu.unbosque.model.persistence.TerritoryDAO;
+import co.edu.unbosque.util.MyMap;
 import co.edu.unbosque.util.MyDoubleLinkedList;
 
-@Named("gameBean")
+@Named
 @ViewScoped
 public class GameBean implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private JugadorDAO jugadorrDao;
+	private TerritoryDAO territoryDao;
 
-	private JugadorService jugadorService;
-	private TerritorioService territorioService;
-	private GameService gameService;
+	private String phase;
+	private int selectedPlayer;
+	private String hashCode;
 
-	@Inject
-	private AuthBean authBean; // <<====== Importante
+	private TerritoryDTO selectedTerritory;
+	private boolean reforzed;
+	private int troopsObtained;
 
 	public GameBean() {
-		jugadorService = new JugadorService();
-		territorioService = new TerritorioService();
-		gameService = new GameService(jugadorService, territorioService);
+		jugadorrDao = new JugadorDAO();
+		territoryDao = new TerritoryDAO();
+		phase = "Phase 1: Reinforce";
 	}
 
-	// ===========================================================
-	// CREAR PARTIDA
-	// ===========================================================
-	public String init() {
-
-		int numPlayers = authBean.getNumPlayers();
-		UsuarioDTO[] usuarios = authBean.getUsuariosPartida();
-		String[] colors = authBean.getColors();
-
-		// ===========================================================
-		// 1. Crear Jugadores a partir de AuthBean
-		// ===========================================================
-		for (int i = 0; i < numPlayers; i++) {
-
-			UsuarioDTO user = usuarios[i];
-			JugadorDTO jugador = new JugadorDTO(user.getUsername(), colors[i], user, // Usuario asociado
-					30, // Tropas iniciales
-					new MyDoubleLinkedList<>() // Territorios
-			);
-
-			jugadorService.crearJugador(jugador);
+	// =============================
+	// SAVE GAME
+	// =============================
+	public void saveGame() {
+		if (phase.equals("Phase 2: Dices")) {
+			warn("It is not possible to save while rolling dice.");
+			return;
 		}
-
-		jugadorService.guardar();
-
-		// ===========================================================
-		// 2. Crear territorios base si no existen
-		// ===========================================================
-		if (territorioService.getDAO().getTerritorios().getSize() == 0) {
-
-			String[] territories = { "Alaska", "Irkutsk", "Brasil", "Argentina", "Perú", "Islandia", "Egipto",
-					"Ucrania" };
-
-			for (String t : territories) {
-
-				TerritorioDTO dto = new TerritorioDTO(t, 1, // Cantidad de tropas
-						null, // Sin dueño
-						new MyDoubleLinkedList<>() // Adyacentes vacíos
-				);
-
-				territorioService.crearTerritorio(dto);
-			}
-
-			territorioService.guardar();
+		if (phase.equals("Winner")) {
+			info("Game over", "You cannot save a finished game.");
+			return;
 		}
-
-		// ===========================================================
-		// 3. Asignar territorios aleatoriamente
-		// ===========================================================
-		var allTerr = territorioService.getDAO().getTerritorios();
-		var allPlayers = jugadorService.getDAO().getJugadores();
-
-		for (int i = 0; i < allTerr.getSize(); i++) {
-
-			int p = (int) (Math.random() * allPlayers.getSize());
-
-			gameService.asignarTerritorioAJugador(allTerr.get(i).getNombre(), allPlayers.get(p).getName());
-		}
-
-		gameService.guardarTodo();
-
-		return "game.xhtml?faces-redirect=true";
 	}
+
+	public void warn(String msg) {
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning", msg));
+	}
+
+	public void info(String sum, String msg) {
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, sum, msg));
+	}
+
+	public JugadorDAO getJugadorrDao() {
+		return jugadorrDao;
+	}
+
+	public void setJugadorrDao(JugadorDAO jugadorrDao) {
+		this.jugadorrDao = jugadorrDao;
+	}
+
+	public TerritoryDAO getTerritoryDao() {
+		return territoryDao;
+	}
+
+	public void setTerritoryDao(TerritoryDAO territoryDao) {
+		this.territoryDao = territoryDao;
+	}
+
+	public String getPhase() {
+		return phase;
+	}
+
+	public void setPhase(String phase) {
+		this.phase = phase;
+	}
+
+	public int getSelectedPlayer() {
+		return selectedPlayer;
+	}
+
+	public void setSelectedPlayer(int selectedPlayer) {
+		this.selectedPlayer = selectedPlayer;
+	}
+
+	public String getHashCode() {
+		return hashCode;
+	}
+
+	public void setHashCode(String hashCode) {
+		this.hashCode = hashCode;
+	}
+
+	public TerritoryDTO getSelectedTerritory() {
+		return selectedTerritory;
+	}
+
+	public void setSelectedTerritory(TerritoryDTO selectedTerritory) {
+		this.selectedTerritory = selectedTerritory;
+	}
+
+	public boolean isReforzed() {
+		return reforzed;
+	}
+
+	public void setReforzed(boolean reforzed) {
+		this.reforzed = reforzed;
+	}
+
+	public int getTroopsObtained() {
+		return troopsObtained;
+	}
+
+	public void setTroopsObtained(int troopsObtained) {
+		this.troopsObtained = troopsObtained;
+	}
+
+	// GETTERS Y SETTERS …
+
 }

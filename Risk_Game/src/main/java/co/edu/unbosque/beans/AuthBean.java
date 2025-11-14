@@ -30,7 +30,7 @@ public class AuthBean implements Serializable {
 	// ===========================================================
 	// CAMPOS PARA CREAR PARTIDA (N jugadores)
 	// ===========================================================
-	private int numPlayers = 2;
+	private int numPlayers;
 
 	private String[] emails = new String[4];
 	private String[] names = new String[4];

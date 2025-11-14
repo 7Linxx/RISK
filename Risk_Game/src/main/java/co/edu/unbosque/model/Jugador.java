@@ -30,6 +30,8 @@ public class Jugador {
 	/** Lista doblemente enlazada con los territorios que pertenecen al jugador */
 	private MyDoubleLinkedList<Territorio> territoriosPertenecientes;
 
+	private MyDoubleLinkedList<String> territorios;
+
 	/**
 	 * Constructor por defecto.
 	 */
@@ -146,4 +148,11 @@ public class Jugador {
 		this.territoriosPertenecientes = territoriosPertenecientes;
 	}
 
+	public boolean containsTerritory(String territorio) {
+		for (String aux : territorios) {
+			if (aux.equals(territorio))
+				return true;
+		}
+		return false;
+	}
 }

@@ -67,7 +67,7 @@
 				<div class="field col-12 md:col-1">
 					<h:panelGrid columns="1" cellpadding="4">
 						<label>Select number players</label>
-						<p:spinner id="numberp" value="#{MapBean.numPlayers}"
+						<p:spinner id="numberp" value="#{GameBean.numPlayers}"
 							buttons="vertical" upButtonStyleClass="ui-button-secondary"
 							downButtonStyleClass="ui-button-secondary" min="2" max="4" />
 					</h:panelGrid>
@@ -90,14 +90,14 @@
 				<h:panelGrid columns="2" cellpadding="4">
 					<h5>Email</h5>
 					<span class="ui-float-label"> <p:inputText id="email1"
-							value="#{MapBean.emails[0]}" placeholder="email" />
+							value="#{GameBean.emails[0]}" placeholder="email" />
 					</span>
 					<h5>Name</h5>
 					<span class="ui-float-label"> <p:inputText id="name1"
-							value="#{MapBean.names[0]}" placeholder="name" />
+							value="#{GameBean.names[0]}" placeholder="name" />
 					</span>
 					<h5>Color</h5>
-					<p:colorPicker id="thumbnail1" value="#{MapBean.colors[0]}"
+					<p:colorPicker id="thumbnail1" value="#{GameBean.colors[0]}"
 						swatchesOnly="true" theme="polaroid" clearButton="true"
 						closeButton="true" inline="true"
 						swatches="#F35B04, #F5BB00, #A755C2, #016FB9, #61C9A8, #F09B59">
@@ -111,21 +111,21 @@
 				<h:panelGrid columns="2" cellpadding="4">
 					<h5>Email</h5>
 					<span class="ui-float-label"> <p:inputText id="email2"
-							value="#{MapBean.emails[1]}" placeholder="email" />
+							value="#{GameBean.emails[1]}" placeholder="email" />
 					</span>
 					<h5>Name</h5>
 					<span class="ui-float-label"> <p:inputText id="name2"
-							value="#{MapBean.names[1]}" placeholder="name" />
+							value="#{GameBean.names[1]}" placeholder="name" />
 					</span>
 					<h5>Color</h5>
-					<p:colorPicker id="thumbnail2" value="#{MapBean.colors[1]}"
+					<p:colorPicker id="thumbnail2" value="#{GameBean.colors[1]}"
 						swatchesOnly="true" theme="polaroid" clearButton="true"
 						closeButton="true" inline="true"
 						swatches="#F35B04, #F5BB00, #A755C2, #016FB9, #61C9A8, #F09B59">
 					</p:colorPicker>
 				</h:panelGrid>
 			</div>
-			<c:if test="#{MapBean.numPlayers>=3}">
+			<c:if test="#{GameBean.numPlayers>=3}">
 				<p:divider layout="vertical"></p:divider>
 				<div class="information">
 
@@ -133,14 +133,14 @@
 					<h:panelGrid columns="2" cellpadding="4">
 						<h5>Email</h5>
 						<span class="ui-float-label"> <p:inputText id="email3"
-								value="#{MapBean.emails[2]}" placeholder="email" />
+								value="#{GameBean.emails[2]}" placeholder="email" />
 						</span>
 						<h5>Name</h5>
 						<span class="ui-float-label"> <p:inputText id="name3"
-								value="#{MapBean.names[2]}" placeholder="name" />
+								value="#{GameBean.names[2]}" placeholder="name" />
 						</span>
 						<h5>Color</h5>
-						<p:colorPicker id="thumbnail3" value="#{MapBean.colors[2]}"
+						<p:colorPicker id="thumbnail3" value="#{GameBean.colors[2]}"
 							swatchesOnly="true" theme="polaroid" clearButton="true"
 							closeButton="true" inline="true"
 							swatches="#F35B04, #F5BB00, #A755C2, #016FB9, #61C9A8, #F09B59">
@@ -148,7 +148,7 @@
 					</h:panelGrid>
 				</div>
 			</c:if>
-			<c:if test="#{MapBean.numPlayers==4}">
+			<c:if test="#{GameBean.numPlayers==4}">
 				<p:divider layout="vertical"></p:divider>
 				<div class="information">
 
@@ -156,14 +156,14 @@
 					<h:panelGrid columns="2" cellpadding="4">
 						<h5>Email</h5>
 						<span class="ui-float-label"> <p:inputText id="email4"
-								value="#{MapBean.emails[3]}" placeholder="email" />
+								value="#{GameBean.emails[3]}" placeholder="email" />
 						</span>
 						<h5>Name</h5>
 						<span class="ui-float-label"> <p:inputText id="name4"
-								value="#{MapBean.names[3]}" placeholder="name" />
+								value="#{GameBean.names[3]}" placeholder="name" />
 						</span>
 						<h5>Color</h5>
-						<p:colorPicker id="thumbnail4" value="#{MapBean.colors[3]}"
+						<p:colorPicker id="thumbnail4" value="#{GameBean.colors[3]}"
 							swatchesOnly="true" theme="polaroid" clearButton="true"
 							closeButton="true" inline="true"
 							swatches="#F35B04, #F5BB00, #A755C2, #016FB9, #61C9A8, #F09B59">
@@ -173,7 +173,7 @@
 			</c:if>
 			<p:commandButton
 				styleClass="rounded-button ui-button-warning login-btn"
-				value="Continue" action="#{MapBean.init}" update="growl" />
+				value="Continue" action="#{GameBean.init}" update="growl" />
 		</div>
 	</h:form>
 	<h:form id="shash">

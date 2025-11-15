@@ -14,10 +14,8 @@ import com.itextpdf.text.log.SysoCounter;
 
 import co.edu.unbosque.model.Jugador;
 import co.edu.unbosque.model.JugadorDTO;
-import co.edu.unbosque.model.PlayerDTO;
 import co.edu.unbosque.model.Territorio;
 import co.edu.unbosque.model.TerritorioDTO;
-import co.edu.unbosque.model.TerritoryDTO;
 import co.edu.unbosque.model.persistence.DataMapper;
 import co.edu.unbosque.model.persistence.JugadorDAO;
 import co.edu.unbosque.model.persistence.TerritorioDAO;

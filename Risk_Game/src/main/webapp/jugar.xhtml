@@ -12,9 +12,6 @@
 	<title>Risk Global Domination</title>
 	<link rel="stylesheet" href="styles/jugar.css" />
 	<script src="js/menu.js"></script>
-	<script>
-		/* espacio para JS adicional */
-	</script>
 </h:head>
 
 <h:body>
@@ -43,7 +40,6 @@
 				<h:commandButton id="btn-jugar" styleClass="play-btn" value="JUGAR"
 					onclick="showGameModes(); return false;" />
 
-				<!-- Panel de selección de modo: reemplazado por spinner (1-6) -->
 				<div id="game-mode-panel" style="display: none;">
 					<button type="button" class="back-arrow-btn"
 						onclick="backToMainPanel()">
@@ -61,7 +57,6 @@
 
 						<div class="game-mode-spinner-row"
 							style="margin-top: 30px; color: white; font-weight: bold; font-size: 28px;">
-							<!-- PrimeFaces spinner que permite escoger entre 1 y 6 -->
 							<h:outputLabel for="playerSpinner" value="Jugadores:" style="" />
 							<p:spinner id="playerSpinner" value="#{MapBean.numPlayers}"
 								min="1" max="6" step="1" styleClass="mode-spinner"
@@ -69,7 +64,6 @@
 						</div>
 
 						<div class="game-mode-actions">
-							<!-- Botón confirmar: llama al bean con el número elegido -->
 							<h:commandButton value="Aceptar" style="margin-top: 20px;"
 								styleClass="mode-btn accept-btn" update="flogin"
 								oncomplete="showLogin();" onclick="return true;" />
@@ -94,7 +88,6 @@
 						<div id="login" class="login">
 							<button class="close-btn" type="button" onclick="closeLogin()">x</button>
 
-							<!-- Jugador 1 siempre: usuario actual, campo readonly -->
 							<c:if test="#{MapBean.numPlayers gt 1}">
 								<div class="information">
 									<label>Información Jugador 1:</label>
@@ -114,7 +107,6 @@
 								</div>
 							</c:if>
 
-							<!-- Jugador 2 -->
 							<c:if test="#{MapBean.numPlayers ge 2}">
 								<p:divider layout="vertical" />
 								<div class="information">
@@ -134,7 +126,6 @@
 								</div>
 							</c:if>
 
-							<!-- Jugador 3 -->
 							<c:if test="#{MapBean.numPlayers ge 3}">
 								<p:divider layout="vertical" />
 								<div class="information">
@@ -154,7 +145,6 @@
 								</div>
 							</c:if>
 
-							<!-- Jugador 4 -->
 							<c:if test="#{MapBean.numPlayers ge 4}">
 								<p:divider layout="vertical" />
 								<div class="information">
@@ -174,7 +164,6 @@
 								</div>
 							</c:if>
 
-							<!-- Jugador 5 -->
 							<c:if test="#{MapBean.numPlayers ge 5}">
 								<p:divider layout="vertical" />
 								<div class="information">
@@ -194,7 +183,6 @@
 								</div>
 							</c:if>
 
-							<!-- Jugador 6 -->
 							<c:if test="#{MapBean.numPlayers eq 6}">
 								<p:divider layout="vertical" />
 								<div class="information">

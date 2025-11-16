@@ -1,33 +1,89 @@
 package co.edu.unbosque.backRisk.model;
 
-import java.util.List;
 import java.util.Objects;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+/**
+ * Entidad que representa un jugador dentro del sistema.
+ * 
+ * <p>
+ * La clase almacena información relevante para identificar y gestionar a cada
+ * jugador, como su nombre, color asignado, correo electrónico, número de
+ * jugador y tropas disponibles.
+ * </p>
+ *
+ * <p>
+ * Esta entidad está mapeada a la tabla {@code jugadores} en la base de datos.
+ * Incluye métodos para acceder y modificar sus atributos, además de las
+ * implementaciones de {@code equals} y {@code hashCode} para asegurar
+ * comparaciones consistentes entre objetos.
+ * </p>
+ *
+ * @author Mariana Pineda
+ * 
+ * @version 2.0
+ */
 @Entity
 @Table(name = "jugadores")
 public class Jugador {
 
+	/**
+	 * Identificador único del jugador. Se genera automáticamente.
+	 */
 	private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
+
+	/**
+	 * Nombre del jugador.
+	 */
 	private String name;
+
+	/**
+	 * Color asignado al jugador dentro del juego.
+	 */
 	private String color;
+
+	/**
+	 * Código hash asociado al jugador.
+	 */
 	private String hashCode;
+
+	/**
+	 * Correo electrónico del jugador.
+	 */
 	private String email;
+
+	/**
+	 * Número de jugador.
+	 */
 	private int jugador;
+
+	/**
+	 * Cantidad de tropas disponibles para el jugador.
+	 */
 	private int tropasDisponibles;
 
+	/**
+	 * Constructor vacío requerido por frameworks de persistencia y serialización.
+	 */
 	public Jugador() {
 		// Constructor vacío para frameworks/serialización
 	}
 
+	/**
+	 * Constructor que inicializa todos los atributos del jugador.
+	 *
+	 * @param id                identificador único del jugador
+	 * @param name              nombre del jugador
+	 * @param color             color asignado al jugador
+	 * @param hashCode          código hash asociado al jugador
+	 * @param email             correo electrónico del jugador
+	 * @param jugador           número de jugador
+	 * @param tropasDisponibles cantidad de tropas disponibles
+	 */
 	public Jugador(Long id, String name, String color, String hashCode, String email, int jugador,
 			int tropasDisponibles) {
 		super();
@@ -96,11 +152,23 @@ public class Jugador {
 		this.tropasDisponibles = tropasDisponibles;
 	}
 
+	/**
+	 * Genera un valor hash basado en los atributos del jugador.
+	 *
+	 * @return un valor hash representativo del estado del objeto
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(color, email, hashCode, id, jugador, name, tropasDisponibles);
 	}
 
+	/**
+	 * Compara este jugador con otro objeto para determinar si son equivalentes.
+	 *
+	 * @param obj objeto a comparar
+	 * @return {@code true} si ambos objetos representan el mismo jugador,
+	 *         {@code false} en caso contrario
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

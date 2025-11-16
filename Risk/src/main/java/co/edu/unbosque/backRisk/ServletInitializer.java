@@ -11,7 +11,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
  * </p>
  * 
  * @author Mariana Pineda
- * @version 1.0
+ * @version 2.0
  */
 public class ServletInitializer extends SpringBootServletInitializer {
 

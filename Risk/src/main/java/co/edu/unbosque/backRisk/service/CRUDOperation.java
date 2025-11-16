@@ -17,7 +17,7 @@ import co.edu.unbosque.backRisk.util.MyLinkedList;
  *            ejemplo DTOs o entidades).
  * 
  * @author Mariana Pineda
- * @version 1.0
+ * @version 2.0
  */
 public interface CRUDOperation<T> {
 

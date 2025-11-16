@@ -6,29 +6,47 @@ import java.util.Iterator;
  * Implementación básica de una lista doblemente enlazada con una posición
  * actual (currentPosition) que permite operaciones de inserción y extracción en
  * la posición actual, así como avanzar o retroceder varias posiciones.
- * 
+ * <p>
+ * Esta estructura mantiene referencias al nodo inicial (head), al nodo actual
+ * (currentPosition), al tamaño de la lista (size) y a la posición numérica
+ * correspondiente al nodo actual (position). Permite recorrer la lista de forma
+ * secuencial hacia adelante o hacia atrás.
+ * </p>
+ *
  * @param <E> Tipo de elementos almacenados en la lista.
  * 
  * @author Mariana Pineda
- * @version 1.0
+ * @version 2.0
  */
 public class MyDoubleLinkedList<E> implements Iterable<E> {
 
 	/**
-	 * Referencia al primer nodo de la lista.
+	 * Referencia al primer nodo de la lista. Representa la entrada principal para
+	 * recorrer la estructura desde el inicio.
 	 */
 	protected DNode<E> head;
 
 	/**
 	 * Referencia al nodo en la posición "actual". Muchas operaciones usan esta
-	 * referencia como punto de inserción/extracción.
+	 * referencia como punto de inserción/extracción. También se utiliza para
+	 * cálculos de desplazamiento dentro de la lista.
 	 */
 	protected DNode<E> currentPosition;
+
+	/**
+	 * Cantidad total de elementos almacenados en la lista.
+	 */
 	protected int size;
+
+	/**
+	 * Índice del nodo donde se encuentra "currentPosition". Comienza en -1 cuando
+	 * la lista está vacía o currentPosition no ha sido inicializado.
+	 */
 	protected int position;
 
 	/**
-	 * Constructor por defecto.
+	 * Constructor por defecto. Inicializa la lista vacía, con tamaño 0 y sin nodo
+	 * actual seleccionado.
 	 */
 	public MyDoubleLinkedList() {
 		position = -1;
@@ -36,12 +54,16 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 	}
 
 	/**
-	 * Avanza la posición actual numPositions pasos hacia adelante.
+	 * Avanza la posición actual {@code numPositions} pasos hacia adelante.
 	 * <p>
-	 * Si currentPosition es null se inicializa en head y se reduce en uno la
-	 * cantidad de posiciones a avanzar.
+	 * Si {@code currentPosition} es {@code null}, se inicializa como {@code head}
+	 * antes de comenzar a avanzar, ajustando la cantidad de pasos restantes.
 	 * </p>
-	 * 
+	 * <p>
+	 * Si se alcanza el final de la lista antes de completar los pasos, el avance se
+	 * detiene.
+	 * </p>
+	 *
 	 * @param numPositions número de posiciones a avanzar (debe ser > 0).
 	 */
 	public void forward(int numPositions) {
@@ -61,12 +83,15 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 	}
 
 	/**
-	 * Retrocede la posición actual numPositions pasos hacia atrás.
+	 * Retrocede la posición actual {@code numPositions} pasos hacia atrás.
 	 * <p>
-	 * Si numPositions <= 0, head es null o currentPosition es null, no realiza
-	 * cambios.
+	 * Si {@code numPositions <= 0}, {@code head == null} o
+	 * {@code currentPosition == null}, no realiza ninguna acción.
 	 * </p>
-	 * 
+	 * <p>
+	 * La operación se detiene si se llega al inicio de la lista.
+	 * </p>
+	 *
 	 * @param numPositions número de posiciones a retroceder.
 	 */
 	public void back(int numPositions) {
@@ -81,9 +106,15 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 	}
 
 	/**
-	 * Inserta un nuevo elemento inmediatamente después de la posición actual. Si
-	 * currentPosition es null, inserta al inicio de la lista.
-	 * 
+	 * Inserta un nuevo elemento inmediatamente después de la posición actual.
+	 * <p>
+	 * Si {@code currentPosition} es {@code null}, el elemento se inserta al inicio
+	 * de la lista, convirtiéndose en el nuevo head.
+	 * </p>
+	 * <p>
+	 * Después de la inserción, el nuevo nodo pasa a ser la posición actual.
+	 * </p>
+	 *
 	 * @param data elemento a insertar.
 	 */
 	public void insert(E data) {
@@ -112,10 +143,13 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 	/**
 	 * Extrae (elimina) el nodo en la posición actual y retorna su información.
 	 * <p>
-	 * Después de la extracción, la posición actual se mueve al siguiente nodo.
+	 * Después de la extracción, la posición actual pasa a ser el siguiente nodo. Si
+	 * el nodo eliminado era el head, el siguiente nodo se convierte en el nuevo
+	 * head.
 	 * </p>
-	 * 
-	 * @return la información del nodo extraído, o null si currentPosition es null.
+	 *
+	 * @return la información del nodo extraído, o {@code null} si
+	 *         {@code currentPosition} es {@code null}.
 	 */
 	public E extract() {
 		E info = null;
@@ -140,8 +174,11 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 	}
 
 	/**
-	 * Representación en cadena de la lista en formato "a <-> b <-> c".
-	 * 
+	 * Representación en cadena de la lista en formato {@code "a <-> b <-> c"}.
+	 * <p>
+	 * Recorre la lista desde el head concatenando los elementos en orden.
+	 * </p>
+	 *
 	 * @return cadena con los elementos de la lista en orden.
 	 */
 	public String toString() {
@@ -160,7 +197,7 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 
 	/**
 	 * Obtiene el nodo cabeza (head).
-	 * 
+	 *
 	 * @return nodo head.
 	 */
 	public DNode<E> getHead() {
@@ -169,7 +206,7 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 
 	/**
 	 * Establece el nodo cabeza (head).
-	 * 
+	 *
 	 * @param head nodo a asignar como head.
 	 */
 	public void setHead(DNode<E> head) {
@@ -178,7 +215,7 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 
 	/**
 	 * Obtiene la posición actual (currentPosition).
-	 * 
+	 *
 	 * @return nodo en la posición actual.
 	 */
 	public DNode<E> getCurrentPosition() {
@@ -187,21 +224,42 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 
 	/**
 	 * Establece la posición actual (currentPosition).
-	 * 
+	 *
 	 * @param currentPosition nodo a asignar como posición actual.
 	 */
 	public void setCurrentPosition(DNode<E> currentPosition) {
 		this.currentPosition = currentPosition;
 	}
 
+	/**
+	 * Obtiene el número de elementos almacenados en la lista.
+	 *
+	 * @return tamaño de la lista.
+	 */
 	public int getSize() {
 		return size;
 	}
 
+	/**
+	 * Establece el tamaño de la lista.
+	 * <p>
+	 * Útil en casos específicos donde el tamaño debe ajustarse manualmente.
+	 * </p>
+	 *
+	 * @param size nuevo tamaño de la lista.
+	 */
 	public void setSize(int size) {
 		this.size = size;
 	}
 
+	/**
+	 * Retorna un iterador que recorre la lista desde el índice 0 hasta el final.
+	 * <p>
+	 * El iterador utiliza el método {@link #get(int)} para obtener los elementos.
+	 * </p>
+	 *
+	 * @return iterador sobre los elementos de la lista.
+	 */
 	@Override
 	public Iterator<E> iterator() {
 		return new Iterator<E>() {
@@ -219,6 +277,16 @@ public class MyDoubleLinkedList<E> implements Iterable<E> {
 		};
 	}
 
+	/**
+	 * Retorna el elemento almacenado en el índice indicado.
+	 * <p>
+	 * Ajusta la posición actual desplazándose hacia adelante o atrás mediante
+	 * {@code forward()} o {@code back()}, según corresponda.
+	 * </p>
+	 *
+	 * @param index índice del elemento deseado (0 ≤ index < size).
+	 * @return contenido del nodo en la posición solicitada.
+	 */
 	public E get(int index) {
 		if (position > index)
 			back(Math.abs(position - index));

@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import co.edu.unbosque.backRisk.dto.TerritorioDTO;
 import co.edu.unbosque.backRisk.service.TerritorioService;
 import co.edu.unbosque.backRisk.util.MyDoubleLinkedList;
-import co.edu.unbosque.backRisk.util.MyLinkedList;
 
 /**
  * Controlador REST para operaciones relacionadas con la entidad "Territorio".
@@ -27,7 +25,7 @@ import co.edu.unbosque.backRisk.util.MyLinkedList;
  * </p>
  *
  * @author Mariana Pineda
- * @since 1.0
+ * @since 2.0
  */
 @RestController
 @CrossOrigin(origins = { "*" })

@@ -31,6 +31,7 @@ public class AuthBean implements Serializable {
 	private int numPlayers = 2; // Por defecto 2
 	private String[] names = new String[6];
 	private String[] colors = new String[6];
+	private String[] emails = new String[6];
 
 	public AuthBean() {
 		usuarioService = new UsuarioService();
@@ -38,6 +39,7 @@ public class AuthBean implements Serializable {
 		for (int i = 0; i < 6; i++) {
 			names[i] = "";
 			colors[i] = "";
+			emails[i] = "";
 		}
 	}
 
@@ -49,10 +51,10 @@ public class AuthBean implements Serializable {
 			return null;
 		}
 		usuarioLogueado = u;
-		
+
 		// Establecer el nombre del usuario logueado en names[0]
 		names[0] = username;
-		
+
 		return "jugar.xhtml?faces-redirect=true";
 	}
 
@@ -132,4 +134,13 @@ public class AuthBean implements Serializable {
 	public void setColors(String[] colors) {
 		this.colors = colors;
 	}
+
+	public String[] getEmails() {
+		return emails;
+	}
+
+	public void setEmails(String[] emails) {
+		this.emails = emails;
+	}
+
 }

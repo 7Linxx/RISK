@@ -1,5 +1,7 @@
 package co.edu.unbosque.backRisk.util;
 
+import java.util.Iterator;
+
 /**
  * Implementación básica de una lista doblemente enlazada con una posición
  * actual (currentPosition) que permite operaciones de inserción y extracción en
@@ -10,7 +12,7 @@ package co.edu.unbosque.backRisk.util;
  * @author Mariana Pineda
  * @version 1.0
  */
-public class MyDoubleLinkedList<E> {
+public class MyDoubleLinkedList<E> implements Iterable<E> {
 
 	/**
 	 * Referencia al primer nodo de la lista.
@@ -22,12 +24,15 @@ public class MyDoubleLinkedList<E> {
 	 * referencia como punto de inserción/extracción.
 	 */
 	protected DNode<E> currentPosition;
+	protected int size;
+	protected int position;
 
 	/**
 	 * Constructor por defecto.
 	 */
 	public MyDoubleLinkedList() {
-
+		position = -1;
+		size = 0;
 	}
 
 	/**
@@ -45,10 +50,12 @@ public class MyDoubleLinkedList<E> {
 			if (currentPosition == null) {
 				currentPosition = head;
 				positionsForward--;
+				position++;
 			}
 			while (currentPosition.getNext() != null && positionsForward > 0) {
 				currentPosition = currentPosition.getNext();
 				positionsForward--;
+				position++;
 			}
 		}
 	}
@@ -69,6 +76,7 @@ public class MyDoubleLinkedList<E> {
 		while (currentPosition != null && positionsBack > 0) {
 			currentPosition = currentPosition.getPrevious();
 			positionsBack--;
+			position--;
 		}
 	}
 
@@ -97,6 +105,8 @@ public class MyDoubleLinkedList<E> {
 		}
 
 		currentPosition = node;
+		position++;
+		size++;
 	}
 
 	/**
@@ -122,10 +132,11 @@ public class MyDoubleLinkedList<E> {
 			if (currentPosition.getNext() != null) {
 				currentPosition.getNext().setPrevious(currentPosition.getPrevious());
 			}
-
+			size--;
 			currentPosition = currentPosition.getNext();
 		}
 		return info;
+
 	}
 
 	/**
@@ -183,4 +194,36 @@ public class MyDoubleLinkedList<E> {
 		this.currentPosition = currentPosition;
 	}
 
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	@Override
+	public Iterator<E> iterator() {
+		return new Iterator<E>() {
+			int index = 0;
+
+			@Override
+			public boolean hasNext() {
+				return index < size;
+			}
+
+			@Override
+			public E next() {
+				return get(index++);
+			}
+		};
+	}
+
+	public E get(int index) {
+		if (position > index)
+			back(Math.abs(position - index));
+		else
+			forward(Math.abs(position - index));
+		return currentPosition.getInfo();
+	}
 }

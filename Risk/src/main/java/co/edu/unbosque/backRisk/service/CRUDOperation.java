@@ -2,6 +2,7 @@ package co.edu.unbosque.backRisk.service;
 
 import java.util.List;
 
+import co.edu.unbosque.backRisk.util.MyDoubleLinkedList;
 import co.edu.unbosque.backRisk.util.MyLinkedList;
 
 /**
@@ -35,9 +36,9 @@ public interface CRUDOperation<T> {
 	/**
 	 * Obtiene todos los registros/objetos del tipo T.
 	 * 
-	 * @return lista personalizada (MyLinkedList) con todos los elementos.
+	 * @return lista personalizada (MyDoubleLinkedList) con todos los elementos.
 	 */
-	public MyLinkedList<T> getAll();
+	public MyDoubleLinkedList<T> getAll();
 
 	/**
 	 * Elimina el registro identificado por el identificador proporcionado.

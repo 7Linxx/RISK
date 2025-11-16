@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.unbosque.backRisk.dto.TerritorioDTO;
 import co.edu.unbosque.backRisk.service.TerritorioService;
+import co.edu.unbosque.backRisk.util.MyDoubleLinkedList;
 import co.edu.unbosque.backRisk.util.MyLinkedList;
 
 @RestController
@@ -37,8 +38,8 @@ public class TerritorioController {
 
 	// READ ALL
 	@GetMapping(path = "/listar")
-	public ResponseEntity<MyLinkedList<TerritorioDTO>> listar() {
-		MyLinkedList<TerritorioDTO> lista = territorioServ.getAll();
+	public ResponseEntity<MyDoubleLinkedList<TerritorioDTO>> listar() {
+		MyDoubleLinkedList<TerritorioDTO> lista = territorioServ.getAll();
 		return new ResponseEntity(lista, HttpStatus.OK);
 	}
 

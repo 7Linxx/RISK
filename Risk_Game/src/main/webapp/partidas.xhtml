@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<h:head>
+	<title>Partidas Guardadas - Risk Global Domination</title>
+	<link rel="stylesheet" href="styles/partidas.css" />
+	<script src="js/partidas.js"></script>
+</h:head>
+
+<h:body>
+	<f:view>
+		<div class="container">
+			<div class="header">
+				<img class="logo-risk" src="images/logo.png" alt="Risk Logo" />
+				<div class="header-buttons">
+					<button class="home" id="homeBtn" type="button"
+						aria-label="Volver al inicio"
+						onclick="window.location.href='jugar.xhtml'">
+						<img src="images/home.png" class="home-img" alt="Página Principal" />
+					</button>
+
+					<button class="gear" id="gearBtn" type="button"
+						aria-label="Configuración"
+						onclick="toggleMenu(); event.stopPropagation();">
+						<img src="images/setting.png" class="gear-img" alt="Configuración" />
+					</button>
+
+					<div id="settingsMenu" class="settings-menu">
+						<div class="settings-menu-item"
+							onclick="window.location='reglas.xhtml'">Reglas</div>
+						<div class="settings-menu-item"
+							onclick="window.location='jugar.xhtml'">Volver al juego</div>
+						<div class="settings-menu-item"
+							onclick="window.location='index.xhtml'">Cerrar sesión</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="content-section">
+				<div class="page-title">
+					<h1>Partidas Guardadas</h1>
+				</div>
+
+				<!-- Panel cuando HAY partidas guardadas -->
+				<h:panelGroup id="partidasPanel"
+					rendered="#{partidaBean.hasPartidas}">
+					<div class="partidas-grid-container">
+						<c:forEach items="#{partidaBean.partidas}" var="partida">
+							<div class="partida-card #{partida.terminada ? 'terminada' : ''}"
+								onclick="#{partida.terminada ? '' : 'cargarPartida(' += partida.id += ')'}">
+
+								<div class="partida-header">
+									<span class="partida-fecha"> <svg class="icon-calendar"
+											viewBox="0 0 24 24"> <rect x="3" y="4" width="18"
+											height="18" rx="2" ry="2" /> <line x1="16" y1="2" x2="16"
+											y2="6" /> <line x1="8" y1="2" x2="8" y2="6" /> <line x1="3"
+											y1="10" x2="21" y2="10" /> </svg> #{partida.fechaFormateada}
+									</span>
+
+									<c:if test="#{partida.terminada}">
+										<span class="badge-terminada">Finalizada</span>
+									</c:if>
+									<c:if test="#{!partida.terminada}">
+										<span class="badge-en-curso">En curso</span>
+									</c:if>
+								</div>
+
+								<div class="partida-info">
+									<c:if test="#{partida.terminada}">
+										<!-- Partida terminada: mostrar ganador -->
+										<div class="ganador-info">
+											<svg class="trophy-icon" viewBox="0 0 24 24"> <path
+												d="M6 9H4.5C3.67 9 3 8.33 3 7.5S3.67 6 4.5 6H6" /> <path
+												d="M18 9h1.5c.83 0 1.5-.67 1.5-1.5S20.33 6 19.5 6H18" /> <path
+												d="M6 9v2c0 3.31 2.69 6 6 6s6-2.69 6-6V9" /> <line x1="12"
+												y1="17" x2="12" y2="21" /> <line x1="8" y1="21" x2="16"
+												y2="21" /> </svg>
+											<div class="ganador-text">
+												<span class="ganador-label">Ganador</span>
+												<div class="ganador-nombre">
+													<span class="color-indicator"
+														style="background-color: #{partida.ganadorColor};"></span>
+													<span>#{partida.ganadorNombre}</span>
+												</div>
+											</div>
+										</div>
+									</c:if>
+
+									<c:if test="#{!partida.terminada}">
+										<!-- Partida en curso: mostrar jugadores -->
+										<div class="jugadores-list">
+											<h4>Jugadores (#{partida.numJugadores})</h4>
+											<div class="jugadores-row">
+												<c:forEach items="#{partida.jugadores}" var="jugador">
+													<div class="jugador-chip">
+														<span class="color-indicator"
+															style="background-color: #{jugador.color};"></span> <span
+															class="jugador-nombre">#{jugador.nombre}</span>
+													</div>
+												</c:forEach>
+											</div>
+										</div>
+
+										<div class="partida-stats">
+											<div class="stat-item">
+												<svg class="icon-stat" viewBox="0 0 24 24"> <circle
+													cx="12" cy="12" r="10" /> <polyline
+													points="12 6 12 12 16 14" /> </svg>
+												<span>Turno: #{partida.turnoActual}</span>
+											</div>
+											<div class="stat-item">
+												<svg class="icon-stat" viewBox="0 0 24 24"> <path
+													d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /> <circle
+													cx="12" cy="10" r="3" /> </svg>
+												<span>Fase: #{partida.faseActual}</span>
+											</div>
+										</div>
+
+										<button class="continuar-btn" type="button">
+											<svg class="icon-play" viewBox="0 0 24 24"> <polygon
+												points="5 3 19 12 5 21 5 3" /> </svg>
+											Continuar partida
+										</button>
+									</c:if>
+								</div>
+							</div>
+						</c:forEach>
+					</div>
+				</h:panelGroup>
+
+				<!-- Panel cuando NO hay partidas guardadas -->
+				<h:panelGroup id="noPartidasPanel"
+					rendered="#{!partidaBean.hasPartidas}">
+					<div class="no-partidas-container">
+						<div class="no-partidas-icon">
+							<svg viewBox="0 0 24 24"> <circle cx="12" cy="12" r="10" />
+							<line x1="12" y1="8" x2="12" y2="12" /> <line x1="12" y1="16"
+								x2="12.01" y2="16" /> </svg>
+						</div>
+						<h2>Aún no hay partidas</h2>
+						<p>No tienes partidas guardadas. ¡Comienza una nueva aventura!</p>
+						<button class="nueva-partida-btn" type="button"
+							onclick="window.location='jugar.xhtml'">
+							<svg class="icon-plus" viewBox="0 0 24 24"> <circle cx="12"
+								cy="12" r="10" /> <line x1="12" y1="8" x2="12" y2="16" /> <line
+								x1="8" y1="12" x2="16" y2="12" /> </svg>
+							Iniciar Nueva Partida
+						</button>
+					</div>
+				</h:panelGroup>
+			</div>
+		</div>
+	</f:view>
+</h:body>
+</html>

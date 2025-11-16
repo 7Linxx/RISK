@@ -1,0 +1,117 @@
+@charset "UTF-8";
+
+@import
+	url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap')
+	;
+	
+body {
+	font-family: 'Courier New', Courier, monospace !important;
+	background-image: url('../images/riskmap.jpg') !important;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center top;
+	height: 580px;
+}
+
+.container-svg {
+	position: relative;
+}
+
+#svg1 {
+	max-width: 100%;
+	max-height: 90vh;
+	width: auto;
+	height: auto;
+	position: absolute;
+	margin: 0 8%;
+}
+
+.round-button {
+	border-radius: 50%;
+	position: absolute;
+	font-size: 12px;
+	top: 25%;
+	left: 50%;
+	transform: translate(-50%, -50%);	
+	background: #ecc891;
+	cursor: pointer;
+	pointer-events: none !important;
+}
+path:hover {
+	cursor: pointer;
+	fill: #75FA61 !important;
+
+}
+
+p {
+	line-height: 1.2;
+	margin: 0;
+}
+
+.popup {
+	width: 23%;
+	height: 34%;
+	background-color: #e0eafc;
+	border-radius: 8px;
+	outline: 2px groove #000000;
+	outline-offset: 0px;
+	position: absolute;
+	bottom: 2%;
+	left: 0.5%;
+	display: flex;
+	/* Usa el modelo de caja flexbox */
+	flex-direction: column;
+	/* Alinea los hijos verticalmente */
+	justify-content: center;
+	/* Centra verticalmente los hijos */
+	align-items: center;
+	/* Centra horizontalmente los hijos */
+	padding: 0 30px 30px;
+	color: #333;
+}
+
+.popup h2 {
+	font-size: 22px;
+}
+
+.center {
+	margin: auto;
+	text-align: center;
+}
+.opt-btn{
+	position: absolute !important;
+	top: 0.5% !important; 
+	right: 0.5% !important;
+	background: white !important;
+	
+}
+.dialog-options{
+	width: 100%;
+	text-align: center;
+}
+.info-player{
+	position: absolute;
+	width: auto;
+	height: auto;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.info-hascode{
+	position: absolute;
+	top: 0.5% !important; 
+	left: 0.5% !important;
+	background: #367842!important;
+	cursor: pointer;
+	pointer-events: none !important;
+	
+}
+.color-player{
+	font-size: 8px;
+	cursor: pointer;
+	pointer-events: none !important;
+	border-radius: 50%;
+}

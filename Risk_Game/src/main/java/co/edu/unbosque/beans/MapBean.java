@@ -1,17 +1,22 @@
 package co.edu.unbosque.beans;
 
-import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Random;
 
-import jakarta.faces.application.FacesMessage;
-import jakarta.faces.context.FacesContext;
-import jakarta.inject.Inject;
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
+import com.itextpdf.text.log.SysoCounter;
+
+import co.edu.unbosque.controller.HttpClientSynchronous;
 import co.edu.unbosque.model.Jugador;
-import co.edu.unbosque.model.JugadorDTO;
-import co.edu.unbosque.model.TerritorioDTO;
-import co.edu.unbosque.model.persistence.DataMapper;
+import co.edu.unbosque.model.Territorio;
+import co.edu.unbosque.model.persistence.FileHandler;
 import co.edu.unbosque.model.persistence.JugadorDAO;
 import co.edu.unbosque.model.persistence.TerritorioDAO;
 import co.edu.unbosque.util.MailSender;
@@ -20,41 +25,30 @@ import co.edu.unbosque.util.MyGraph;
 import co.edu.unbosque.util.MyMap;
 import co.edu.unbosque.util.QueueImp;
 import co.edu.unbosque.util.algorithm.BreadthFirstSearch;
-
-import java.util.Arrays;
-import java.util.Random;
 import jakarta.annotation.ManagedBean;
 import jakarta.enterprise.context.RequestScoped;
-import javax.mail.MessagingException;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
 
 @ManagedBean
 @RequestScoped
 public class MapBean {
-	private static final long serialVersionUID = 1L;
 
-	@Inject
-	private AuthBean authBean;
-	
 	private TerritorioDAO territorioDao;
 	private JugadorDAO jugadorDao;
+	private String[] territorios, hashCodes;
+	private Territorio territorioSeleccionado, territorioFichado;
+	private int jugadorSeleccionado, index = 0, tropasAsignadas, tropasObtenidas, comandoTropas, numDice, maxDice,
+			numEDice, ganador, selectedDices, selectedEDices, maxTropas, minTropas, numeroJugadores, sizeHashes;
+	private String fase, textGanador, textPerdedor, hashCode, jugadorEnemigo, jugadorActual;
+	private boolean error1, error2, reforzado;
 	private MyGraph<String> map;
-
-	private String[] territories;
-	private TerritorioDTO selectedTerritory, targetTerritory;
-	private int selectedPlayer;
-	private String phase, textWinner, textLosser;
-	private boolean error1, error2, reforzed;
-	private int troopsObtained, troopsCommand;
-	private String enemyPlayer, currentPlayer;
-
-	// Variables para dados
-	private int selectedDices, selectedEDices;
-	private int numDice, numEDice;
-	private int[] disesA, disesE;
-	private int winner;
-	private int maxTroops, minTroops;
-
 	private MyDoubleLinkedList<String> enemiesTarget, alliesTarget;
+	private String colores[];
+	private String nombres[];
+	private String emails[];
+	private int[] disesA, disesE;
+	private StreamedContent file;
 
 	public MapBean() {
 		territorioDao = new TerritorioDAO();
@@ -62,129 +56,372 @@ public class MapBean {
 		map = new MyGraph<>();
 		disesA = new int[3];
 		disesE = new int[2];
-		reforzed = false;
-
-		territories = new String[] { "Alaska", "Northwest_Territory", "Alberta", "Ontario", "Western_United_States",
+		colores = new String[4];
+		nombres = new String[4];
+		emails = new String[4];
+		reforzado = false;
+		territorios = new String[] { "Alaska", "Northwest_Territory", "Alberta", "Ontario", "Western_United_States",
 				"Quebec", "Eastern_United_States", "Central_America", "Venezuela", "Peru", "Brazil", "Argentina",
 				"Greenland", "Iceland", "Great_Britain", "Northern_Europe", "Scandinavia", "Western_Europe",
 				"Southern_Europe", "Ukraine", "Ural", "Middle_East", "Afghanistan", "China", "India", "Siam", "Siberia",
 				"Mongolia", "Irkutsk", "Yakursk", "Kamchatka", "Japan", "Indonesia", "New_Guinea", "Eastern_Australia",
 				"Western_Australia", "North_Africa", "Congo", "Egypt", "East_Africa", "South_Africa", "Madagascar" };
-
-		for (String aux : territories) {
+		for (String aux : territorios) {
 			map.addNode(aux);
 		}
 		initGraph();
 	}
 
-	public String init() {
-		// Obtener datos del AuthBean
-		int numPlayers = authBean.getNumPlayers();
-		String[] names = authBean.getNames();
-		String[] colors = authBean.getColors();
+	public TerritorioDAO getTerritorioDao() {
+		return territorioDao;
+	}
 
-		// Validar datos
-		if (!validatePlayers(numPlayers, names, colors)) {
-			return null; // Se quedan en la misma página
+	public void setTerritorioDao(TerritorioDAO territorioDao) {
+		this.territorioDao = territorioDao;
+	}
+
+	public JugadorDAO getJugadorDao() {
+		return jugadorDao;
+	}
+
+	public void setJugadorDao(JugadorDAO jugadorDao) {
+		this.jugadorDao = jugadorDao;
+	}
+
+	public String[] getTerritorios() {
+		return territorios;
+	}
+
+	public void setTerritorios(String[] territorios) {
+		this.territorios = territorios;
+	}
+
+	public String[] getHashcodes() {
+		return hashCodes;
+	}
+
+	public void setHashcodes(String[] hashcodes) {
+		this.hashCodes = hashcodes;
+	}
+
+	public Territorio getTerritorioSeleccionado() {
+		return territorioSeleccionado;
+	}
+
+	public void setTerritorioSeleccionado(Territorio territorioSeleccionado) {
+		this.territorioSeleccionado = territorioSeleccionado;
+	}
+
+	public Territorio getTerritorioFichado() {
+		return territorioFichado;
+	}
+
+	public void setTerritorioFichado(Territorio territorioFichado) {
+		this.territorioFichado = territorioFichado;
+	}
+
+	public int getJugadorSeleccionado() {
+		return jugadorSeleccionado;
+	}
+
+	public void setJugadorSeleccionado(int jugadorSeleccionado) {
+		this.jugadorSeleccionado = jugadorSeleccionado;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	public int getTropasAsignadas() {
+		tropasAsignadas = territorioDao.getTerritorios().getValue(territorios[index]).getNumeroTropas();
+		index++;
+		if (index == territorios.length) {
+			index = 0;
 		}
+		return tropasAsignadas;
+	}
 
-		// Crear jugadores
-		if (!createPlayers(numPlayers, names, colors)) {
+	public void setTropasAsignadas(int tropasAsignadas) {
+		this.tropasAsignadas = tropasAsignadas;
+	}
+
+	public int getTropasObtenidas() {
+		return tropasObtenidas;
+	}
+
+	public void setTropasObtenidas(int tropasObtenidas) {
+		this.tropasObtenidas = tropasObtenidas;
+	}
+
+	public int getComandoTropas() {
+		return comandoTropas;
+	}
+
+	public void setComandoTropas(int comandoTropas) {
+		this.comandoTropas = comandoTropas;
+	}
+
+	public int getNumDice() {
+		return numDice;
+	}
+
+	public void setNumDice(int numDice) {
+		this.numDice = numDice;
+	}
+
+	public int getMaxDice() {
+		return maxDice;
+	}
+
+	public void setMaxDice(int maxDice) {
+		this.maxDice = maxDice;
+	}
+
+	public int getNumEDice() {
+		return numEDice;
+	}
+
+	public void setNumEDice(int numEDice) {
+		this.numEDice = numEDice;
+	}
+
+	public int getGanador() {
+		return ganador;
+	}
+
+	public void setGanador(int ganador) {
+		this.ganador = ganador;
+	}
+
+	public int getSelectedDices() {
+		return selectedDices;
+	}
+
+	public void setSelectedDices(int selectedDices) {
+		this.selectedDices = selectedDices;
+	}
+
+	public int getSelectedEDices() {
+		return selectedEDices;
+	}
+
+	public void setSelectedEDices(int selectedEDices) {
+		this.selectedEDices = selectedEDices;
+	}
+
+	public int getMaxTropas() {
+		return maxTropas;
+	}
+
+	public void setMaxTropas(int maxTropas) {
+		this.maxTropas = maxTropas;
+	}
+
+	public int getMinTropas() {
+		return minTropas;
+	}
+
+	public void setMinTropas(int minTropas) {
+		this.minTropas = minTropas;
+	}
+
+	public int getNumeroJugadores() {
+		return numeroJugadores;
+	}
+
+	public void setNumeroJugadores(int numeroJugadores) {
+		this.numeroJugadores = numeroJugadores;
+	}
+
+	public int getSizeHashes() {
+		return sizeHashes;
+	}
+
+	public void setSizeHashes(int sizeHashes) {
+		this.sizeHashes = sizeHashes;
+	}
+
+	public String getFase() {
+		return fase;
+	}
+
+	public void setFase(String fase) {
+		this.fase = fase;
+	}
+
+	public String getTextGanador() {
+		return textGanador;
+	}
+
+	public void setTextGanador(String textGanador) {
+		this.textGanador = textGanador;
+	}
+
+	public String getTextPerdedor() {
+		return textPerdedor;
+	}
+
+	public void setTextPerdedor(String textPerdedor) {
+		this.textPerdedor = textPerdedor;
+	}
+
+	public String getHashCode() {
+		return hashCode;
+	}
+
+	public void setHashCode(String hashCode) {
+		this.hashCode = hashCode;
+	}
+
+	public String getJugadorEnemigo() {
+		return jugadorEnemigo;
+	}
+
+	public void setJugadorEnemigo(String jugadorEnemigo) {
+		this.jugadorEnemigo = jugadorEnemigo;
+	}
+
+	public String getJugadorActual() {
+		return jugadorActual;
+	}
+
+	public void setJugadorActual(String jugadorActual) {
+		this.jugadorActual = jugadorActual;
+	}
+
+	public boolean isError1() {
+		return error1;
+	}
+
+	public void setError1(boolean error1) {
+		this.error1 = error1;
+	}
+
+	public boolean isError2() {
+		return error2;
+	}
+
+	public void setError2(boolean error2) {
+		this.error2 = error2;
+	}
+
+	public boolean isReforzado() {
+		return reforzado;
+	}
+
+	public void setReforzado(boolean reforzado) {
+		this.reforzado = reforzado;
+	}
+
+	public MyGraph<String> getMap() {
+		return map;
+	}
+
+	public void setMap(MyGraph<String> map) {
+		this.map = map;
+	}
+
+	public MyDoubleLinkedList<String> getEnemiesTarget() {
+		return enemiesTarget;
+	}
+
+	public void setEnemiesTarget(MyDoubleLinkedList<String> enemiesTarget) {
+		this.enemiesTarget = enemiesTarget;
+	}
+
+	public MyDoubleLinkedList<String> getAlliesTarget() {
+		return alliesTarget;
+	}
+
+	public void setAlliesTarget(MyDoubleLinkedList<String> alliesTarget) {
+		this.alliesTarget = alliesTarget;
+	}
+
+	public String[] getColores() {
+		return colores;
+	}
+
+	public void setColores(String[] colores) {
+		this.colores = colores;
+	}
+
+	public String[] getNombres() {
+		return nombres;
+	}
+
+	public void setNombres(String[] nombres) {
+		this.nombres = nombres;
+	}
+
+	public String[] getEmails() {
+		return emails;
+	}
+
+	public void setEmails(String[] emails) {
+		this.emails = emails;
+	}
+
+	public int[] getDisesA() {
+		return disesA;
+	}
+
+	public void setDisesA(int[] disesA) {
+		this.disesA = disesA;
+	}
+
+	public int[] getDisesE() {
+		return disesE;
+	}
+
+	public void setDisesE(int[] disesE) {
+		this.disesE = disesE;
+	}
+
+	public StreamedContent getFile() {
+		file = DefaultStreamedContent
+				.builder().name("GameDetails.zip").contentType("application/zip").stream(() -> FacesContext
+						.getCurrentInstance().getExternalContext().getResourceAsStream("/files/GameDetails.zip"))
+				.build();
+		return file;
+	}
+
+	public void setFile(StreamedContent file) {
+		this.file = file;
+	}
+
+	public String init() {
+		if (!initPlayers()) {
 			return null;
 		}
-
-		// Asignar territorios aleatoriamente
-		assignTerritories(numPlayers);
-
-		// Inicializar variables del juego
-		selectedPlayer = 0;
-		phase = "Phase 1: Reinforce";
-		receiveTroops();
-		currentPlayer = jugadorDao.getJugadores().get(selectedPlayer).getName();
-
+		Random r = new Random();
+		for (String territorio : territorios) {
+			int selectedPlayer = r.nextInt(jugadorDao.getJugadores().getSize());
+			territorioDao.create(new Territorio(territorio, jugadorDao.getJugadores().get(selectedPlayer).getColor(),
+					r.nextInt(3) + 1));
+			jugadorDao.getJugadores().get(selectedPlayer).getTerritorios().add(territorio);
+		}
+		hashCode = generarHash(Objects.hash(firstDigitHashCode(), territorioDao, jugadorDao));
 		initDetails();
-
+		jugadorSeleccionado = 0;
+		fase = "Fase 1: Refuerzos";
+		receiveTroops();
 		return "game.xhtml?faces-redirect=true";
 	}
 
-	private boolean validatePlayers(int numPlayers, String[] names, String[] colors) {
-		MyMap<String, Boolean> vColor = new MyMap<>();
-		MyMap<String, Boolean> vName = new MyMap<>();
-
-		for (int i = 0; i < numPlayers; i++) {
-			// Validar nombre
-			if (names[i] == null || names[i].trim().isEmpty()) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Error", "El jugador " + (i + 1) + " debe tener un nombre.");
-				return false;
-			}
-			if (names[i].length() > 15) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Error",
-						"El nombre del jugador " + (i + 1) + " es muy largo (máximo 15 caracteres).");
-				return false;
-			}
-			if (vName.containsKey(names[i])) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Error", "El nombre '" + names[i] + "' ya está siendo usado.");
-				return false;
-			}
-			vName.put(names[i], true);
-
-			// Validar color
-			if (colors[i] == null || colors[i].trim().isEmpty()) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Error",
-						"El jugador " + (i + 1) + " debe seleccionar un color.");
-				return false;
-			}
-			if (vColor.containsKey(colors[i])) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Error", "El color ya está siendo usado por otro jugador.");
-				return false;
-			}
-			vColor.put(colors[i], true);
-		}
-
-		return true;
-	}
-
-	private boolean createPlayers(int numPlayers, String[] names, String[] colors) {
-		jugadorDao = new JugadorDAO(); // Limpiar jugadores anteriores
-
-		for (int i = 0; i < numPlayers; i++) {
-			Jugador jugador = new Jugador();
-			jugador.setName(names[i]);
-			jugador.setColor(colors[i]);
-			jugador.setTerritoriosPertenecientes(new MyDoubleLinkedList<>());
-
-			jugadorDao.getJugadores().add(jugador);
-		}
-
-		return true;
-	}
-
-	private void assignTerritories(int numPlayers) {
-		Random r = new Random();
-
-		for (String territory : territories) {
-			int playerIndex = r.nextInt(numPlayers);
-			Jugador selectedPlayer = jugadorDao.getJugadores().get(playerIndex);
-
-			int tropasIniciales = r.nextInt(3) + 1;
-			MyDoubleLinkedList<TerritorioDTO> adyacentesVacia = new MyDoubleLinkedList<>();
-
-			TerritorioDTO nuevo = new TerritorioDTO(territory, tropasIniciales, selectedPlayer, adyacentesVacia);
-
-			territorioDao.crear(nuevo);
-			selectedPlayer.getTerritoriosPertenecientes().add(DataMapper.territorioDTOtoTerritorio(nuevo));
-		}
-	}
-
 	public void initDetails() {
-		troopsCommand = 0;
-		textWinner = "";
-		enemyPlayer = "";
+		comandoTropas = 0;
+		textGanador = "";
+		jugadorEnemigo = "";
+		jugadorActual = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre();
 		error1 = error2 = false;
 		enemiesTarget = new MyDoubleLinkedList<>();
 		alliesTarget = new MyDoubleLinkedList<>();
-		selectedTerritory = null;
-		targetTerritory = null;
+		territorioSeleccionado = null;
+		territorioFichado = null;
 	}
 
 	public void initGraph() {
@@ -270,255 +507,197 @@ public class MapBean {
 		map.addEdge("South_Africa", "Madagascar");
 	}
 
-	public String obtainColor(String territory) {
-		TerritorioDTO terr = DataMapper.territorioToTerritorioDTO(territorioDao.findByNombre(territory));
-
-		if (terr != null && terr.getDuenio() != null && terr.getDuenio().getColor() != null) {
-			return terr.getDuenio().getColor();
+	public String obtainColor(String territorio) {
+		if (territorioDao.getTerritorios().containsKey(territorio)) {
+			return territorioDao.getTerritorios().getValue(territorio).getColor();
 		}
 		return "#e6e6e6";
 	}
 
-	public void changeTerritory(String territory) {
-
-		// Buscar el territorio por nombre
-		TerritorioDTO clicked = DataMapper.territorioToTerritorioDTO(territorioDao.findByNombre(territory));
-
-		if (clicked == null) {
-			error1 = true;
-			return;
-		}
-
-		switch (phase) {
-
-		/*
-		 * ============================================================ PHASE 1:
-		 * REINFORCE ============================================================
-		 */
-		case "Phase 1: Reinforce":
-
-			if (selectedTerritory != null) {
-				selectedTerritory.getDuenio().setColor(selectedTerritory.getDuenio().getColor());
-
+	public void changeTerritory(String territorio) {
+		if (fase.equals("Fase 1: Refuerzos")) {
+			if (territorioSeleccionado != null) {
+				territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre())
+						.setColor(playerTerritory(territorioSeleccionado.getNombre()).getColor());
 			}
-
-			if (troopsObtained == 0)
+			if (tropasObtenidas == 0)
 				return;
-
-			if (jugadorDao.getJugadores().get(selectedPlayer).containsTerritory(territory)) {
-
-				selectedTerritory = clicked;
-				clicked.getDuenio().setColor("#7da028");
+			if (jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(territorio)) {
+				territorioSeleccionado = territorioDao.getTerritorios().getValue(territorio);
+				territorioDao.getTerritorios().getValue(territorio).setColor("#75FA61");
 				error1 = false;
-
 			} else {
 				error1 = true;
 			}
-			break;
-
-		/*
-		 * ============================================================ PHASE 2: ATTACK
-		 * ============================================================
-		 */
-		case "Phase 2: Attack":
-
-			boolean isMine = jugadorDao.getJugadores().get(selectedPlayer).containsTerritory(territory);
-			int troops = clicked.getCantidadTropas();
-
-			// Own territory with 1 troop -> cannot attack
-			if (isMine && troops <= 1) {
+		} else if (fase.equals("Fase 2: Ataque")) {
+			if (jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(territorio)
+					&& territorioDao.getTerritorios().getValue(territorio).getNumeroTropas() <= 1) {
 				error1 = true;
 				offTargetEnemies();
-				selectedTerritory = null;
-				targetTerritory = null;
-				break;
-			}
-
-			// Select origin to attack from
-			if (isMine && troops > 1) {
+				territorioSeleccionado = null;
+				territorioFichado = null;
+			} else if (jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(territorio)
+					&& territorioDao.getTerritorios().getValue(territorio).getNumeroTropas() > 1) {
 				offTargetEnemies();
-				selectedTerritory = clicked;
-				clicked.getDuenio().setColor("#7da028");
-
-				targetEnemies(territory);
-
+				territorioSeleccionado = territorioDao.getTerritorios().getValue(territorio);
+				territorioDao.getTerritorios().getValue(territorio).setColor("#75FA61");
+				targetEnemies(territorio);
 				error1 = false;
-				error2 = enemiesTarget.getSize() == 0;
-
-				targetTerritory = null;
-				break;
-			}
-
-			// Enemy target clicked
-			if (enemiesTarget.getSize() > 0 && isTargetEnemy(territory)) {
-
-				targetTerritory = clicked;
-				enemyPlayer = clicked.getDuenio().getName();
-				offTargetEnemies(territory);
+				if (enemiesTarget.getSize() == 0) {
+					error2 = true;
+				} else
+					error2 = false;
+				territorioFichado = null;
+			} else if (enemiesTarget.getSize() > 0 && isTargetEnemy(territorio)) {
+				territorioFichado = territorioDao.getTerritorios().getValue(territorio);
+				jugadorEnemigo = playerTerritory(territorio).getNombre();
+				offTargetEnemies(territorio);
 				calcNumDices();
 			}
-
-			break;
-
-		/*
-		 * ============================================================ PHASE 3:
-		 * STRENGTHEN ============================================================
-		 */
-		case "Phase 3: Strengthen":
-
-			if (reforzed)
+		} else if (fase.equals("Fase 3: Fortificacion")) {
+			if (reforzado) {
 				return;
-
-			boolean iOwn = jugadorDao.getJugadores().get(selectedPlayer).containsTerritory(territory);
-			int t = clicked.getCantidadTropas();
-
-			// Nothing selected + territory ≤ 1
-			if (selectedTerritory == null && iOwn && t <= 1) {
+			}
+			if (territorioSeleccionado == null
+					&& jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(territorio)
+					&& territorioDao.getTerritorios().getValue(territorio).getNumeroTropas() <= 1) {
 				error2 = true;
 				error1 = false;
-				targetTerritory = null;
-				break;
-			}
-
-			// First selected territory
-			if (selectedTerritory == null && iOwn && t > 1) {
-
-				selectedTerritory = clicked;
-				clicked.getDuenio().setColor("#7da028");
-				targetAllies(territory);
-
+				territorioFichado = null;
+			} else if (territorioSeleccionado == null
+					&& jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(territorio)
+					&& territorioDao.getTerritorios().getValue(territorio).getNumeroTropas() > 1) {
+				territorioSeleccionado = territorioDao.getTerritorios().getValue(territorio);
+				territorioDao.getTerritorios().getValue(territorio).setColor("#75FA61");
+				territorioFichado = null;
+				targetAllies(territorio);
 				error1 = false;
 				error2 = false;
-				break;
-			}
 
-			// Changing origin territory
-			if (selectedTerritory != null && targetTerritory != null && iOwn && t > 1) {
-
-				selectedTerritory.getDuenio().setColor(selectedTerritory.getDuenio().getColor());
-				selectedTerritory = clicked;
-
-				maxTroops = selectedTerritory.getCantidadTropas() - 1;
-
+			} else if (territorioSeleccionado != null && territorioFichado != null
+					&& jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(territorio)
+					&& territorioDao.getTerritorios().getValue(territorio).getNumeroTropas() > 1) {
+				territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre())
+						.setColor(jugadorDao.getJugadores().get(jugadorSeleccionado).getColor());
+				territorioSeleccionado = territorioDao.getTerritorios().getValue(territorio);
+				maxTropas = territorioSeleccionado.getNumeroTropas() - 1;
+				territorioFichado = null;
 				offTargetAllies();
-				selectedTerritory.getDuenio().setColor("#7da028");
-
-				targetAllies(territory);
-
+				territorioDao.getTerritorios().getValue(territorio).setColor("#75FA61");
+				targetAllies(territorio);
 				error1 = false;
 				error2 = false;
-				break;
-			}
 
-			// Selecting ally target
-			if (selectedTerritory != null && isTargetAllie(territory)) {
-
-				targetTerritory = clicked;
-				maxTroops = selectedTerritory.getCantidadTropas() - 1;
-
-				offTargetAllies(territory);
-
+			} else if (territorioSeleccionado != null && isTargetAllie(territorio)) {
+				territorioFichado = territorioDao.getTerritorios().getValue(territorio);
+				maxTropas = territorioSeleccionado.getNumeroTropas() - 1;
+				offTargetAllies(territorio);
 				error1 = false;
 				error2 = false;
-				break;
-			}
-
-			// Invalid ally selection
-			if (selectedTerritory != null && iOwn && !isTargetAllie(territory) && t <= 1) {
-
-				selectedTerritory.getDuenio().setColor(selectedTerritory.getDuenio().getColor());
-				selectedTerritory = null;
-				targetTerritory = null;
-
+			} else if (territorioSeleccionado != null
+					&& jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(territorio)
+					&& !isTargetAllie(territorio)
+					&& territorioDao.getTerritorios().getValue(territorio).getNumeroTropas() > 1) {
+				territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre())
+						.setColor(jugadorDao.getJugadores().get(jugadorSeleccionado).getColor());
+				territorioSeleccionado = territorioDao.getTerritorios().getValue(territorio);
+				maxTropas = territorioSeleccionado.getNumeroTropas() - 1;
+				territorioFichado = null;
 				offTargetAllies();
+				territorioDao.getTerritorios().getValue(territorio).setColor("#75FA61");
+				targetAllies(territorio);
+				error1 = false;
+				error2 = false;
 
+			} else if (territorioSeleccionado != null
+					&& jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(territorio)
+					&& !isTargetAllie(territorio)
+					&& territorioDao.getTerritorios().getValue(territorio).getNumeroTropas() <= 1) {
+				territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre())
+						.setColor(jugadorDao.getJugadores().get(jugadorSeleccionado).getColor());
+				territorioSeleccionado = null;
+				territorioFichado = null;
+				offTargetAllies();
 				error2 = true;
 				error1 = false;
-				break;
+			} else {
+				offTargetAllies();
+				territorioSeleccionado = null;
+				territorioFichado = null;
+				error1 = true;
+				error2 = false;
 			}
-
-			// Default invalid
-			offTargetAllies();
-			selectedTerritory = null;
-			targetTerritory = null;
-
-			error1 = true;
-			error2 = false;
-
-			break;
 		}
 	}
 
 	public void reinforceTerritory() {
-
-		int number = territorioDao.getTerritorios().getCurrent().getInfo().getDuenio().getTropasDisponibles()
-				+ troopsCommand;
-		territorioDao.getTerritorios().getCurrent().getInfo().getDuenio().setTropasDisponibles(number);
-		troopsObtained -= troopsCommand;
-		territorioDao.getTerritorios().getCurrent().getInfo().getDuenio()
-				.setColor(playerTerritory(selectedTerritory.getDuenio().getColor()).getColor());
-
-		selectedTerritory = null;
-		troopsCommand = 0;
+		int number = territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre()).getNumeroTropas()
+				+ comandoTropas;
+		territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre()).setNumeroTropas(number);
+		tropasObtenidas -= comandoTropas;
+		territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre())
+				.setColor(playerTerritory(territorioSeleccionado.getNombre()).getColor());
+		territorioSeleccionado = null;
+		comandoTropas = 0;
 	}
 
-	public JugadorDTO playerTerritory(String territory) {
+	public Jugador playerTerritory(String territory) {
 		for (int i = 0; i < jugadorDao.getJugadores().getSize(); i++) {
 			if (jugadorDao.getJugadores().get(i).containsTerritory(territory)) {
-				return DataMapper.jugadorToJugadorDTO(jugadorDao.getJugadores().get(i));
+				return jugadorDao.getJugadores().get(i);
 			}
 		}
 		return null;
 	}
 
 	public void changePhase() {
-		if (phase.equals("Phase 1: Reinforce")) {
+		if (fase.equals("Fase 1: Refuerzos")) {
 			error1 = false;
 			error2 = false;
-			phase = "Phase 2: Attack";
-			selectedTerritory = null;
-		} else if (phase.equals("Phase 2: Attack")) {
+			fase = "Fase 2: Ataque";
+			territorioSeleccionado = null;
+		} else if (fase.equals("Fase 2: Ataque")) {
 			error1 = false;
 			error2 = false;
-			reforzed = false;
+			reforzado = false;
 			offTargetEnemies();
-			selectedTerritory = null;
-			targetTerritory = null;
-			phase = "Phase 3: Strengthen";
-		} else if (phase.equals("Phase 3: Strengthen")) {
+			territorioSeleccionado = null;
+			territorioFichado = null;
+			fase = "Fase 3: Fortificacion";
+		} else if (fase.equals("Fase 3: Fortificacion")) {
 			error1 = false;
 			error2 = false;
 			offTargetAllies();
 			passTurn();
 			receiveTroops();
-			currentPlayer = jugadorDao.getJugadores().get(selectedPlayer).getName();
-			selectedTerritory = null;
-			targetTerritory = null;
-			textWinner = "";
-			winner = 0;
+			jugadorActual = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre();
+			territorioSeleccionado = null;
+			territorioFichado = null;
+			textGanador = "";
+			ganador = 0;
 			selectedDices = 0;
 			selectedEDices = 0;
-			phase = "Phase 1: Reinforce";
+			fase = "Fase 1: Refuerzos";
 		}
 	}
 
 	public void phaseDices() {
-		if (phase.equals("Phase 2: Attack")) {
-			phase = "Phase 2: Dices";
-		} else if (phase.equals("Phase 2: Dices") && winner != 1) {
-			phase = "Phase 2: Attack";
+		if (fase.equals("Fase 2: Ataque")) {
+			fase = "Fase 2: Dados";
+		} else if (fase.equals("Fase 2: Dados") && ganador != 1) {
+			fase = "Fase 2: Ataque";
 			offTargetEnemies();
-			selectedTerritory = null;
-			targetTerritory = null;
+			territorioSeleccionado = null;
+			territorioFichado = null;
 		} else {
-			addAfterConquist(targetTerritory.getNombre());
-			if (jugadorDao.getJugadores().get(selectedPlayer).getTerritoriosPertenecientes()
-					.getSize() == territories.length) {
-				phase = "Winner";
+			addAfterConquist(territorioFichado.getNombre());
+			if (jugadorDao.getJugadores().get(jugadorSeleccionado).getTerritorios().getSize() == territorios.length) {
+				fase = "Ganador";
+				generateFileResults();
 				return;
 			}
-			maxTroops = selectedTerritory.getCantidadTropas() - 1;
-			phase = "Phase 2: Conquest";
+			maxTropas = territorioSeleccionado.getNumeroTropas() - 1;
+			fase = "Phase 2: Conquista";
 		}
 	}
 
@@ -526,10 +705,10 @@ public class MapBean {
 		enemiesTarget = new MyDoubleLinkedList<>();
 		BreadthFirstSearch<String> bfs = new BreadthFirstSearch<String>(map, territory);
 		bfs.runSearch();
-		for (String aux : territories) {
-			if (!jugadorDao.getJugadores().get(selectedPlayer).containsTerritory(aux)) {
+		for (String aux : territorios) {
+			if (!jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(aux)) {
 				if (bfs.obtainDistance(aux) == 1) {
-					territorioDao.getTerritorios().getCurrent().getInfo().getDuenio().setColor("#7da028");
+					territorioDao.getTerritorios().getValue(aux).setColor("#F79A9A");
 					enemiesTarget.add(aux);
 				}
 			}
@@ -537,12 +716,12 @@ public class MapBean {
 	}
 
 	public void offTargetEnemies() {
-		if (selectedTerritory != null) {
-			territorioDao.getTerritorios().getCurrent().getInfo().getDuenio()
-					.setColor(playerTerritory(selectedTerritory.getDuenio().getColor()).getColor());
+		if (territorioSeleccionado != null) {
+			territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre())
+					.setColor(playerTerritory(territorioSeleccionado.getNombre()).getColor());
 		}
 		for (String aux : enemiesTarget) {
-			territorioDao.getTerritorios().getCurrent().getInfo().getDuenio().setColor(playerTerritory(aux).getColor());
+			territorioDao.getTerritorios().getValue(aux).setColor(playerTerritory(aux).getColor());
 		}
 		enemiesTarget = new MyDoubleLinkedList<>();
 	}
@@ -550,10 +729,10 @@ public class MapBean {
 	public void offTargetEnemies(String territory) {
 		for (String aux : enemiesTarget) {
 			if (aux.equals(territory)) {
-				territorioDao.getTerritorios().getCurrent().getInfo().getDuenio().setColor("#7da028");
+				territorioDao.getTerritorios().getValue(aux).setColor("#F79A9A");
 				continue;
 			}
-			territorioDao.getTerritorios().getCurrent().getInfo().getDuenio().setColor(playerTerritory(aux).getColor());
+			territorioDao.getTerritorios().getValue(aux).setColor(playerTerritory(aux).getColor());
 		}
 	}
 
@@ -566,14 +745,14 @@ public class MapBean {
 	}
 
 	public void calcNumDices() {
-		if (selectedTerritory.getCantidadTropas() - 1 >= 3)
+		if (territorioSeleccionado.getNumeroTropas() - 1 >= 3)
 			numDice = 3;
-		else if (selectedTerritory.getCantidadTropas() - 1 == 2)
+		else if (territorioSeleccionado.getNumeroTropas() - 1 == 2)
 			numDice = 2;
 		else
 			numDice = 1;
 
-		if (targetTerritory.getCantidadTropas() >= 2)
+		if (territorioFichado.getNumeroTropas() >= 2)
 			numEDice = 2;
 		else
 			numEDice = 1;
@@ -594,8 +773,8 @@ public class MapBean {
 			else
 				disesE[i] = 0;
 		}
-		textWinner = "";
-		winner = 0;
+		textGanador = "";
+		ganador = 0;
 	}
 
 	public int random() {
@@ -606,31 +785,32 @@ public class MapBean {
 
 	public void battleRound() {
 		int[] restTroops = resTroops(disesA, disesE);
-		int remainingATroops = selectedTerritory.getCantidadTropas() - restTroops[0];
-		int remainingBTroops = targetTerritory.getCantidadTropas() - restTroops[1];
-		territorioDao.findByNombre(targetTerritory.getNombre()).setCantidadTropas(remainingBTroops);
-		selectedTerritory = DataMapper
-				.territorioToTerritorioDTO(territorioDao.findByNombre(selectedTerritory.getNombre()));
-		targetTerritory = DataMapper.territorioToTerritorioDTO(territorioDao.findByNombre(targetTerritory.getNombre()));
-		if (targetTerritory.getCantidadTropas() == 0) {
-			textWinner = jugadorDao.getJugadores().get(selectedPlayer).getName() + " lost " + restTroops[0]
-					+ " troops | " + playerTerritory(targetTerritory.getNombre()).getName() + " lost " + restTroops[1]
-					+ " troops.";
-			textLosser = jugadorDao.getJugadores().get(selectedPlayer).getName() + " has conquered "
-					+ targetTerritory.getNombre();
+		int remainingATroops = territorioSeleccionado.getNumeroTropas() - restTroops[0];
+		int remainingBTroops = territorioFichado.getNumeroTropas() - restTroops[1];
+		territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre()).setNumeroTropas(remainingATroops);
+		territorioDao.getTerritorios().getValue(territorioFichado.getNombre()).setNumeroTropas(remainingBTroops);
+		territorioSeleccionado = territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre());
+		territorioFichado = territorioDao.getTerritorios().getValue(territorioFichado.getNombre());
+		if (territorioFichado.getNumeroTropas() == 0) {
+			textGanador = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre() + " perdio " + restTroops[0]
+					+ " troops | " + playerTerritory(territorioFichado.getNombre()).getNombre() + " perdio "
+					+ restTroops[1] + " troops.";
+			textPerdedor = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre() + " has conquered "
+					+ territorioFichado.getNombre();
 			;
-			winner = 1;
-			minTroops = selectedDices;
-		} else if (selectedTerritory.getCantidadTropas() == 1) {
-			textWinner = "You can no longer attack from this territory, there is only one troop left.";
-			textLosser = jugadorDao.getJugadores().get(selectedPlayer).getName() + " lost " + restTroops[0]
-					+ " troops | " + playerTerritory(targetTerritory.getNombre()).getName() + " lost " + restTroops[1]
-					+ " troops";
-			winner = 2;
+			ganador = 1;
+			minTropas = selectedDices;
+		} else if (territorioSeleccionado.getNumeroTropas() == 1) {
+			textGanador = "No puedes atacar desde este territorio, solo queda una tropa.";
+			textGanador = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre() + " perdio " + restTroops[0]
+					+ " tropas | " + playerTerritory(territorioFichado.getNombre()).getNombre() + " perdio "
+					+ restTroops[1] + " tropas";
+			ganador = 2;
 		} else {
-			textWinner = jugadorDao.getJugadores().get(selectedPlayer).getName() + " lost " + restTroops[0]
-					+ " troops.";
-			textLosser = playerTerritory(targetTerritory.getNombre()).getName() + " lost " + restTroops[1] + " troops.";
+			textGanador = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre() + " perdio " + restTroops[0]
+					+ " tropas.";
+			textPerdedor = playerTerritory(territorioFichado.getNombre()).getNombre() + " perdio " + restTroops[1]
+					+ " tropas.";
 		}
 
 	}
@@ -652,24 +832,23 @@ public class MapBean {
 	}
 
 	public void resetBattleRound() {
-		textWinner = "";
+		textGanador = "";
 		calcNumDices();
 	}
 
 	public void addAfterConquist(String territory) {
 		playerTerritory(territory).removeTerritory(territory);
-		jugadorDao.getJugadores().get(selectedPlayer).getTerritoriosPertenecientes()
-				.add(territorioDao.findByNombre(territory));
+		jugadorDao.getJugadores().get(jugadorSeleccionado).getTerritorios().add(territory);
 	}
 
 	public void addTroopsAfterConquist() {
-		int resTroops = selectedTerritory.getCantidadTropas() - troopsCommand;
-		territorioDao.findByNombre(selectedTerritory.getNombre()).setCantidadTropas(resTroops);
-		territorioDao.findByNombre(targetTerritory.getNombre()).setCantidadTropas(troopsCommand);
-		phase = "Phase 2: Attack";
+		int resTroops = territorioSeleccionado.getNumeroTropas() - comandoTropas;
+		territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre()).setNumeroTropas(resTroops);
+		territorioDao.getTerritorios().getValue(territorioFichado.getNombre()).setNumeroTropas(comandoTropas);
+		fase = "Phase 2: Attack";
 		offTargetEnemies();
-		selectedTerritory = null;
-		targetTerritory = null;
+		territorioSeleccionado = null;
+		territorioFichado = null;
 	}
 
 	public void targetAllies(String territory) {
@@ -685,7 +864,7 @@ public class MapBean {
 				while (!queue.isEmpty()) {
 					int u = queue.dequeue();
 					for (int v : getGraph().getAdj().get(u)) {
-						if (getDis()[v] == -1 && jugadorDao.getJugadores().get(selectedPlayer)
+						if (getDis()[v] == -1 && jugadorDao.getJugadores().get(jugadorSeleccionado)
 								.containsTerritory(getGraph().numberToNode(v))) {
 							getDis()[v] = getDis()[u] + 1;
 							queue.enqueue(v);
@@ -695,10 +874,10 @@ public class MapBean {
 			}
 		};
 		bfs.runSearch();
-		for (String aux : territories) {
-			if (jugadorDao.getJugadores().get(selectedPlayer).containsTerritory(aux)) {
+		for (String aux : territorios) {
+			if (jugadorDao.getJugadores().get(jugadorSeleccionado).containsTerritory(aux)) {
 				if (bfs.obtainDistance(aux) != -1 && !aux.equals(territory)) {
-					territorioDao.findByNombre(aux).getDuenio().setColor("#ccd9c1");
+					territorioDao.getTerritorios().getValue(aux).setColor("#C0C0C0");
 					alliesTarget.add(aux);
 				}
 			}
@@ -706,12 +885,12 @@ public class MapBean {
 	}
 
 	public void offTargetAllies() {
-		if (selectedTerritory != null) {
-			territorioDao.findByNombre(selectedTerritory.getNombre()).getDuenio()
-					.setColor(playerTerritory(selectedTerritory.getDuenio().getColor()).getColor());
+		if (territorioSeleccionado != null) {
+			territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre())
+					.setColor(playerTerritory(territorioSeleccionado.getNombre()).getColor());
 		}
 		for (String aux : alliesTarget) {
-			territorioDao.findByNombre(aux).getDuenio().setColor(playerTerritory(aux).getColor());
+			territorioDao.getTerritorios().getValue(aux).setColor(playerTerritory(aux).getColor());
 		}
 		alliesTarget = new MyDoubleLinkedList<>();
 	}
@@ -719,11 +898,10 @@ public class MapBean {
 	public void offTargetAllies(String territory) {
 		for (String aux : alliesTarget) {
 			if (aux.equals(territory)) {
-				territorioDao.findByNombre(aux).getDuenio().setColor("#ccd9c1");
+				territorioDao.getTerritorios().getValue(aux).setColor("#C0C0C0");
 				continue;
 			}
-			territorioDao.findByNombre(aux).getDuenio().setColor(playerTerritory(aux).getColor());
-
+			territorioDao.getTerritorios().getValue(aux).setColor(playerTerritory(aux).getColor());
 		}
 	}
 
@@ -736,37 +914,100 @@ public class MapBean {
 	}
 
 	public void strengthenTerritory() {
-		int restTroops = selectedTerritory.getCantidadTropas() - troopsCommand;
-		territorioDao.findByNombre(selectedTerritory.getNombre()).setCantidadTropas(restTroops);
-		int receivedTroops = targetTerritory.getCantidadTropas() + troopsCommand;
-		territorioDao.findByNombre(targetTerritory.getNombre()).setCantidadTropas(receivedTroops);
+		int restTroops = territorioSeleccionado.getNumeroTropas() - comandoTropas;
+		territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre()).setNumeroTropas(restTroops);
+		int receivedTroops = territorioFichado.getNumeroTropas() + comandoTropas;
+		territorioDao.getTerritorios().getValue(territorioFichado.getNombre()).setNumeroTropas(receivedTroops);
+		territorioSeleccionado = territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre());
+		territorioFichado = territorioDao.getTerritorios().getValue(territorioFichado.getNombre());
 		offTargetAllies();
-		reforzed = true;
+		reforzado = true;
 	}
 
 	public void passTurn() {
-		selectedPlayer++;
-		if (selectedPlayer == jugadorDao.getJugadores().getSize()) {
-			selectedPlayer = 0;
+		jugadorSeleccionado++;
+		if (jugadorSeleccionado == jugadorDao.getJugadores().getSize()) {
+			jugadorSeleccionado = 0;
 		}
-		while (jugadorDao.getJugadores().get(selectedPlayer).getTerritoriosPertenecientes().getSize() == 0) {
-			selectedPlayer++;
-			if (selectedPlayer == jugadorDao.getJugadores().getSize()) {
-				selectedPlayer = 0;
+		while (jugadorDao.getJugadores().get(jugadorSeleccionado).getTerritorios().getSize() == 0) {
+			jugadorSeleccionado++;
+			if (jugadorSeleccionado == jugadorDao.getJugadores().getSize()) {
+				jugadorSeleccionado = 0;
 			}
 		}
 	}
 
 	public void receiveTroops() {
-		int territories = jugadorDao.getJugadores().get(selectedPlayer).getTerritoriosPertenecientes().getSize();
-		troopsObtained = territories / 3;
-		if (troopsObtained < 3) {
-			troopsObtained = 3;
+		tropasObtenidas = jugadorDao.getJugadores().get(jugadorSeleccionado).getTerritorios().getSize() / 3;
+		if (tropasObtenidas < 3) {
+			tropasObtenidas = 3;
 		}
 	}
 
-	private void addMessage(FacesMessage.Severity severity, String summary, String detail) {
+	public boolean initPlayers() {
+		jugadorDao = new JugadorDAO();
+		boolean required = true;
+		boolean auxName = true;
+		MyMap<String, Boolean> vColor = new MyMap<>();
+		MyMap<String, Boolean> vName = new MyMap<>();
+		for (int i = 0; i < numeroJugadores; i++) {
+			auxName = true;
+			if (nombres[i].length() > 8) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1),
+						"The name should only have a maximum of 8 characters.");
+				required = false;
+				auxName = false;
+			} else if (nombres[i].isEmpty()) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1), "Please enter a name.");
+				required = false;
+				auxName = false;
+			} else if (nombres[i].matches(".*[,;].*")) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1),
+						"Characters \",\" and \";\" are not allowed.");
+				required = false;
+			}
+			if (vName.containsKey(nombres[i]) && auxName) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Name already taked",
+						"Please select other name player " + (i + 1) + ".");
+				required = false;
+			} else {
+				vName.put(nombres[i], true);
+			}
+			if (!emails[i].matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid email player " + (i + 1),
+						"The entered email is not valid.");
+				required = false;
+			}
+			if (colores[i].isEmpty()) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid color player " + (i + 1), "Please select a color.");
+				required = false;
+			}
+			if (vColor.containsKey(colores[i]) && !colores[i].isEmpty()) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Color already taked",
+						"Please select other color player " + (i + 1) + ".");
+				required = false;
+			} else {
+				vColor.put(colores[i], true);
+			}
+			jugadorDao.getJugadores().add(new PlayerDTO(nombres[i], colores[i], emails[i]));
+		}
+		return required;
+	}
+
+	public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
+	}
+
+	public String firstDigitHashCode() {
+		String val = "0";
+		try {
+			val = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/getlastid");
+			Integer.parseInt(val);
+		} catch (Exception e) {
+			SecureRandom r = new SecureRandom();
+			val = Integer.toString((r.nextInt(50) + 1));
+		}
+		return val;
 	}
 
 	public int playerIndex(String territory) {
@@ -778,91 +1019,198 @@ public class MapBean {
 		return 0;
 	}
 
+	public void saveGame() {
+		if (fase.equals("Phase 2: Dices")) {
+			addMessage(FacesMessage.SEVERITY_WARN, "Warning",
+					"It is not possible to save while rolling dice. Select the back button to stop rolling dice and save.");
+			return;
+		}
+		if (fase.equals("Phase 2: Conquest")) {
+			addMessage(FacesMessage.SEVERITY_WARN, "Warning",
+					"You cannot save while sending troops after you have conquered a territory. Please send troops to the conquered territory to save.");
+			return;
+		}
+		if (fase.equals("Winner")) {
+			addMessage(FacesMessage.SEVERITY_INFO, "The game is over.",
+					"The game cannot be saved at the end of the game.");
+			return;
+		}
+		if (fase.equals("Fase 1: Refuerzos") && territorioSeleccionado != null) {
+			territorioDao.getTerritorios().getValue(territorioSeleccionado.getNombre())
+					.setColor(playerTerritory(territorioSeleccionado.getNombre()).getColor());
+		} else if (fase.equals("Fase 3: Fortificacion")) {
+			offTargetAllies();
+		} else if (fase.equals("Fase 2: Ataque")) {
+			offTargetEnemies();
+		}
+		String exist = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/existhash/" + hashCode);
+		if (!exist.equals("No")) {
+			HttpClientSynchronous.doDelete("http://localhost:8081/gamedetails/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("http://localhost:8081/player/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("http://localhost:8081/territory/deletebyhash/" + hashCode);
+		}
+		for (Territorio current : territorioDao.getTerritorios().values()) {
+			HttpClientSynchronous.doPost("http://localhost:8081/territory/create",
+					"{\"hashCode\": \"" + hashCode + "\",\"name\":\"" + current.getNombre() + "\",\"color\":\""
+							+ current.getColor() + "\",\"numberTroops\": " + current.getNumeroTropas()
+							+ ",\"playerIndex\": " + playerIndex(current.getNombre()) + "}");
+		}
+		int i = 0;
+		for (Jugador current : jugadorDao.getJugadores()) {
+			HttpClientSynchronous.doPost("http://localhost:8081/player/create",
+					"{\"hashCode\": \"" + hashCode + "\",\"name\": \"" + current.getNombre() + "\",\"color\": \""
+							+ current.getColor() + "\",\"email\": \"" + current.getEmail() + "\",\"indexPlayer\": " + i
+							+ "}");
+			i++;
+		}
+		String gameInfo = "empty";
+		if (fase.equals("Fase 1: Refuerzos")) {
+			gameInfo = Integer.toString(tropasObtenidas);
+		} else if (fase.equals("Fase 3: Fortificacion")) {
+			gameInfo = reforzado ? "Yes" : "No";
+		}
+		HttpClientSynchronous.doPost("http://localhost:8081/gamedetails/create",
+				"{\"hashCode\": \"" + hashCode + "\",\"phase\": \"" + fase + "\",\"playerTurn\": " + jugadorSeleccionado
+						+ ",\"gameInfo\": \"" + gameInfo + "\"}");
+
+		addMessage(FacesMessage.SEVERITY_INFO, "Game saved.", "Game successfully saved.");
+	}
+
+	public void loadHashCodes() {
+		hashCode = "";
+		String jsHash = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/getallhashcode");
+		if (jsHash.isEmpty()) {
+			sizeHashes = 0;
+			hashCodes = new String[0];
+			return;
+		}
+		String[] aux = jsHash.split(",");
+		hashCodes = new String[aux.length];
+		sizeHashes = aux.length;
+		for (int i = 0; i < hashCodes.length; i++) {
+			hashCodes[i] = aux[i];
+		}
+	}
+
+	public String loadGame() {
+		String exist = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/existhash/" + hashCode);
+		if (exist.equals("No")) {
+			addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Please select game hashcode.");
+			return null;
+		}
+		territorioDao = new TerritorioDAO();
+		jugadorDao = new JugadorDAO();
+		MyMap<Integer, MyDoubleLinkedList<String>> pTerritory = new MyMap<>();
+		String[] jsTerritories = HttpClientSynchronous.doGet("http://localhost:8081/territory/getbyhash/" + hashCode)
+				.split(";");
+		for (String object : jsTerritories) {
+			String[] attributes = object.split(",");
+			Territorio territorio = new Territorio(attributes[1], attributes[2], Integer.parseInt(attributes[3]));
+			int index = Integer.parseInt(attributes[4]);
+			if (!pTerritory.containsKey(index)) {
+				pTerritory.put(index, new MyDoubleLinkedList<>());
+			}
+			pTerritory.getValue(index).add(territorio.getNombre());
+			territorioDao.create(territorio);
+		}
+		MyMap<Integer, Jugador> jJugadores = new MyMap<>();
+		String[] jsJugadores = HttpClientSynchronous.doGet("http://localhost:8081/player/getbyhash/" + hashCode)
+				.split(";");
+		for (String object : jsJugadores) {
+			String[] attributes = object.split(",");
+			Jugador jugador = new Jugador(attributes[1], attributes[2], attributes[3]);
+			int index = Integer.parseInt(attributes[4]);
+			if (pTerritory.containsKey(index)) {
+				jugador.setTerritorios(pTerritory.getValue(index));
+			} else {
+				jugador.setTerritorios(new MyDoubleLinkedList<String>());
+			}
+			jJugadores.put(index, jugador);
+		}
+		for (int i = 0; i < jsJugadores.length; i++) {
+			jugadorDao.create(jJugadores.getValue(i));
+		}
+		String[] jsGameDetails = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/getbyhash/" + hashCode)
+				.split(",");
+		fase = jsGameDetails[1];
+		jugadorSeleccionado = Integer.parseInt(jsGameDetails[2]);
+		if (fase.equals("Fase 1: Refuerzos")) {
+			tropasObtenidas = Integer.parseInt(jsGameDetails[3]);
+		} else if (fase.equals("Fase 3: Fortificacion")) {
+			reforzado = jsGameDetails[3].equals("Si");
+		}
+		initDetails();
+		return "game.xhtml?faces-redirect=true";
+	}
+
+	public void generateFileResults() {
+		String pathPdf = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/files/GameDetails.pdf");
+		String pathZip = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/files/GameDetails.zip");
+		String pathImg = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/images/risklogo.png");
+		String header = "Resultados del juego";
+		int totalTroops = 0;
+		for (String aux : territorios)
+			totalTroops += territorioDao.getTerritorios().getValue(aux).getNumeroTropas();
+		String content = "Muchas gracias por jugar el juego. Felicidades "
+				+ jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre() + " ganaste el juego con un total de "
+				+ totalTroops + " tropas. Gracias a los otros jugadores, gran juego.";
+		String[] lplayers = new String[jugadorDao.getJugadores().getSize() + 1];
+		lplayers[0] = "lista jugadores:";
+		for (int i = 0; i < jugadorDao.getJugadores().getSize(); i++) {
+			lplayers[i + 1] = jugadorDao.getJugadores().get(i).getNombre() + ". "
+					+ (i == jugadorSeleccionado ? "Ganador." : "Perdedor");
+		}
+		String content2 = "Codigo del juego: " + hashCode;
+		FileHandler.generateZIP(pathPdf, pathZip, pathImg, header, content, content2, lplayers);
+	}
+
 	public String exitGame() {
 		return "index.xhtml?faces-redirect=true";
 	}
 
 	public String endGame() {
 		for (int i = 0; i < jugadorDao.getJugadores().getSize(); i++) {
+			Jugador current = jugadorDao.getJugadores().get(i);
+			sendEmailToPlayers(current.getNombre(), current.getEmail(), i == jugadorSeleccionado);
+		}
+		String exist = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/existhash/" + hashCode);
+		if (!exist.equals("No")) {
+			HttpClientSynchronous.doDelete("http://localhost:8081/gamedetails/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("http://localhost:8081/player/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("http://localhost:8081/territory/deletebyhash/" + hashCode);
 		}
 		return "index.xhtml?faces-redirect=true";
 	}
 
-	private String username;
-	private String password;
-	private String email;
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String login() {
-		if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-			addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Usuario y contraseña requeridos.");
-			return null;
+	public void sendEmailToPlayers(String name, String email, boolean isWinner) {
+		String content = "Gracias por jugar el juego.\n\n";
+		if (isWinner) {
+			int totalTroops = 0;
+			for (String aux : territorios)
+				totalTroops += territorioDao.getTerritorios().getValue(aux).getNumeroTropas();
+			content += "Felicidades " + name
+					+ " por tu victoria en el juego! Tu estrategia y habilidades tacticas te llevaron a la cima del tablero."
+					+ " Eres un verdadero maestro de la conquista. Haz conquistado todos los terrenos con un total de "
+					+ totalTroops + " tropas." + "\n\nResultados generales:\n\n";
+		} else {
+			content += "Aunque esta vez no has conseguido la victoria" + name
+					+ ", quiero destacar tu valentia y tu enfoque estrategico."
+					+ " Tu participacion demuestra tu dedicacion y habilidades tacticas, y es evidente que enfrentaste los retos con determinacion."
+					+ "\n\nResultados generales:\n\n";
 		}
-		String hashed = hashPassword(password);
-		for (JugadorDTO p : jugadorDao.getAll()) {
-			if (p.getName().equals(username) && p.getUser().getContrasenia().equals(hashed)) {
-				addMessage(FacesMessage.SEVERITY_INFO, "Bienvenido", "Acceso correcto");
-				return "game.xhtml?faces-redirect=true";
-			}
+		for (int i = 0; i < jugadorDao.getJugadores().getSize(); i++) {
+			content += jugadorDao.getJugadores().get(i).getNombre() + ". "
+					+ (i == jugadorSeleccionado ? "Ganador.\n" : "Perdedor\n");
 		}
-		addMessage(FacesMessage.SEVERITY_ERROR, "Acceso denegado", "Credenciales incorrectas.");
-		return null;
-	}
-
-	private String hashPassword(String password) {
 		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			byte[] hash = md.digest(password.getBytes(StandardCharsets.UTF_8));
-			StringBuilder hex = new StringBuilder();
-			for (byte b : hash)
-				hex.append(String.format("%02x", b));
-			return hex.toString();
-		} catch (Exception e) {
-			return password;
-		}
-	}
-
-	private void sendRegisterEmail(String email, String username) {
-		String msg = "¡Bienvenido a Risk!\n\nTu usuario (" + username
-				+ ") ha sido registrado exitosamente.\n¡Disfruta el juego!";
-		try {
-			MailSender.sendEamil(email, msg);
+			MailSender.sendEamil(email, content);
 		} catch (MessagingException e) {
-			System.err.println("Error enviando correo de registro");
+			System.err.println("Error enviando el mail");
 		}
 	}
 
-	private String selectedMode;
-
-	public String getSelectedMode() {
-		return selectedMode;
-	}
-
-	public void setSelectedMode(String selectedMode) {
-		this.selectedMode = selectedMode;
+	public String generarHash(int password) {
+		return HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/generatehash/" + password);
 	}
 
 }

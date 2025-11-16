@@ -1,158 +1,82 @@
 package co.edu.unbosque.model;
 
+import java.util.Objects;
+
 import co.edu.unbosque.util.MyDoubleLinkedList;
 
-/**
- * Representa un jugador en el modelo del juego.
- *
- * <p>
- * Contiene los datos principales de un jugador: nombre, color, usuario
- * asociado, tropas disponibles y la lista de territorios que le pertenecen.
- * </p>
- *
- * @author Mariana Pineda
- * @since 1.0
- */
 public class Jugador {
 
-	/** Nombre del jugador */
-	private String name;
-
-	/** Color asignado al jugador */
+	private String nombre;
 	private String color;
-
-	/** Usuario asociado al jugador (credenciales/meta información) */
-	private Usuario user;
-
-	/** Cantidad de tropas disponibles para repartir o mover */
-	private int tropasDisponibles;
-
-	/** Lista doblemente enlazada con los territorios que pertenecen al jugador */
-	private MyDoubleLinkedList<Territorio> territoriosPertenecientes;
-
+	private String email;
 	private MyDoubleLinkedList<String> territorios;
 
-	/**
-	 * Constructor por defecto.
-	 */
 	public Jugador() {
-		// Constructor vacío
+		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * Constructor con todos los atributos.
-	 *
-	 * @param name                      nombre del jugador
-	 * @param color                     color del jugador
-	 * @param user                      usuario asociado
-	 * @param tropasDisponibles         tropas disponibles
-	 * @param territoriosPertenecientes lista de territorios del jugador
-	 */
-	public Jugador(String name, String color, Usuario user, int tropasDisponibles,
-			MyDoubleLinkedList<Territorio> territoriosPertenecientes) {
+	public Jugador(String nombre, String color, String email) {
 		super();
-		this.name = name;
+		this.nombre = nombre;
 		this.color = color;
-		this.user = user;
-		this.tropasDisponibles = tropasDisponibles;
-		this.territoriosPertenecientes = territoriosPertenecientes;
+		this.email = email;
 	}
 
-	/**
-	 * Obtiene el nombre del jugador.
-	 *
-	 * @return nombre del jugador
-	 */
-	public String getName() {
-		return name;
+	public Jugador(String nombre, String color, MyDoubleLinkedList<String> territorios) {
+		super();
+		this.nombre = nombre;
+		this.color = color;
+		this.territorios = territorios;
 	}
 
-	/**
-	 * Establece el nombre del jugador.
-	 *
-	 * @param name nuevo nombre
-	 */
-	public void setName(String name) {
-		this.name = name;
+	public String getNombre() {
+		return nombre;
 	}
 
-	/**
-	 * Obtiene el color del jugador.
-	 *
-	 * @return color del jugador
-	 */
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public String getColor() {
 		return color;
 	}
 
-	/**
-	 * Establece el color del jugador.
-	 *
-	 * @param color nuevo color
-	 */
 	public void setColor(String color) {
 		this.color = color;
 	}
 
-	/**
-	 * Obtiene el usuario asociado al jugador.
-	 *
-	 * @return usuario asociado
-	 */
-	public Usuario getUser() {
-		return user;
+	public MyDoubleLinkedList<String> getTerritorios() {
+		return territorios;
 	}
 
-	/**
-	 * Establece el usuario asociado al jugador.
-	 *
-	 * @param user nuevo usuario
-	 */
-	public void setUser(Usuario user) {
-		this.user = user;
+	public void setTerritorios(MyDoubleLinkedList<String> territorios) {
+		this.territorios = territorios;
 	}
 
-	/**
-	 * Obtiene el número de tropas disponibles.
-	 *
-	 * @return tropas disponibles
-	 */
-	public int getTropasDisponibles() {
-		return tropasDisponibles;
+	@Override
+	public int hashCode() {
+		return Objects.hash(color, nombre, territorios);
 	}
 
-	/**
-	 * Establece el número de tropas disponibles.
-	 *
-	 * @param tropasDisponibles nuevas tropas disponibles
-	 */
-	public void setTropasDisponibles(int tropasDisponibles) {
-		this.tropasDisponibles = tropasDisponibles;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Jugador other = (Jugador) obj;
+		return Objects.equals(color, other.color) && Objects.equals(nombre, other.nombre)
+				&& Objects.equals(territorios, other.territorios);
 	}
 
-	/**
-	 * Obtiene la lista de territorios pertenecientes al jugador.
-	 *
-	 * @return lista de territorios
-	 */
-	public MyDoubleLinkedList<Territorio> getTerritoriosPertenecientes() {
-		return territoriosPertenecientes;
-	}
-
-	/**
-	 * Establece la lista de territorios pertenecientes al jugador.
-	 *
-	 * @param territoriosPertenecientes nueva lista de territorios
-	 */
-	public void setTerritoriosPertenecientes(MyDoubleLinkedList<Territorio> territoriosPertenecientes) {
-		this.territoriosPertenecientes = territoriosPertenecientes;
-	}
-
-	public boolean containsTerritory(String territorio) {
-		for (String aux : territorios) {
-			if (aux.equals(territorio))
-				return true;
-		}
-		return false;
-	}
 }

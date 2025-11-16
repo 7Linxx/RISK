@@ -1,125 +1,64 @@
 package co.edu.unbosque.model;
 
-import co.edu.unbosque.util.MyDoubleLinkedList;
+import java.util.Objects;
 
-/**
- * Representa un territorio dentro del modelo del juego.
- *
- * <p>
- * Un territorio contiene un nombre, la cantidad de tropas desplegadas, su dueño
- * (jugador) y una lista de territorios adyacentes que permiten modelar el mapa
- * del juego.
- * </p>
- *
- * @author Mariana Pineda
- * @since 1.0
- */
 public class Territorio {
 
-	/** Nombre identificador del territorio */
 	private String nombre;
+	private String color;
+	private int numeroTropas;
 
-	/** Cantidad de tropas actualmente en el territorio */
-	private int cantidadTropas;
-
-	/** Jugador que posee actualmente el territorio */
-	private Jugador duenio;
-
-	/** Territorios adyacentes conectados a este territorio */
-	private MyDoubleLinkedList<Territorio> territoriosAdyacentes;
-
-	/** Constructor por defecto. */
 	public Territorio() {
-		// Constructor vacío
+		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * Constructor completo.
-	 *
-	 * @param nombre                nombre del territorio
-	 * @param cantidadTropas        cantidad de tropas en el territorio
-	 * @param duenio                jugador propietario del territorio
-	 * @param territoriosAdyacentes lista de territorios adyacentes
-	 */
-	public Territorio(String nombre, int cantidadTropas, Jugador duenio,
-			MyDoubleLinkedList<Territorio> territoriosAdyacentes) {
+	public Territorio(String nombre, String color, int numeroTropas) {
 		super();
 		this.nombre = nombre;
-		this.cantidadTropas = cantidadTropas;
-		this.duenio = duenio;
-		this.territoriosAdyacentes = territoriosAdyacentes;
+		this.color = color;
+		this.numeroTropas = numeroTropas;
 	}
 
-	/**
-	 * Obtiene el nombre del territorio.
-	 *
-	 * @return nombre del territorio
-	 */
 	public String getNombre() {
 		return nombre;
 	}
 
-	/**
-	 * Establece el nombre del territorio.
-	 *
-	 * @param nombre nuevo nombre del territorio
-	 */
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
 
-	/**
-	 * Obtiene la cantidad de tropas en el territorio.
-	 *
-	 * @return número de tropas
-	 */
-	public int getCantidadTropas() {
-		return cantidadTropas;
+	public String getColor() {
+		return color;
 	}
 
-	/**
-	 * Establece la cantidad de tropas en el territorio.
-	 *
-	 * @param cantidadTropas nueva cantidad de tropas
-	 */
-	public void setCantidadTropas(int cantidadTropas) {
-		this.cantidadTropas = cantidadTropas;
+	public void setColor(String color) {
+		this.color = color;
 	}
 
-	/**
-	 * Obtiene el jugador dueño del territorio.
-	 *
-	 * @return jugador propietario
-	 */
-	public Jugador getDuenio() {
-		return duenio;
+	public int getNumeroTropas() {
+		return numeroTropas;
 	}
 
-	/**
-	 * Establece el jugador dueño del territorio.
-	 *
-	 * @param duenio nuevo dueño del territorio
-	 */
-	public void setDuenio(Jugador duenio) {
-		this.duenio = duenio;
+	public void setNumeroTropas(int numeroTropas) {
+		this.numeroTropas = numeroTropas;
 	}
 
-	/**
-	 * Obtiene la lista de territorios adyacentes.
-	 *
-	 * @return lista de territorios adyacentes
-	 */
-	public MyDoubleLinkedList<Territorio> getTerritoriosAdyacentes() {
-		return territoriosAdyacentes;
+	@Override
+	public int hashCode() {
+		return Objects.hash(color, nombre, numeroTropas);
 	}
 
-	/**
-	 * Establece la lista de territorios adyacentes.
-	 *
-	 * @param territoriosAdyacentes nueva lista de territorios adyacentes
-	 */
-	public void setTerritoriosAdyacentes(MyDoubleLinkedList<Territorio> territoriosAdyacentes) {
-		this.territoriosAdyacentes = territoriosAdyacentes;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Territorio other = (Territorio) obj;
+		return Objects.equals(color, other.color) && Objects.equals(nombre, other.nombre)
+				&& numeroTropas == other.numeroTropas;
 	}
 
 }

@@ -79,4 +79,20 @@ public class Jugador {
 				&& Objects.equals(territorios, other.territorios);
 	}
 
+
+	public boolean containsTerritory(String territorio) {
+		for(String aux: territorios) {
+			if(aux.equals(territorio))return true;
+		}
+		return false;
+	}
+	
+	public void removeTerritory(String terrytorio) {
+		for (int i = 0; i < territorios.getSize(); i++) {
+			if(terrytorio.equals(territorios.get(i))) {
+				territorios.remove(i);
+				return;
+			}
+		}
+	}
 }

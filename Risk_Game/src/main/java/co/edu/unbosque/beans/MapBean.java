@@ -989,7 +989,7 @@ public class MapBean {
 			} else {
 				vColor.put(colores[i], true);
 			}
-			jugadorDao.getJugadores().add(new PlayerDTO(nombres[i], colores[i], emails[i]));
+			jugadorDao.getJugadores().add(new Jugador(nombres[i], colores[i], emails[i]));
 		}
 		return required;
 	}

@@ -135,51 +135,35 @@ keyframes appearMenu { 0% {
 100
 
 
-
-
 %
 {
 opacity
 
 
-
-
 :
 
 
-
-
 1
-
-
 ;
+
+
 transform
 
 
-
-
 :
 
 
-
-
 scale
-
-
 (
-
-
 
 
 1
 
 
-
-
 )
-
-
 ;
+
+
 }
 }
 .settings-menu-item {
@@ -251,24 +235,25 @@ to {
 	width: 1000px;
 	height: 430px;
 	position: relative;
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-template-rows: 50%;
+	display: flex;
 	transition: transform 0.8s ease;
 	background-color: #8B4513;
 	border-radius: 8px;
 	border: 3px solid #654321;
+	flex-wrap: wrap;
+	flex-direction: column;
 }
 
 .page {
 	width: 500px;
 	height: 100%;
-	position: absolute;
+	position: relative;
 	background: linear-gradient(to bottom, #f4e5c2 0%, #e8d7b0 100%);
 	border: 2px solid #c9a86a;
 	transition: transform 0.8s ease, opacity 0.5s ease;
 	backface-visibility: hidden;
 	overflow: hidden;
+	flex-shrink: 0
 }
 
 .page-left {
@@ -282,7 +267,7 @@ to {
 }
 
 .page.hidden {
-	opacity: 0;
+	display: none;
 	pointer-events: none;
 }
 
@@ -302,37 +287,25 @@ keyframes turnPageLeft { 0% {
 100
 
 
-
-
 %
 {
 transform
 
 
-
-
 :
 
 
-
-
 rotateY
-
-
 (
-
-
 
 
 -180deg
 
 
-
-
 )
-
-
 ;
+
+
 }
 }
 @
@@ -343,41 +316,27 @@ keyframes turnPageRight { 0% {
 100
 
 
-
-
 %
 {
 transform
 
 
-
-
 :
 
 
-
-
 rotateY
-
-
 (
-
-
 
 
 180deg
 
 
-
-
 )
-
-
 ;
-}
-}
 
-/* Contenido de las páginas */
+
+}
+}
 .page-content {
 	padding: 40px 35px;
 	height: 100%;
@@ -390,7 +349,6 @@ rotateY
 		106, 0.15) 31px, rgba(201, 168, 106, 0.15) 32px);
 }
 
-/* Scrollbar para el contenido de la página */
 .page-content::-webkit-scrollbar {
 	width: 6px;
 }
@@ -411,12 +369,13 @@ rotateY
 
 .page-content h3 {
 	font-family: 'Berkshire Swash', cursive;
-	font-size: 28px;
+	font-size: 30px;
 	color: #7DA028;
 	margin-top: 0;
 	margin-bottom: 20px;
 	border-bottom: 2px solid #c9a86a;
 	padding-bottom: 10px;
+	letter-spacing: 3;
 }
 
 .page-content p {
@@ -444,9 +403,9 @@ rotateY
 	font-size: 18px;
 	color: #8B4513;
 	opacity: 0.6;
+	z-index: 35;
 }
 
-/* Página de portada */
 .cover-page {
 	display: flex;
 	flex-direction: column;
@@ -458,17 +417,16 @@ rotateY
 	padding: 60px;
 }
 
-.cover-page h2 {
+.cover-page-title {
 	font-family: 'Berkshire Swash', cursive;
-	font-size: 72px;
-	margin: 0;
+	font-size: 75px;
+	margin-top: 25px;
 	text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
-	letter-spacing: 8px;
 }
 
 .cover-page h3 {
 	font-family: 'Crimson Text', serif;
-	font-size: 32px;
+	font-size: 30px;
 	margin: 20px 0;
 	border: none;
 	color: #f5ecdd;
@@ -489,40 +447,26 @@ keyframes pulse { 0%, 100% {
 50
 
 
-
-
 %
 {
 transform
 
 
-
-
 :
 
 
-
-
 scale
-
-
 (
 
 
-
-
 1
-
-
 .1
 
 
-
-
 )
-
-
 ;
+
+
 }
 }
 .cover-subtitle {
@@ -531,7 +475,6 @@ scale
 	margin-top: 20px;
 }
 
-/* Página de índice */
 .index-page h3 {
 	text-align: center;
 	font-size: 36px;
@@ -548,7 +491,6 @@ scale
 	padding: 12px 15px;
 	margin-bottom: 8px;
 	background: rgba(125, 160, 40, 0.1);
-	border-left: 4px solid #7DA028;
 	border-radius: 4px;
 	cursor: pointer;
 	transition: all 0.3s ease;
@@ -569,7 +511,6 @@ scale
 	font-style: italic;
 }
 
-/* Cajas especiales */
 .highlight-box {
 	background: rgba(255, 215, 0, 0.2);
 	border: 2px solid #c97527;
@@ -586,7 +527,7 @@ scale
 
 .phase-box {
 	background: rgba(125, 160, 40, 0.15);
-	border-left: 4px solid #7DA028;
+	border: 2px solid #7DA028;
 	padding: 15px;
 	margin: 15px 0;
 	border-radius: 4px;
@@ -606,10 +547,10 @@ scale
 
 .tip {
 	background: rgba(135, 206, 250, 0.2);
-	border-left: 4px solid #4682b4;
+	border: 2px solid #4682b4;
 	padding: 10px 15px;
 	margin: 15px 0;
-	border-radius: 4px;
+	border-radius: 8px;
 	font-style: italic;
 }
 
@@ -621,7 +562,6 @@ scale
 	margin: 10px 0;
 }
 
-/* Tablas */
 .rules-table {
 	width: 100%;
 	border-collapse: collapse;
@@ -632,10 +572,10 @@ scale
 .rules-table th {
 	background: #7DA028;
 	color: white;
-	padding: 12px;
+	padding: 16px;
 	text-align: left;
 	font-family: 'Berkshire Swash', cursive;
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .rules-table td {
@@ -651,10 +591,9 @@ scale
 	background: rgba(125, 160, 40, 0.15);
 }
 
-/* Ejemplo de combate */
 .combat-example {
 	background: rgba(220, 220, 220, 0.3);
-	border: 2px dashed #8B4513;
+	border: 2px groove #8B4513;
 	border-radius: 8px;
 	padding: 15px;
 	margin: 15px 0;
@@ -668,7 +607,6 @@ scale
 	color: #8B4513;
 }
 
-/* Contraportada */
 .back-cover {
 	display: flex;
 	flex-direction: column;
@@ -676,13 +614,15 @@ scale
 	justify-content: center;
 	text-align: center;
 	background: linear-gradient(135deg, #c97527 0%, #a86020 100%);
-	color: #f5ecdd;
+	color: #f5ecdd !important;
 }
 
-.back-cover h3 {
-	color: #f5ecdd;
-	border: none;
-	font-size: 36px;
+.back-cover-title {
+	font-family: 'Berkshire Swash', cursive;
+	font-size: 62px;
+	margin-top: 25px;
+	text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.6);
+	color: #f5ecdd !important;
 }
 
 .back-note {
@@ -704,21 +644,23 @@ scale
 }
 
 .back-to-index:hover {
-	background: #9AC03D;
 	transform: scale(1.05);
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .victory-message {
-	background: rgba(255, 215, 0, 0.3);
-	border: 2px solid #FFD700;
-	border-radius: 8px;
+	background: rgba(255, 215, 0, 0.2);
+	border: 2px solid #eebf1e;
+	border-radius: 6px;
 	padding: 20px;
 	margin-top: 20px;
+	align-items: center;
+	align-content: center;
 }
 
 .victory-message strong {
-	font-size: 20px;
+	font-size: 32px;
+	font-weight: bolder;
 	color: #7DA028;
 }
 
@@ -781,7 +723,6 @@ scale
 	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
-/* Responsive */
 @media ( max-width : 1200px) {
 	.book {
 		width: 800px;
@@ -860,4 +801,7 @@ scale
 		width: 20px;
 		height: 20px;
 	}
+}
+.creditos{
+	padding: 30px;
 }

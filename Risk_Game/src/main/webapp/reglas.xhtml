@@ -19,18 +19,18 @@
 			<div class="header">
 				<img class="logo-risk" src="images/logo.png" alt="Risk Logo" />
 				<div class="header-buttons">
-					<button class="home" id="homeBtn" type="button" 
+					<button class="home" id="homeBtn" type="button"
 						aria-label="Volver al inicio"
 						onclick="window.location.href='jugar.xhtml'">
 						<img src="images/home.png" class="home-img" alt="Pagina Principal" />
 					</button>
-					
+
 					<button class="gear" id="gearBtn" type="button"
 						aria-label="Configuración"
 						onclick="toggleMenu(); event.stopPropagation();">
 						<img src="images/setting.png" class="gear-img" alt="Configuración" />
 					</button>
-					
+
 					<div id="settingsMenu" class="settings-menu">
 						<div class="settings-menu-item"
 							onclick="window.location='historial.xhtml'">Historial</div>
@@ -48,9 +48,9 @@
 				</div>
 
 				<div class="book-container" id="bookContainer">
-					<button class="nav-arrow left-arrow" id="prevBtn" onclick="prevPage()">
-						<svg viewBox="0 0 24 24">
-							<polyline points="15 18 9 12 15 6"/>
+					<button class="nav-arrow left-arrow" id="prevBtn"
+						onclick="prevPage()">
+						<svg viewBox="0 0 24 24"> <polyline points="15 18 9 12 15 6" />
 						</svg>
 					</button>
 
@@ -58,13 +58,12 @@
 						<!-- Página de portada e índice -->
 						<div class="page page-left" data-page="0">
 							<div class="page-content cover-page">
-								<h2>RISK</h2>
+								<span class="cover-page-title">RISK</span>
 								<h3>El Juego de Dominación Global</h3>
-								<div class="cover-decoration">⚔️</div>
 								<p class="cover-subtitle">Reglas Oficiales</p>
 							</div>
 						</div>
-						
+
 						<div class="page page-right" data-page="1">
 							<div class="page-content index-page">
 								<h3>Índice</h3>
@@ -88,7 +87,10 @@
 							<div class="page-content">
 								<h3>1. Objetivo del Juego</h3>
 								<div class="page-number">2</div>
-								<p>El objetivo de Risk es simple pero desafiante: <strong>conquistar el mundo</strong> eliminando a todos tus oponentes del mapa.</p>
+								<p>
+									El objetivo de Risk es simple pero desafiante: <strong>conquistar
+										el mundo</strong> eliminando a todos tus oponentes del mapa.
+								</p>
 								<p>Para lograrlo, deberás:</p>
 								<ul>
 									<li>Controlar todos los territorios del tablero</li>
@@ -96,7 +98,9 @@
 									<li>Mantener y expandir tu dominio estratégicamente</li>
 								</ul>
 								<div class="highlight-box">
-									<strong>¡Importante!</strong> El juego termina cuando solo queda un jugador con territorios en el mapa. Ese jugador es el ganador absoluto.
+									<strong>¡Importante!</strong> El juego termina cuando solo
+									queda un jugador con territorios en el mapa. Ese jugador es el
+									ganador absoluto.
 								</div>
 							</div>
 						</div>
@@ -105,15 +109,21 @@
 							<div class="page-content">
 								<h3>Dominación Mundial</h3>
 								<div class="page-number">3</div>
-								<p>Risk es un juego de estrategia militar donde cada decisión cuenta. Deberás:</p>
+								<p>Risk es un juego de estrategia militar donde cada
+									decisión cuenta. Deberás:</p>
 								<ul>
-									<li><strong>Planificar</strong> tus movimientos cuidadosamente</li>
+									<li><strong>Planificar</strong> tus movimientos
+										cuidadosamente</li>
 									<li><strong>Atacar</strong> en el momento oportuno</li>
 									<li><strong>Defender</strong> tus territorios clave</li>
 									<li><strong>Formar alianzas</strong> temporales (opcional)</li>
-									<li><strong>Traicionar</strong> cuando sea estratégicamente ventajoso</li>
+									<li><strong>Traicionar</strong> cuando sea
+										estratégicamente ventajoso</li>
 								</ul>
-								<p class="tip">💡 <em>Consejo:</em> Controlar continentes completos te dará refuerzos adicionales en cada turno.</p>
+								<p class="tip">
+									<em>Consejo:</em> Controlar continentes completos te dará
+									refuerzos adicionales en cada turno.
+								</p>
 							</div>
 						</div>
 
@@ -124,10 +134,14 @@
 								<div class="page-number">4</div>
 								<p>El juego incluye los siguientes elementos:</p>
 								<ul>
-									<li><strong>1 Tablero de juego</strong> con 42 territorios divididos en 6 continentes</li>
-									<li><strong>6 Sets de ejércitos</strong> de colores diferentes (cada uno con tropas de diferentes valores)</li>
-									<li><strong>Dados de ataque</strong> (rojos) y <strong>dados de defensa</strong> (blancos)</li>
-									<li><strong>Cartas de territorio</strong> para estrategias avanzadas</li>
+									<li><strong>1 Tablero de juego</strong> con 42 territorios
+										divididos en 6 continentes</li>
+									<li><strong>6 Sets de ejércitos</strong> de colores
+										diferentes (cada uno con tropas de diferentes valores)</li>
+									<li><strong>Dados de ataque</strong> (rojos) y <strong>dados
+											de defensa</strong> (blancos)</li>
+									<li><strong>Cartas de territorio</strong> para estrategias
+										avanzadas</li>
 								</ul>
 							</div>
 						</div>
@@ -145,7 +159,8 @@
 									<li><strong>Asia</strong> (12 territorios)</li>
 									<li><strong>Oceanía</strong> (4 territorios)</li>
 								</ul>
-								<p class="tip">💡 Cada continente tiene un valor de refuerzo diferente cuando lo controlas completamente.</p>
+								<p class="tip">Cada continente tiene un valor de refuerzo
+									diferente cuando lo controlas completamente.</p>
 							</div>
 						</div>
 
@@ -154,12 +169,21 @@
 							<div class="page-content">
 								<h3>3. Preparación del Juego</h3>
 								<div class="page-number">6</div>
-								<p><strong>Paso 1: Determinar jugadores</strong></p>
-								<p>Risk se juega con 2 a 6 jugadores. Cada jugador elige un color de ejército.</p>
-								<p><strong>Paso 2: Distribuir territorios</strong></p>
-								<p>Los territorios se asignan aleatoriamente entre todos los jugadores hasta que todos los territorios estén ocupados.</p>
-								<p><strong>Paso 3: Colocar tropas iniciales</strong></p>
-								<p>Cada jugador coloca sus tropas iniciales en sus territorios:</p>
+								<p>
+									<strong>Paso 1: Determinar jugadores</strong>
+								</p>
+								<p>Risk se juega con 2 a 6 jugadores. Cada jugador elige un
+									color de ejército.</p>
+								<p>
+									<strong>Paso 2: Distribuir territorios</strong>
+								</p>
+								<p>Los territorios se asignan aleatoriamente entre todos los
+									jugadores hasta que todos los territorios estén ocupados.</p>
+								<p>
+									<strong>Paso 3: Colocar tropas iniciales</strong>
+								</p>
+								<p>Cada jugador coloca sus tropas iniciales en sus
+									territorios:</p>
 							</div>
 						</div>
 
@@ -193,7 +217,8 @@
 										<td>20 tropas cada uno</td>
 									</tr>
 								</table>
-								<p>Coloca al menos 1 tropa en cada territorio que controles. Luego distribuye el resto libremente.</p>
+								<p>Coloca al menos 1 tropa en cada territorio que controles.
+									Luego distribuye el resto libremente.</p>
 							</div>
 						</div>
 
@@ -202,12 +227,18 @@
 							<div class="page-content">
 								<h3>4. Cómo Jugar</h3>
 								<div class="page-number">8</div>
-								<p>El juego se desarrolla en turnos. Los jugadores juegan en sentido horario.</p>
-								<p><strong>Orden de juego:</strong></p>
+								<p>El juego se desarrolla en turnos. Los jugadores juegan en
+									sentido horario.</p>
+								<p>
+									<strong>Orden de juego:</strong>
+								</p>
 								<ol>
-									<li>Determina el primer jugador (puedes tirar dados para decidirlo)</li>
-									<li>Cada jugador completa su turno antes de pasar al siguiente</li>
-									<li>El juego continúa hasta que un jugador controle todos los territorios</li>
+									<li>Determina el primer jugador (puedes tirar dados para
+										decidirlo)</li>
+									<li>Cada jugador completa su turno antes de pasar al
+										siguiente</li>
+									<li>El juego continúa hasta que un jugador controle todos
+										los territorios</li>
 								</ol>
 							</div>
 						</div>
@@ -238,10 +269,16 @@
 								<h3>5. Turno del Jugador</h3>
 								<div class="page-number">10</div>
 								<p>Durante tu turno, debes seguir estas tres fases en orden:</p>
-								<p><strong>1. RECIBIR Y COLOCAR REFUERZOS</strong></p>
-								<p>Al inicio de tu turno, recibes tropas de refuerzo que puedes colocar en cualquiera de tus territorios.</p>
-								<p><strong>2. ATACAR (Opcional)</strong></p>
-								<p>Puedes atacar territorios enemigos adyacentes a los tuyos tantas veces como quieras durante tu turno.</p>
+								<p>
+									<strong>1. RECIBIR Y COLOCAR REFUERZOS</strong>
+								</p>
+								<p>Al inicio de tu turno, recibes tropas de refuerzo que
+									puedes colocar en cualquiera de tus territorios.</p>
+								<p>
+									<strong>2. ATACAR (Opcional)</strong>
+								</p>
+								<p>Puedes atacar territorios enemigos adyacentes a los tuyos
+									tantas veces como quieras durante tu turno.</p>
 							</div>
 						</div>
 
@@ -249,12 +286,18 @@
 							<div class="page-content">
 								<h3>Fases del Turno</h3>
 								<div class="page-number">11</div>
-								<p><strong>3. FORTIFICAR (Obligatorio)</strong></p>
-								<p>Al final de tu turno, puedes mover tropas de un territorio tuyo a otro territorio tuyo adyacente.</p>
+								<p>
+									<strong>3. FORTIFICAR (Obligatorio)</strong>
+								</p>
+								<p>Al final de tu turno, puedes mover tropas de un
+									territorio tuyo a otro territorio tuyo adyacente.</p>
 								<div class="highlight-box">
-									<strong>Regla importante:</strong> Solo puedes fortificar UNA VEZ por turno, moviendo tropas entre dos territorios conectados que controles.
+									<strong>Regla importante:</strong> Solo puedes fortificar UNA
+									VEZ por turno, moviendo tropas entre dos territorios conectados
+									que controles.
 								</div>
-								<p>Después de fortificar, tu turno termina y pasa al siguiente jugador.</p>
+								<p>Después de fortificar, tu turno termina y pasa al
+									siguiente jugador.</p>
 							</div>
 						</div>
 
@@ -263,14 +306,21 @@
 							<div class="page-content">
 								<h3>6. Refuerzos</h3>
 								<div class="page-number">12</div>
-								<p>Al inicio de tu turno, calcula cuántas tropas de refuerzo recibes:</p>
-								<p><strong>Cálculo básico:</strong></p>
+								<p>Al inicio de tu turno, calcula cuántas tropas de refuerzo
+									recibes:</p>
+								<p>
+									<strong>Cálculo básico:</strong>
+								</p>
 								<ul>
 									<li>Divide el número de territorios que controlas entre 3</li>
 									<li>Redondea hacia abajo</li>
-									<li>Mínimo: 3 tropas (incluso si controlas menos de 9 territorios)</li>
+									<li>Mínimo: 3 tropas (incluso si controlas menos de 9
+										territorios)</li>
 								</ul>
-								<p class="example"><em>Ejemplo:</em> Si controlas 10 territorios: 10 ÷ 3 = 3.33 → recibes 3 tropas</p>
+								<p class="example">
+									<em>Ejemplo:</em> Si controlas 10 territorios: 10 ÷ 3 = 3.33 →
+									recibes 3 tropas
+								</p>
 							</div>
 						</div>
 
@@ -278,7 +328,9 @@
 							<div class="page-content">
 								<h3>Bonos de Continente</h3>
 								<div class="page-number">13</div>
-								<p><strong>Controlar continentes completos te da bonos:</strong></p>
+								<p>
+									<strong>Controlar continentes completos te da bonos:</strong>
+								</p>
 								<table class="rules-table">
 									<tr>
 										<th>Continente</th>
@@ -317,15 +369,20 @@
 							<div class="page-content">
 								<h3>7. Ataque</h3>
 								<div class="page-number">14</div>
-								<p>Durante la fase de ataque, puedes atacar territorios enemigos adyacentes a los tuyos.</p>
-								<p><strong>Requisitos para atacar:</strong></p>
+								<p>Durante la fase de ataque, puedes atacar territorios
+									enemigos adyacentes a los tuyos.</p>
+								<p>
+									<strong>Requisitos para atacar:</strong>
+								</p>
 								<ul>
-									<li>Tu territorio debe tener al menos 2 tropas (1 ataca, 1 se queda)</li>
+									<li>Tu territorio debe tener al menos 2 tropas (1 ataca, 1
+										se queda)</li>
 									<li>El territorio enemigo debe ser adyacente al tuyo</li>
 									<li>Puedes atacar múltiples veces en tu turno</li>
 								</ul>
 								<div class="highlight-box">
-									<strong>Regla:</strong> Siempre debe quedar al menos 1 tropa en el territorio atacante.
+									<strong>Regla:</strong> Siempre debe quedar al menos 1 tropa en
+									el territorio atacante.
 								</div>
 							</div>
 						</div>
@@ -334,19 +391,23 @@
 							<div class="page-content">
 								<h3>Iniciando un Ataque</h3>
 								<div class="page-number">15</div>
-								<p><strong>Para declarar un ataque:</strong></p>
+								<p>
+									<strong>Para declarar un ataque:</strong>
+								</p>
 								<ol>
 									<li>Anuncia desde qué territorio atacas</li>
 									<li>Anuncia qué territorio enemigo atacas</li>
 									<li>Decide cuántos dados usarás (1, 2 o 3)</li>
 								</ol>
-								<p><strong>Dados de ataque:</strong></p>
+								<p>
+									<strong>Dados de ataque:</strong>
+								</p>
 								<ul>
 									<li>Con 2+ tropas: puedes tirar 1 dado</li>
 									<li>Con 3+ tropas: puedes tirar 1 o 2 dados</li>
 									<li>Con 4+ tropas: puedes tirar 1, 2 o 3 dados</li>
 								</ul>
-								<p class="tip">💡 Más dados = más posibilidades de ganar</p>
+								<p class="tip">Más dados = más posibilidades de ganar</p>
 							</div>
 						</div>
 
@@ -356,12 +417,16 @@
 								<h3>8. Combate</h3>
 								<div class="page-number">16</div>
 								<p>El combate se resuelve con dados:</p>
-								<p><strong>Defensor:</strong></p>
+								<p>
+									<strong>Defensor:</strong>
+								</p>
 								<ul>
 									<li>Con 1 tropa: tira 1 dado</li>
 									<li>Con 2+ tropas: tira 1 o 2 dados</li>
 								</ul>
-								<p><strong>Resolución:</strong></p>
+								<p>
+									<strong>Resolución:</strong>
+								</p>
 								<ol>
 									<li>Ambos jugadores tiran sus dados</li>
 									<li>Se comparan los dados más altos</li>
@@ -375,18 +440,29 @@
 							<div class="page-content">
 								<h3>Resultados del Combate</h3>
 								<div class="page-number">17</div>
-								<p><strong>Ejemplos de combate:</strong></p>
+								<p>
+									<strong>Ejemplos de combate:</strong>
+								</p>
 								<div class="combat-example">
-									<p><strong>Atacante tira:</strong> 6, 4, 2</p>
-									<p><strong>Defensor tira:</strong> 5, 3</p>
-									<p><strong>Comparación:</strong></p>
+									<p>
+										<strong>Atacante tira:</strong> 6, 4, 2
+									</p>
+									<p>
+										<strong>Defensor tira:</strong> 5, 3
+									</p>
+									<p>
+										<strong>Comparación:</strong>
+									</p>
 									<ul>
 										<li>6 vs 5: Atacante gana (defensor pierde 1)</li>
 										<li>4 vs 3: Atacante gana (defensor pierde 1)</li>
 									</ul>
-									<p><strong>Resultado:</strong> Defensor pierde 2 tropas</p>
+									<p>
+										<strong>Resultado:</strong> Defensor pierde 2 tropas
+									</p>
 								</div>
-								<p class="tip">💡 Si el defensor pierde todas sus tropas, el atacante conquista el territorio.</p>
+								<p class="tip">Si el defensor pierde todas sus tropas, el
+									atacante conquista el territorio.</p>
 							</div>
 						</div>
 
@@ -395,12 +471,16 @@
 							<div class="page-content">
 								<h3>9. Fortificación</h3>
 								<div class="page-number">18</div>
-								<p>Al final de tu turno, puedes fortificar tus posiciones moviendo tropas.</p>
-								<p><strong>Reglas de fortificación:</strong></p>
+								<p>Al final de tu turno, puedes fortificar tus posiciones
+									moviendo tropas.</p>
+								<p>
+									<strong>Reglas de fortificación:</strong>
+								</p>
 								<ul>
 									<li>Solo puedes fortificar UNA VEZ por turno</li>
 									<li>Solo entre DOS de tus territorios</li>
-									<li>Los territorios deben estar conectados por territorios que controles</li>
+									<li>Los territorios deben estar conectados por territorios
+										que controles</li>
 									<li>Puedes mover tantas tropas como quieras</li>
 									<li>Debes dejar al menos 1 tropa en el territorio origen</li>
 								</ul>
@@ -411,14 +491,21 @@
 							<div class="page-content">
 								<h3>Estrategia de Fortificación</h3>
 								<div class="page-number">19</div>
-								<p><strong>Usos estratégicos:</strong></p>
+								<p>
+									<strong>Usos estratégicos:</strong>
+								</p>
 								<ul>
-									<li><strong>Reforzar fronteras:</strong> Mueve tropas a territorios en peligro</li>
-									<li><strong>Preparar ataques:</strong> Acumula tropas para una ofensiva futura</li>
-									<li><strong>Consolidar posiciones:</strong> Agrupa tropas en puntos estratégicos</li>
+									<li><strong>Reforzar fronteras:</strong> Mueve tropas a
+										territorios en peligro</li>
+									<li><strong>Preparar ataques:</strong> Acumula tropas para
+										una ofensiva futura</li>
+									<li><strong>Consolidar posiciones:</strong> Agrupa tropas
+										en puntos estratégicos</li>
 								</ul>
 								<div class="highlight-box">
-									<strong>Importante:</strong> Piensa cuidadosamente tu fortificación. Es tu última acción antes de que tus oponentes jueguen.
+									<strong>Importante:</strong> Piensa cuidadosamente tu
+									fortificación. Es tu última acción antes de que tus oponentes
+									jueguen.
 								</div>
 							</div>
 						</div>
@@ -428,12 +515,20 @@
 							<div class="page-content">
 								<h3>10. Victoria</h3>
 								<div class="page-number">20</div>
-								<p><strong>Condición de victoria:</strong></p>
-								<p>El juego termina cuando un jugador controla TODOS los territorios del mapa, eliminando completamente a todos sus oponentes.</p>
-								<p><strong>Eliminación de jugadores:</strong></p>
+								<p>
+									<strong>Condición de victoria:</strong>
+								</p>
+								<p>El juego termina cuando un jugador controla TODOS los
+									territorios del mapa, eliminando completamente a todos sus
+									oponentes.</p>
+								<p>
+									<strong>Eliminación de jugadores:</strong>
+								</p>
 								<ul>
-									<li>Un jugador es eliminado cuando pierde su último territorio</li>
-									<li>Los jugadores eliminados salen del juego inmediatamente</li>
+									<li>Un jugador es eliminado cuando pierde su último
+										territorio</li>
+									<li>Los jugadores eliminados salen del juego
+										inmediatamente</li>
 									<li>El juego continúa con los jugadores restantes</li>
 								</ul>
 							</div>
@@ -443,17 +538,21 @@
 							<div class="page-content">
 								<h3>¡Conquista el Mundo!</h3>
 								<div class="page-number">21</div>
-								<p><strong>Consejos para la victoria:</strong></p>
+								<p>
+									<strong>Consejos para la victoria:</strong>
+								</p>
 								<ul>
-									<li>🎯 Controla continentes completos para bonos de refuerzo</li>
-									<li>🛡️ Defiende puntos de entrada estratégicos</li>
-									<li>⚔️ Ataca cuando tengas ventaja numérica</li>
-									<li>🤝 Forma alianzas temporales cuando sea necesario</li>
-									<li>🧠 Planifica varios turnos por adelantado</li>
-									<li>🎲 No subestimes el poder de la suerte con los dados</li>
+									<li>Controla continentes completos para bonos de refuerzo</li>
+									<li>Defiende puntos de entrada estratégicos</li>
+									<li>Ataca cuando tengas ventaja numérica</li>
+									<li>Forma alianzastemporales cuando sea necesario</li>
+									<li>Planifica varios turnos por adelantado</li>
+									<li>No subestimes el poder de la suerte con los dados</li>
 								</ul>
 								<div class="victory-message">
-									<p><strong>¡Buena suerte, conquistador!</strong></p>
+									<p>
+										<strong>¡Buena suerte, conquistador!</strong>
+									</p>
 									<p>Que la estrategia esté de tu lado.</p>
 								</div>
 							</div>
@@ -462,30 +561,37 @@
 						<!-- Página final -->
 						<div class="page page-left" data-page="22">
 							<div class="page-content back-cover">
-								<h3>Fin de las Reglas</h3>
-								<p>Ahora estás listo para jugar Risk.</p>
-								<div class="cover-decoration">🌍</div>
-								<p class="back-note">Haz clic en el índice para revisar cualquier sección.</p>
-								<button class="back-to-index" onclick="goToPage(1)">Volver al Índice</button>
+								<span class="back-cover-title">Fin de las Reglas</span>
+								<p style="font-size: 26px;">Ahora estás listo para jugar
+									Risk.</p>
+								<button class="back-to-index" onclick="goToPage(1)">Volver
+									al Índice</button>
 							</div>
 						</div>
 
 						<div class="page page-right empty" data-page="23">
 							<div class="page-content">
-								<!-- Página vacía de contraportada -->
+								<span class="back-cover-title">Creditos: </span>
+								<div class="creditos">
+									<h3>Mariana Pineda</h3>
+									<h3>Luna Calderon</h3>
+									<h3 style="">Universidad El Bosque 🍃</h3>
+								</div>
+
 							</div>
 						</div>
 					</div>
 
-					<button class="nav-arrow right-arrow" id="nextBtn" onclick="nextPage()">
-						<svg viewBox="0 0 24 24">
-							<polyline points="9 18 15 12 9 6"/>
+					<button class="nav-arrow right-arrow" id="nextBtn"
+						onclick="nextPage()">
+						<svg viewBox="0 0 24 24"> <polyline points="9 18 15 12 9 6" />
 						</svg>
 					</button>
 				</div>
 
 				<div class="page-indicator">
-					<span id="currentPageDisplay">1</span> / <span id="totalPagesDisplay">22</span>
+					<span id="currentPageDisplay">1</span> / <span
+						id="totalPagesDisplay">22</span>
 				</div>
 			</div>
 		</div>

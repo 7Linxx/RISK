@@ -192,6 +192,8 @@ transform
 	opacity: 1;
 	visibility: visible;
 	transform: translateY(0);
+	display: block;
+	animation: appearMenu 0.20s;
 }
 
 #game-mode-panel, #player-count-panel {

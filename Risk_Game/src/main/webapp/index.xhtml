@@ -27,6 +27,11 @@
 				<h:inputText id="usuario" styleClass="risk-input" required="true"
 					requiredMessage="Usuario requerido" value="#{authBean.username}" />
 			</div>
+			<div class="input-row">
+				<label class="input-label" for="email">Email</label>
+				<h:inputSecret id="email" styleClass="risk-input" required="true"
+					requiredMessage="Contraseña requerida" value="#{authBean.password}" />
+			</div>
 
 			<div class="input-row">
 				<label class="input-label" for="contra">Contraseña</label>

@@ -4,9 +4,8 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
 
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -56,9 +55,10 @@ public class MapBean {
 		map = new MyGraph<>();
 		disesA = new int[3];
 		disesE = new int[2];
-		colores = new String[4];
-		nombres = new String[4];
-		emails = new String[4];
+		colores = new String[6];
+		nombres = new String[6];
+		emails = new String[6];
+		contrasenias = new String[6]; 
 		reforzado = false;
 		territorios = new String[] { "Alaska", "Northwest_Territory", "Alberta", "Ontario", "Western_United_States",
 				"Quebec", "Eastern_United_States", "Central_America", "Venezuela", "Peru", "Brazil", "Argentina",
@@ -943,56 +943,103 @@ public class MapBean {
 			tropasObtenidas = 3;
 		}
 	}
+	
+	private String contrasenias[];
+	
+	
+	public String[] getContrasenias() {
+	    return contrasenias;
+	}
+
+	public void setContrasenias(String[] contrasenias) {
+	    this.contrasenias = contrasenias;
+	}
 
 	public boolean initPlayers() {
 		jugadorDao = new JugadorDAO();
 		boolean required = true;
-		boolean auxName = true;
 		MyMap<String, Boolean> vColor = new MyMap<>();
 		MyMap<String, Boolean> vName = new MyMap<>();
+
 		for (int i = 0; i < numeroJugadores; i++) {
-			auxName = true;
-			if (nombres[i].length() > 8) {
+			boolean validPlayer = true;
+
+			// Validación de nombre
+			if (nombres[i] == null || nombres[i].trim().isEmpty()) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1), "Please enter a name.");
+				required = false;
+				validPlayer = false;
+			} else if (nombres[i].length() > 8) {
 				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1),
 						"The name should only have a maximum of 8 characters.");
 				required = false;
-				auxName = false;
-			} else if (nombres[i].isEmpty()) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1), "Please enter a name.");
-				required = false;
-				auxName = false;
-			} else if (nombres[i].matches(".*[,;].*")) {
+				validPlayer = false;
+			} else if (nombres[i].matches(".[,;].")) {
 				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1),
 						"Characters \",\" and \";\" are not allowed.");
 				required = false;
-			}
-			if (vName.containsKey(nombres[i]) && auxName) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Name already taked",
-						"Please select other name player " + (i + 1) + ".");
+				validPlayer = false;
+			} else if (vName.containsKey(nombres[i])) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Name already taken",
+						"Please select another name for player " + (i + 1) + ".");
 				required = false;
+				validPlayer = false;
 			} else {
 				vName.put(nombres[i], true);
 			}
-			if (!emails[i].matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
+
+			// Validación de email
+			if (emails[i] == null || emails[i].trim().isEmpty()) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid email player " + (i + 1), "Please enter an email.");
+				required = false;
+				validPlayer = false;
+			} else if (!emails[i].matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
 				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid email player " + (i + 1),
 						"The entered email is not valid.");
 				required = false;
+				validPlayer = false;
 			}
-			if (colores[i].isEmpty()) {
+
+			// Validación de color
+			if (colores[i] == null || colores[i].trim().isEmpty()) {
 				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid color player " + (i + 1), "Please select a color.");
 				required = false;
-			}
-			if (vColor.containsKey(colores[i]) && !colores[i].isEmpty()) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Color already taked",
-						"Please select other color player " + (i + 1) + ".");
+				validPlayer = false;
+			} else if (vColor.containsKey(colores[i])) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Color already taken",
+						"Please select another color for player " + (i + 1) + ".");
 				required = false;
+				validPlayer = false;
 			} else {
 				vColor.put(colores[i], true);
 			}
-			jugadorDao.getJugadores().add(new Jugador(nombres[i], colores[i], emails[i]));
+
+			// Validación de contraseña
+			if (contrasenias[i] == null || contrasenias[i].isEmpty()) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid password " + (i + 1), "Please enter a password.");
+				required = false;
+				validPlayer = false;
+			} else if (contrasenias[i].length() < 8) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid password " + (i + 1),
+						"The password should have a minimum of 8 characters.");
+				required = false;
+				validPlayer = false;
+			} else if (!contrasenias[i].matches("^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[@#$%^&+=!*()_\\-]).+$")) {
+				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid password " + (i + 1),
+						"The password must contain at least one uppercase letter, one lowercase letter, and one number.");
+				required = false;
+				validPlayer = false;
+			}
+
+			// Solo agregar jugador si todas las validaciones pasaron
+			if (validPlayer) {
+				jugadorDao.getJugadores().add(new Jugador(nombres[i], colores[i], emails[i]));
+			}
 		}
+
 		return required;
 	}
+	
 
 	public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
@@ -1077,19 +1124,33 @@ public class MapBean {
 	}
 
 	public void loadHashCodes() {
-		hashCode = "";
-		String jsHash = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/getallhashcode");
-		if (jsHash.isEmpty()) {
-			sizeHashes = 0;
-			hashCodes = new String[0];
-			return;
-		}
-		String[] aux = jsHash.split(",");
-		hashCodes = new String[aux.length];
-		sizeHashes = aux.length;
-		for (int i = 0; i < hashCodes.length; i++) {
-			hashCodes[i] = aux[i];
-		}
+	    hashCode = "";
+	    try {
+	        String jsHash = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/getallhashcode");
+	        
+	        if (jsHash == null || jsHash.isEmpty() || jsHash.trim().isEmpty()) {
+	            sizeHashes = 0;
+	            hashCodes = new String[0];
+	            addMessage(FacesMessage.SEVERITY_INFO, "Sin partidas", 
+	                      "No hay partidas guardadas disponibles.");
+	            return;
+	        }
+	        
+	        String[] aux = jsHash.split(",");
+	        hashCodes = new String[aux.length];
+	        sizeHashes = aux.length;
+	        
+	        for (int i = 0; i < hashCodes.length; i++) {
+	            hashCodes[i] = aux[i].trim();
+	        }
+	        
+	    } catch (Exception e) {
+	        sizeHashes = 0;
+	        hashCodes = new String[0];
+	        addMessage(FacesMessage.SEVERITY_ERROR, "Error de conexión", 
+	                  "No se pudo conectar con el servidor. Verifica que esté ejecutándose.");
+	        System.err.println("Error al cargar hash codes: " + e.getMessage());
+	    }
 	}
 
 	public String loadGame() {
@@ -1165,7 +1226,7 @@ public class MapBean {
 	}
 
 	public String exitGame() {
-		return "index.xhtml?faces-redirect=true";
+		return "jugar.xhtml?faces-redirect=true";
 	}
 
 	public String endGame() {
@@ -1179,7 +1240,7 @@ public class MapBean {
 			HttpClientSynchronous.doDelete("http://localhost:8081/player/deletebyhash/" + hashCode);
 			HttpClientSynchronous.doDelete("http://localhost:8081/territory/deletebyhash/" + hashCode);
 		}
-		return "index.xhtml?faces-redirect=true";
+		return "jugar.xhtml?faces-redirect=true";
 	}
 
 	public void sendEmailToPlayers(String name, String email, boolean isWinner) {

@@ -25,23 +25,23 @@
 			<div class="input-row">
 				<label class="input-label" for="usuario">Usuario</label>
 				<h:inputText id="usuario" styleClass="risk-input" required="true"
-					requiredMessage="Usuario requerido" value="#{authBean.username}" />
-			</div>
-			<div class="input-row">
-				<label class="input-label" for="email">Email</label>
-				<h:inputText id="email" styleClass="risk-input" required="true"
-					requiredMessage="Email requerida" value="#{authBean.email}" />
+					requiredMessage="Usuario requerido" value="#{MapBean.nombres[0]}" />
 			</div>
 
 			<div class="input-row">
 				<label class="input-label" for="contra">Contraseña</label>
 				<h:inputSecret id="contra" styleClass="risk-input" required="true"
-					requiredMessage="Contraseña requerida" value="#{authBean.password}" />
+					requiredMessage="Contraseña requerida" value="#{MapBean.contrasenias[0]}" />
+			</div>
+			<div class="input-row">
+				<label class="input-label" for="email">Correo</label>
+				<h:inputText id="email" styleClass="risk-input" required="true"
+					requiredMessage="Email requerida" value="#{MapBean.emails[0]}" />
 			</div>
 
 			<div style="text-align: center; margin-top: 10px;">
 				<h:commandButton value="Ingresar" styleClass="ingresar-btn"
-					action="#{authBean.login}" />
+					action="jugar.xhtml?faces-redirect=true" />
 			</div>
 
 			<br />
@@ -55,197 +55,6 @@
 		</h:form>
 	</div>
 
-
-	<!-- MENU -->
-	<div class="content">
-		<p:graphicImage library="primeblocks-app" alt="logo" height="200"
-			styleClass="mb-3" value="images/logo.png" />
-
-		<div class="boton-group">
-			<h:commandButton styleClass="boton" value="Start New Game"
-				onclick="showNumberPlayers()" />
-
-			<p:commandButton styleClass="rounded-button ui-button-warning"
-				value="Continue Previous Game" action="#{mapBean.loadHashCodes}"
-				update="shash" oncomplete="showSelectHash()" />
-
-			<p:commandButton
-				styleClass="rounded-button ui-button-warning boton-margin"
-				value="About Game" oncomplete="PF('aboutDialog').show()" />
-		</div>
-	</div>
-
-
-	<!-- SELECT NUMBER OF PLAYERS -->
-	<h:form id="nplayers">
-		<div id="dnplayers" class="login center-items accommodate">
-			<button class="close-btn" onclick="closeNumberPlayers()">x</button>
-
-			<div class="ui-fluid formgrid grid">
-				<div class="field col-12 md:col-1">
-					<h:panelGrid columns="1" cellpadding="4">
-						<label>Select number players</label>
-						<p:spinner id="numberp" value="#{authBean.numPlayers}"
-							buttons="vertical" upButtonStyleClass="ui-button-secondary"
-							downButtonStyleClass="ui-button-secondary" min="2" max="4" />
-					</h:panelGrid>
-				</div>
-			</div>
-
-			<p:commandButton styleClass="btn login-btn" value="Continue"
-				update="flogin" oncomplete="showLogin()" />
-		</div>
-	</h:form>
-
-
-	<!-- PLAYER DATA -->
-	<h:form id="flogin">
-
-		<p:growl id="growl" showDetail="true" />
-
-		<div id="login" class="login">
-			<button class="close-btn" onclick="closeLogin()">x</button>
-
-			<!-- PLAYER 1 -->
-			<div class="information">
-				<label>Information Player 1:</label>
-				<h:panelGrid columns="2" cellpadding="4">
-
-					<h5>Email</h5>
-					<p:inputText id="email1" value="#{authBean.emails[0]}"
-						placeholder="email" />
-
-					<h5>Name</h5>
-					<p:inputText id="name1" value="#{authBean.names[0]}"
-						placeholder="name" />
-
-					<h5>Color</h5>
-					<p:colorPicker id="thumbnail1" value="#{authBean.colors[0]}"
-						swatchesOnly="true" theme="polaroid" closeButton="true"
-						inline="true"
-						swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
-				</h:panelGrid>
-			</div>
-
-			<p:divider layout="vertical" />
-
-			<!-- PLAYER 2 -->
-			<div class="information">
-				<label>Information Player 2:</label>
-				<h:panelGrid columns="2" cellpadding="4">
-
-					<h5>Email</h5>
-					<p:inputText id="email2" value="#{authBean.emails[1]}"
-						placeholder="email" />
-
-					<h5>Name</h5>
-					<p:inputText id="name2" value="#{authBean.names[1]}"
-						placeholder="name" />
-
-					<h5>Color</h5>
-					<p:colorPicker id="thumbnail2" value="#{authBean.colors[1]}"
-						swatchesOnly="true" theme="polaroid" closeButton="true"
-						inline="true"
-						swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
-				</h:panelGrid>
-			</div>
-
-
-			<!-- PLAYER 3 -->
-			<c:if test="#{authBean.numPlayers >= 3}">
-				<p:divider layout="vertical" />
-				<div class="information">
-					<label>Information Player 3:</label>
-					<h:panelGrid columns="2" cellpadding="4">
-
-						<h5>Email</h5>
-						<p:inputText id="email3" value="#{authBean.emails[2]}"
-							placeholder="email" />
-
-						<h5>Name</h5>
-						<p:inputText id="name3" value="#{authBean.names[2]}"
-							placeholder="name" />
-
-						<h5>Color</h5>
-						<p:colorPicker id="thumbnail3" value="#{authBean.colors[2]}"
-							swatchesOnly="true" theme="polaroid" closeButton="true"
-							inline="true"
-							swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
-					</h:panelGrid>
-				</div>
-			</c:if>
-
-
-			<!-- PLAYER 4 -->
-			<c:if test="#{authBean.numPlayers == 4}">
-				<p:divider layout="vertical" />
-				<div class="information">
-					<label>Information Player 4:</label>
-					<h:panelGrid columns="2" cellpadding="4">
-
-						<h5>Email</h5>
-						<p:inputText id="email4" value="#{authBean.emails[3]}"
-							placeholder="email" />
-
-						<h5>Name</h5>
-						<p:inputText id="name4" value="#{authBean.names[3]}"
-							placeholder="name" />
-
-						<h5>Color</h5>
-						<p:colorPicker id="thumbnail4" value="#{gameBean.colors[3]}"
-							swatchesOnly="true" theme="polaroid" closeButton="true"
-							inline="true"
-							swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
-					</h:panelGrid>
-				</div>
-			</c:if>
-
-			<p:commandButton
-				styleClass="rounded-button ui-button-warning login-btn"
-				value="Continue" action="#{gameBean.init}" update="growl" />
-		</div>
-	</h:form>
-
-
-	<!-- SELECT HASH -->
-	<h:form id="shash">
-		<p:growl id="ehash" showDetail="true" />
-		<div id="scode" class="login hash-modal">
-
-			<div class="information">
-				<button class="close-btn" onclick="closeSelectHash()">x</button>
-
-				<c:choose>
-					<c:when test="#{mapBean.sizeHashes > 0}">
-						<label>Select game hash code:</label>
-						<h:panelGrid columns="1" cellpadding="4">
-							<p:selectOneListbox id="hashcodes" value="#{mapBean.hashCode}"
-								filter="true" filterMatchMode="contains">
-								<f:selectItems value="#{mapBean.hashCodes}" />
-							</p:selectOneListbox>
-
-						</h:panelGrid>
-
-					</c:when>
-
-					<c:otherwise>
-						<p:staticMessage severity="info" summary="No saved games"
-							detail="No saved games were found." />
-					</c:otherwise>
-				</c:choose>
-			</div>
-
-		</div>
-	</h:form>
-
-
-	<!-- ABOUT DIALOG -->
-	<p:dialog header="About Risk" widgetVar="aboutDialog" resizable="false"
-		modal="true" styleClass="dialog">
-
-		<h:outputText
-			value="Risk is a strategy board game of diplomacy, conflict and conquest..." />
-	</p:dialog>
 
 </h:body>
 </html>

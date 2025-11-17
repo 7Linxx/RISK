@@ -14,8 +14,8 @@ import jakarta.mail.internet.MimeMessage;
 
 public class MailSender {
 
-	private static String emailFrom = "mjpu117@gmail.com";
-	private static String passwordFrom = "vwabzakgmbqcleri";
+	private static String emailFrom = "emailueb@gmail.com";
+	private static String passwordFrom = "Emailueb2025++";
 
 	private static Properties prop = new Properties();
 	private static Session session;

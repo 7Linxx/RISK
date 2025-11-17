@@ -5,13 +5,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
-
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-
-import com.itextpdf.text.log.SysoCounter;
-
 import co.edu.unbosque.controller.HttpClientSynchronous;
 import co.edu.unbosque.model.Jugador;
 import co.edu.unbosque.model.Territorio;
@@ -26,11 +21,13 @@ import co.edu.unbosque.util.QueueImp;
 import co.edu.unbosque.util.algorithm.BreadthFirstSearch;
 import jakarta.annotation.ManagedBean;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Named;
 
-@ManagedBean
-@RequestScoped
+@Named("mapBean")
+@SessionScoped
 public class MapBean {
 
 	private TerritorioDAO territorioDao;
@@ -58,7 +55,7 @@ public class MapBean {
 		colores = new String[6];
 		nombres = new String[6];
 		emails = new String[6];
-		contrasenias = new String[6]; 
+		contrasenias = new String[6];
 		reforzado = false;
 		territorios = new String[] { "Alaska", "Northwest_Territory", "Alberta", "Ontario", "Western_United_States",
 				"Quebec", "Eastern_United_States", "Central_America", "Venezuela", "Peru", "Brazil", "Argentina",
@@ -793,9 +790,9 @@ public class MapBean {
 		territorioFichado = territorioDao.getTerritorios().getValue(territorioFichado.getNombre());
 		if (territorioFichado.getNumeroTropas() == 0) {
 			textGanador = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre() + " perdio " + restTroops[0]
-					+ " troops | " + playerTerritory(territorioFichado.getNombre()).getNombre() + " perdio "
-					+ restTroops[1] + " troops.";
-			textPerdedor = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre() + " has conquered "
+					+ " tropas | " + playerTerritory(territorioFichado.getNombre()).getNombre() + " perdio "
+					+ restTroops[1] + " tropas.";
+			textPerdedor = jugadorDao.getJugadores().get(jugadorSeleccionado).getNombre() + " ha conquistado "
 					+ territorioFichado.getNombre();
 			;
 			ganador = 1;
@@ -943,16 +940,15 @@ public class MapBean {
 			tropasObtenidas = 3;
 		}
 	}
-	
+
 	private String contrasenias[];
-	
-	
+
 	public String[] getContrasenias() {
-	    return contrasenias;
+		return contrasenias;
 	}
 
 	public void setContrasenias(String[] contrasenias) {
-	    this.contrasenias = contrasenias;
+		this.contrasenias = contrasenias;
 	}
 
 	public boolean initPlayers() {
@@ -966,22 +962,23 @@ public class MapBean {
 
 			// Validación de nombre
 			if (nombres[i] == null || nombres[i].trim().isEmpty()) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1), "Please enter a name.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Nombre de jugador invalido " + (i + 1),
+						"Por favor ingresa un nombre.");
 				required = false;
 				validPlayer = false;
 			} else if (nombres[i].length() > 8) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1),
-						"The name should only have a maximum of 8 characters.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Nombre de jugador invalido " + (i + 1),
+						"El nombre debe tener un maximo de 8 caracteres.");
 				required = false;
 				validPlayer = false;
 			} else if (nombres[i].matches(".[,;].")) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid name player " + (i + 1),
-						"Characters \",\" and \";\" are not allowed.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Nombre de jugador invalido " + (i + 1),
+						"Caracteres como \",\" y \";\" no estan permitidos.");
 				required = false;
 				validPlayer = false;
 			} else if (vName.containsKey(nombres[i])) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Name already taken",
-						"Please select another name for player " + (i + 1) + ".");
+				addMessage(FacesMessage.SEVERITY_ERROR, "El nombre ya ha sido tomado",
+						"Por favor selecciona otro nombre para el jugador " + (i + 1) + ".");
 				required = false;
 				validPlayer = false;
 			} else {
@@ -990,24 +987,24 @@ public class MapBean {
 
 			// Validación de email
 			if (emails[i] == null || emails[i].trim().isEmpty()) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid email player " + (i + 1), "Please enter an email.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Email invalido " + (i + 1), "Por favor ingresa un email.");
 				required = false;
 				validPlayer = false;
 			} else if (!emails[i].matches("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid email player " + (i + 1),
-						"The entered email is not valid.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Email invalido " + (i + 1),
+						"El email ingresado no es valido.");
 				required = false;
 				validPlayer = false;
 			}
 
 			// Validación de color
 			if (colores[i] == null || colores[i].trim().isEmpty()) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid color player " + (i + 1), "Please select a color.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Color invalido " + (i + 1), "Por favor selecciona un color.");
 				required = false;
 				validPlayer = false;
 			} else if (vColor.containsKey(colores[i])) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Color already taken",
-						"Please select another color for player " + (i + 1) + ".");
+				addMessage(FacesMessage.SEVERITY_ERROR, "El color ya ha sido tomado",
+						"Por favor selecciona otro color " + (i + 1) + ".");
 				required = false;
 				validPlayer = false;
 			} else {
@@ -1016,17 +1013,18 @@ public class MapBean {
 
 			// Validación de contraseña
 			if (contrasenias[i] == null || contrasenias[i].isEmpty()) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid password " + (i + 1), "Please enter a password.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Contraseña invalida " + (i + 1),
+						"Por favor ingresa una contraseña.");
 				required = false;
 				validPlayer = false;
 			} else if (contrasenias[i].length() < 8) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid password " + (i + 1),
-						"The password should have a minimum of 8 characters.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Contraseña invalida " + (i + 1),
+						"La contraseña debe tener un minimo de 8 caracteres.");
 				required = false;
 				validPlayer = false;
 			} else if (!contrasenias[i].matches("^(?=.[a-z])(?=.[A-Z])(?=.\\d)(?=.[@#$%^&+=!*()_\\-]).+$")) {
-				addMessage(FacesMessage.SEVERITY_ERROR, "Invalid password " + (i + 1),
-						"The password must contain at least one uppercase letter, one lowercase letter, and one number.");
+				addMessage(FacesMessage.SEVERITY_ERROR, "Contraseña invalida " + (i + 1),
+						"La contraseña debe tener por lo menos una mayuscula, una minuscula, un numero y un caracter especial.");
 				required = false;
 				validPlayer = false;
 			}
@@ -1039,7 +1037,6 @@ public class MapBean {
 
 		return required;
 	}
-	
 
 	public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
@@ -1048,7 +1045,7 @@ public class MapBean {
 	public String firstDigitHashCode() {
 		String val = "0";
 		try {
-			val = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/getlastid");
+			val = HttpClientSynchronous.doGet("https://gpcueb.org/backsito/juego/getlastid");
 			Integer.parseInt(val);
 		} catch (Exception e) {
 			SecureRandom r = new SecureRandom();
@@ -1067,19 +1064,19 @@ public class MapBean {
 	}
 
 	public void saveGame() {
-		if (fase.equals("Phase 2: Dices")) {
-			addMessage(FacesMessage.SEVERITY_WARN, "Warning",
-					"It is not possible to save while rolling dice. Select the back button to stop rolling dice and save.");
+		if (fase.equals("Fase 2: Dados")) {
+			addMessage(FacesMessage.SEVERITY_WARN, "Precaucion",
+					"No es posible guardar mientras se tiran los dados. Selecciona el boton atras para parar y guardar el juego.");
 			return;
 		}
-		if (fase.equals("Phase 2: Conquest")) {
-			addMessage(FacesMessage.SEVERITY_WARN, "Warning",
-					"You cannot save while sending troops after you have conquered a territory. Please send troops to the conquered territory to save.");
+		if (fase.equals("Fase 2: Conquista")) {
+			addMessage(FacesMessage.SEVERITY_WARN, "Precaucion",
+					"No es posible guardar mientras envias tropas despues de conquistar un territorio. Por favor envia las tropas al territorio conquistado para salvar el juego.");
 			return;
 		}
-		if (fase.equals("Winner")) {
-			addMessage(FacesMessage.SEVERITY_INFO, "The game is over.",
-					"The game cannot be saved at the end of the game.");
+		if (fase.equals("Ganador")) {
+			addMessage(FacesMessage.SEVERITY_INFO, "El juego se termino.",
+					"El juego no puede ser guardado al final del juego.");
 			return;
 		}
 		if (fase.equals("Fase 1: Refuerzos") && territorioSeleccionado != null) {
@@ -1090,21 +1087,21 @@ public class MapBean {
 		} else if (fase.equals("Fase 2: Ataque")) {
 			offTargetEnemies();
 		}
-		String exist = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/existhash/" + hashCode);
+		String exist = HttpClientSynchronous.doGet("https://gpcueb.org/backsito/juego/existhash/" + hashCode);
 		if (!exist.equals("No")) {
-			HttpClientSynchronous.doDelete("http://localhost:8081/gamedetails/deletebyhash/" + hashCode);
-			HttpClientSynchronous.doDelete("http://localhost:8081/player/deletebyhash/" + hashCode);
-			HttpClientSynchronous.doDelete("http://localhost:8081/territory/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("https://gpcueb.org/backsito/juego/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("https://gpcueb.org/backsito/jugador/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("https://gpcueb.org/backsito/territorio/deletebyhash/" + hashCode);
 		}
 		for (Territorio current : territorioDao.getTerritorios().values()) {
-			HttpClientSynchronous.doPost("http://localhost:8081/territory/create",
-					"{\"hashCode\": \"" + hashCode + "\",\"name\":\"" + current.getNombre() + "\",\"color\":\""
-							+ current.getColor() + "\",\"numberTroops\": " + current.getNumeroTropas()
-							+ ",\"playerIndex\": " + playerIndex(current.getNombre()) + "}");
+			HttpClientSynchronous.doPost("https://gpcueb.org/backsito/territorio/crear",
+					"{\"hashCode\": \"" + hashCode + "\",\"nombre\":\"" + current.getNombre() + "\",\"color\":\""
+							+ current.getColor() + "\",\"numero de tropas\": " + current.getNumeroTropas()
+							+ ",\"posicion jugador\": " + playerIndex(current.getNombre()) + "}");
 		}
 		int i = 0;
 		for (Jugador current : jugadorDao.getJugadores()) {
-			HttpClientSynchronous.doPost("http://localhost:8081/player/create",
+			HttpClientSynchronous.doPost("https://gpcueb.org/backsito/jugador/crear",
 					"{\"hashCode\": \"" + hashCode + "\",\"name\": \"" + current.getNombre() + "\",\"color\": \""
 							+ current.getColor() + "\",\"email\": \"" + current.getEmail() + "\",\"indexPlayer\": " + i
 							+ "}");
@@ -1116,54 +1113,53 @@ public class MapBean {
 		} else if (fase.equals("Fase 3: Fortificacion")) {
 			gameInfo = reforzado ? "Yes" : "No";
 		}
-		HttpClientSynchronous.doPost("http://localhost:8081/gamedetails/create",
+		HttpClientSynchronous.doPost("https://gpcueb.org/backsito/juego/crear",
 				"{\"hashCode\": \"" + hashCode + "\",\"phase\": \"" + fase + "\",\"playerTurn\": " + jugadorSeleccionado
 						+ ",\"gameInfo\": \"" + gameInfo + "\"}");
 
-		addMessage(FacesMessage.SEVERITY_INFO, "Game saved.", "Game successfully saved.");
+		addMessage(FacesMessage.SEVERITY_INFO, "Juego guardado.", "Juego exitosamente guardado.");
 	}
 
 	public void loadHashCodes() {
-	    hashCode = "";
-	    try {
-	        String jsHash = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/getallhashcode");
-	        
-	        if (jsHash == null || jsHash.isEmpty() || jsHash.trim().isEmpty()) {
-	            sizeHashes = 0;
-	            hashCodes = new String[0];
-	            addMessage(FacesMessage.SEVERITY_INFO, "Sin partidas", 
-	                      "No hay partidas guardadas disponibles.");
-	            return;
-	        }
-	        
-	        String[] aux = jsHash.split(",");
-	        hashCodes = new String[aux.length];
-	        sizeHashes = aux.length;
-	        
-	        for (int i = 0; i < hashCodes.length; i++) {
-	            hashCodes[i] = aux[i].trim();
-	        }
-	        
-	    } catch (Exception e) {
-	        sizeHashes = 0;
-	        hashCodes = new String[0];
-	        addMessage(FacesMessage.SEVERITY_ERROR, "Error de conexión", 
-	                  "No se pudo conectar con el servidor. Verifica que esté ejecutándose.");
-	        System.err.println("Error al cargar hash codes: " + e.getMessage());
-	    }
+		hashCode = "";
+		try {
+			String jsHash = HttpClientSynchronous.doGet("https://gpcueb.org/backsito/juego/getallhashcode");
+
+			if (jsHash == null || jsHash.isEmpty() || jsHash.trim().isEmpty()) {
+				sizeHashes = 0;
+				hashCodes = new String[0];
+				addMessage(FacesMessage.SEVERITY_INFO, "Sin partidas", "No hay partidas guardadas disponibles.");
+				return;
+			}
+
+			String[] aux = jsHash.split(",");
+			hashCodes = new String[aux.length];
+			sizeHashes = aux.length;
+
+			for (int i = 0; i < hashCodes.length; i++) {
+				hashCodes[i] = aux[i].trim();
+			}
+
+		} catch (Exception e) {
+			sizeHashes = 0;
+			hashCodes = new String[0];
+			addMessage(FacesMessage.SEVERITY_ERROR, "Error de conexión",
+					"No se pudo conectar con el servidor. Verifica que esté ejecutándose.");
+			System.err.println("Error al cargar hash codes: " + e.getMessage());
+		}
 	}
 
 	public String loadGame() {
-		String exist = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/existhash/" + hashCode);
+		String exist = HttpClientSynchronous.doGet("https://gpcueb.org/backsito/juego/existhash/" + hashCode);
 		if (exist.equals("No")) {
-			addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Please select game hashcode.");
+			addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Por favor selecciona el codigo del juego.");
 			return null;
 		}
 		territorioDao = new TerritorioDAO();
 		jugadorDao = new JugadorDAO();
 		MyMap<Integer, MyDoubleLinkedList<String>> pTerritory = new MyMap<>();
-		String[] jsTerritories = HttpClientSynchronous.doGet("http://localhost:8081/territory/getbyhash/" + hashCode)
-				.split(";");
+		String[] jsTerritories = HttpClientSynchronous
+				.doGet("https://gpcueb.org/backsito/territorio/getbyhash/" + hashCode).split(";");
 		for (String object : jsTerritories) {
 			String[] attributes = object.split(",");
 			Territorio territorio = new Territorio(attributes[1], attributes[2], Integer.parseInt(attributes[3]));
@@ -1175,7 +1171,7 @@ public class MapBean {
 			territorioDao.create(territorio);
 		}
 		MyMap<Integer, Jugador> jJugadores = new MyMap<>();
-		String[] jsJugadores = HttpClientSynchronous.doGet("http://localhost:8081/player/getbyhash/" + hashCode)
+		String[] jsJugadores = HttpClientSynchronous.doGet("https://gpcueb.org/backsito/jugador/getbyhash/" + hashCode)
 				.split(";");
 		for (String object : jsJugadores) {
 			String[] attributes = object.split(",");
@@ -1191,7 +1187,7 @@ public class MapBean {
 		for (int i = 0; i < jsJugadores.length; i++) {
 			jugadorDao.create(jJugadores.getValue(i));
 		}
-		String[] jsGameDetails = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/getbyhash/" + hashCode)
+		String[] jsGameDetails = HttpClientSynchronous.doGet("https://gpcueb.org/backsito/juego/getbyhash/" + hashCode)
 				.split(",");
 		fase = jsGameDetails[1];
 		jugadorSeleccionado = Integer.parseInt(jsGameDetails[2]);
@@ -1234,11 +1230,11 @@ public class MapBean {
 			Jugador current = jugadorDao.getJugadores().get(i);
 			sendEmailToPlayers(current.getNombre(), current.getEmail(), i == jugadorSeleccionado);
 		}
-		String exist = HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/existhash/" + hashCode);
+		String exist = HttpClientSynchronous.doGet("https://gpcueb.org/backsito/juego/existhash/" + hashCode);
 		if (!exist.equals("No")) {
-			HttpClientSynchronous.doDelete("http://localhost:8081/gamedetails/deletebyhash/" + hashCode);
-			HttpClientSynchronous.doDelete("http://localhost:8081/player/deletebyhash/" + hashCode);
-			HttpClientSynchronous.doDelete("http://localhost:8081/territory/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("https://gpcueb.org/backsito/juego/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("https://gpcueb.org/backsito/jugador/deletebyhash/" + hashCode);
+			HttpClientSynchronous.doDelete("https://gpcueb.org/backsito/territorio/deletebyhash/" + hashCode);
 		}
 		return "jugar.xhtml?faces-redirect=true";
 	}
@@ -1271,7 +1267,7 @@ public class MapBean {
 	}
 
 	public String generarHash(int password) {
-		return HttpClientSynchronous.doGet("http://localhost:8081/gamedetails/generatehash/" + password);
+		return HttpClientSynchronous.doGet("https://gpcueb.org/backsito/juego/generatehash/" + password);
 	}
 
 }

@@ -1,5 +1,6 @@
 package co.edu.unbosque.beans;
 
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Objects;
@@ -28,7 +29,7 @@ import jakarta.inject.Named;
 
 @Named("mapBean")
 @SessionScoped
-public class MapBean {
+public class MapBean implements Serializable {
 
 	private TerritorioDAO territorioDao;
 	private JugadorDAO jugadorDao;
@@ -1270,4 +1271,64 @@ public class MapBean {
 		return HttpClientSynchronous.doGet("https://gpcueb.org/backsito/juego/generatehash/" + password);
 	}
 
+	public String register() {
+
+		// Aseguramos que haya al menos 1 jugador
+		if (numeroJugadores <= 0) {
+			numeroJugadores = 1;
+		}
+
+		// Inicializamos los arrays si están nulos o muy pequeños
+		if (nombres == null || nombres.length < numeroJugadores) {
+			nombres = Arrays.copyOf(nombres != null ? nombres : new String[0], 6);
+		}
+		if (emails == null || emails.length < numeroJugadores) {
+			emails = Arrays.copyOf(emails != null ? emails : new String[0], 6);
+		}
+		if (contrasenias == null || contrasenias.length < numeroJugadores) {
+			contrasenias = Arrays.copyOf(contrasenias != null ? contrasenias : new String[0], 6);
+		}
+		if (colores == null || colores.length < numeroJugadores) {
+			colores = Arrays.copyOf(colores != null ? colores : new String[0], 6);
+		}
+
+		// Color por defecto para el jugador 1 si no hay
+		if (colores[0] == null || colores[0].trim().isEmpty()) {
+			colores[0] = "#d9753d"; // pon aquí el color que quieras por defecto
+		}
+
+		// Valida datos y llena jugadorDao
+		if (!initPlayers()) {
+			// hubo errores de validación, se quedan los mensajes en el growl
+			return null; // no navega
+		}
+
+		// Si todo OK, arranca el juego (init() ya retorna
+		// game.xhtml?faces-redirect=true)
+		return "jugar.xhtml?faces-redirect=true";
+	}
+
+	public String login() {
+
+		numeroJugadores = 1; // solo un jugador al loguearse
+
+		if (nombres == null || nombres.length == 0) {
+			nombres = new String[6];
+			emails = new String[6];
+			contrasenias = new String[6];
+			colores = new String[6];
+		}
+
+		// Color por defecto si no hay
+		if (colores[0] == null || colores[0].isEmpty()) {
+			colores[0] = "#d9753d";
+		}
+
+		// Validar datos de jugador
+		if (!initPlayers()) {
+			return null; // ❗ permanece en login y muestra errores
+		}
+
+		return "jugar.xhtml?faces-redirect=true"; // INICIA PARTIDA Y REDIRIGE A game.xhtml
+	}
 }

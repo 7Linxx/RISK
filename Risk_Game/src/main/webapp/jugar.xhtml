@@ -57,7 +57,7 @@
 						<div class="game-mode-spinner-row"
 							style="margin-top: 30px; color: white; font-weight: bold; font-size: 28px;">
 							<h:outputLabel value="Jugadores:" style="" />
-							<p:spinner id="playerSpinner" value="#{MapBean.numeroJugadores}"
+							<p:spinner id="playerSpinner" value="#{mapBean.numeroJugadores}"
 								action="" min="1" max="6" step="1" styleClass="mode-spinner"
 								title="Elige el número de jugadores (1-6)" />
 
@@ -98,12 +98,12 @@
 								<h:panelGrid columns="2" cellpadding="4">
 									<h5>Tu usuario</h5>
 									<span class="ui-float-label"> <p:inputText id="name1"
-											value="#{MapBean.nombres[0]}" readonly="true"
+											value="#{mapBean.nombres[0]}" readonly="true"
 											styleClass="risk-input" placeholder="usuario"
 											style="background-color:#eee;color:#333;font-weight:bold;" />
 									</span>
 									<h5>Color</h5>
-									<p:colorPicker id="thumbnail1" value="#{MapBean.colores[0]}"
+									<p:colorPicker id="thumbnail1" value="#{mapBean.colores[0]}"
 										swatchesOnly="true" theme="polaroid" clearButton="false"
 										closeButton="true" inline="true"
 										swatches="#d9753d,#d9bc3b,#a776b8,#3d80ad,#4ebf72,#F09B59" />
@@ -116,11 +116,11 @@
 								<h:panelGrid columns="2" cellpadding="4">
 									<h5>Nombre</h5>
 									<span class="ui-float-label"> <p:inputText id="name2"
-											value="#{MapBean.nombres[1]}" styleClass="risk-input"
-											placeholder="#{MapBean.nombres[1]}" required="true" />
+											value="#{mapBean.nombres[1]}" styleClass="risk-input"
+											placeholder="#{mapBean.nombres[1]}" required="true" />
 									</span>
 									<h5>Color</h5>
-									<p:colorPicker id="thumbnail2" value="#{MapBean.colores[1]}"
+									<p:colorPicker id="thumbnail2" value="#{mapBean.colores[1]}"
 										swatchesOnly="true" theme="polaroid" clearButton="false"
 										closeButton="true" inline="true"
 										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
@@ -133,11 +133,11 @@
 								<h:panelGrid columns="2" cellpadding="4">
 									<h5>Nombre</h5>
 									<span class="ui-float-label"> <p:inputText id="name3"
-											value="#{MapBean.nombres[2]}" styleClass="risk-input"
-											placeholder="nombre" required="true" />
+											value="#{mapBean.nombres[2]}" styleClass="risk-input"
+											placeholder="nombre" />
 									</span>
 									<h5>Color</h5>
-									<p:colorPicker id="thumbnail3" value="#{MapBean.colores[2]}"
+									<p:colorPicker id="thumbnail3" value="#{mapBean.colores[2]}"
 										swatchesOnly="true" theme="polaroid" clearButton="false"
 										closeButton="true" inline="true"
 										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
@@ -150,11 +150,11 @@
 								<h:panelGrid columns="2" cellpadding="4">
 									<h5>Nombre</h5>
 									<span class="ui-float-label"> <p:inputText id="name4"
-											value="#{MapBean.nombres[3]}" styleClass="risk-input"
-											placeholder="nombre" required="true" />
+											value="#{mapBean.nombres[3]}" styleClass="risk-input"
+											placeholder="nombre" />
 									</span>
 									<h5>Color</h5>
-									<p:colorPicker id="thumbnail4" value="#{MapBean.colores[3]}"
+									<p:colorPicker id="thumbnail4" value="#{mapBean.colores[3]}"
 										swatchesOnly="true" theme="polaroid" clearButton="false"
 										closeButton="true" inline="true"
 										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
@@ -167,11 +167,11 @@
 								<h:panelGrid columns="2" cellpadding="4">
 									<h5>Nombre</h5>
 									<span class="ui-float-label"> <p:inputText id="name5"
-											value="#{MapBean.nombres[4]}" styleClass="risk-input"
-											placeholder="nombre" required="true" />
+											value="#{mapBean.nombres[4]}" styleClass="risk-input"
+											placeholder="nombre" />
 									</span>
 									<h5>Color</h5>
-									<p:colorPicker id="thumbnail5" value="#{MapBean.colores[4]}"
+									<p:colorPicker id="thumbnail5" value="#{mapBean.colores[4]}"
 										swatchesOnly="true" theme="polaroid" clearButton="false"
 										closeButton="true" inline="true"
 										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
@@ -184,11 +184,11 @@
 								<h:panelGrid columns="2" cellpadding="4">
 									<h5>Nombre</h5>
 									<span class="ui-float-label"> <p:inputText id="name6"
-											value="#{MapBean.nombres[5]}" styleClass="risk-input"
-											placeholder="nombre" required="true" />
+											value="#{mapBean.nombres[5]}" styleClass="risk-input"
+											placeholder="nombre" />
 									</span>
 									<h5>Color</h5>
-									<p:colorPicker id="thumbnail6" value="#{MapBean.colores[5]}"
+									<p:colorPicker id="thumbnail6" value="#{mapBean.colores[5]}"
 										swatchesOnly="true" theme="polaroid" clearButton="false"
 										closeButton="true" inline="true"
 										swatches="#F35B04,#F5BB00,#A755C2,#016FB9,#61C9A8,#F09B59" />
@@ -201,7 +201,7 @@
 						<div class="button-container">
 							<p:commandButton id="entry"
 								styleClass="rounded-button ui-button-warning login-btn"
-								value="Continuar" action="#{MapBean.init}" />
+								value="Continuar" action="#{mapBean.init}" ajax="false" />
 						</div>
 					</div>
 				</h:form>

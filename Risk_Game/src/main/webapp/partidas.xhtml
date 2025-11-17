@@ -17,7 +17,7 @@
 <h:body>
 	<f:view>
 		<f:metadata>
-			 <f:viewAction action="#{MapBean.loadHashCodes}" />
+			<f:viewAction action="#{mapBean.loadHashCodes}" />
 		</f:metadata>
 
 		<div class="container">
@@ -57,9 +57,9 @@
 
 					<!-- Panel cuando HAY partidas guardadas -->
 					<h:panelGroup id="partidasPanel"
-						rendered="#{MapBean.sizeHashes > 0}">
+						rendered="#{mapBean.sizeHashes > 0}">
 						<div class="partidas-grid-container">
-							<c:forEach begin="0" end="#{MapBean.sizeHashes - 1}" var="i">
+							<c:forEach begin="0" end="#{mapBean.sizeHashes - 1}" var="i">
 								<div class="partida-card">
 									<div class="partida-header">
 										<span class="partida-fecha"> <svg class="icon-calendar"
@@ -67,7 +67,7 @@
 												height="18" rx="2" ry="2" /> <line x1="16" y1="2" x2="16"
 												y2="6" /> <line x1="8" y1="2" x2="8" y2="6" /> <line
 												x1="3" y1="10" x2="21" y2="10" /> </svg> Código:
-											#{MapBean.hashcodes[i]}
+											#{mapBean.hashcodes[i]}
 										</span> <span class="badge-en-curso">En curso</span>
 									</div>
 
@@ -77,14 +77,14 @@
 												<svg class="icon-stat" viewBox="0 0 24 24"> <circle
 													cx="12" cy="12" r="10" /> <polyline
 													points="12 6 12 12 16 14" /> </svg>
-												<span>Hash: #{MapBean.hashcodes[i]}</span>
+												<span>Hash: #{mapBean.hashcodes[i]}</span>
 											</div>
 										</div>
 
 										<h:commandButton styleClass="continuar-btn"
-											value="Continuar partida" action="#{MapBean.loadGame}">
-											<f:setPropertyActionListener target="#{MapBean.hashCode}"
-												value="#{MapBean.hashcodes[i]}" />
+											value="Continuar partida" action="#{mapBean.loadGame}">
+											<f:setPropertyActionListener target="#{mapBean.hashCode}"
+												value="#{mapBean.hashcodes[i]}" />
 										</h:commandButton>
 									</div>
 								</div>
@@ -94,7 +94,7 @@
 
 					<!-- Panel cuando NO hay partidas guardadas -->
 					<h:panelGroup id="noPartidasPanel"
-						rendered="#{MapBean.sizeHashes == 0}">
+						rendered="#{mapBean.sizeHashes == 0}">
 						<div class="no-partidas-container">
 							<div class="no-partidas-icon">
 								<svg viewBox="0 0 24 24"> <circle cx="12" cy="12" r="10" />

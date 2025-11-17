@@ -25,23 +25,24 @@
 			<div class="input-row">
 				<label class="input-label" for="usuario">Usuario</label>
 				<h:inputText id="usuario" styleClass="risk-input" required="true"
-					requiredMessage="Usuario requerido" value="#{MapBean.nombres[0]}" />
+					requiredMessage="Usuario requerido" value="#{mapBean.nombres[0]}" />
 			</div>
 
 			<div class="input-row">
 				<label class="input-label" for="contra">Contraseña</label>
 				<h:inputSecret id="contra" styleClass="risk-input" required="true"
-					requiredMessage="Contraseña requerida" value="#{MapBean.contrasenias[0]}" />
+					requiredMessage="Contraseña requerida"
+					value="#{mapBean.contrasenias[0]}" />
 			</div>
 			<div class="input-row">
 				<label class="input-label" for="email">Correo</label>
 				<h:inputText id="email" styleClass="risk-input" required="true"
-					requiredMessage="Email requerida" value="#{MapBean.emails[0]}" />
+					requiredMessage="Email requerida" value="#{mapBean.emails[0]}" />
 			</div>
 
 			<div style="text-align: center; margin-top: 10px;">
 				<h:commandButton value="Ingresar" styleClass="ingresar-btn"
-					action="jugar.xhtml?faces-redirect=true" />
+					action="#{mapBean.login}" />
 			</div>
 
 			<br />

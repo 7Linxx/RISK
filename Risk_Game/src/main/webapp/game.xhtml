@@ -52,19 +52,20 @@
 		</h:form>
 	</p:dialog>
 	<p:card styleClass="info-player">
-		<ui:repeat var="player" value="#{mapBean.pDao.players}">
+		<ui:repeat var="player" value="#{mapBean.jugadorDao.jugadores}">
 			<div class="row">
 				<div class="col-md-6">
 					<h:panelGrid columns="2" cellpadding="1">
 						<h:commandButton styleClass="color-player"
-							style="background: #{player.color};"></h:commandButton>
+							style="background: #{jugador.color};"></h:commandButton>
 						<h4>#{player.name}</h4>
 					</h:panelGrid>
 				</div>
 			</div>
 		</ui:repeat>
 	</p:card>
-	<p:button value="Partida: #{mapBean.hashCode}" styleClass="info-hascode ui-button-raised ui-button-flat"></p:button>
+	<p:button value="Partida: #{mapBean.hashCode}"
+		styleClass="info-hascode ui-button-raised ui-button-flat"></p:button>
 	<h:form prependId="false" id="board">
 		<svg width="1920.701" height="1080.52"
 			viewBox="0 0 508.18547 285.88759" version="1.1" id="svg1">
@@ -400,186 +401,192 @@
 				d="m 310.95002,220.025 5.97477,29.28676 z" id="path72" />
     </g>
   </svg>
-		<h:commandButton id="bAlaska" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bAlaska" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Alaska')}"
 			styleClass="round-button" />
 		<h:commandButton id="bNorthwest_Territory"
-			value="#{mapBean.assignTroops}"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Northwest_Territory')}"
 			styleClass="round-button" />
-		<h:commandButton id="bAlberta" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bAlberta" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Alberta')}"
 			styleClass="round-button" />
-		<h:commandButton id="bOntario" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bOntario" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Ontario')}"
 			styleClass="round-button" />
 		<h:commandButton id="bWestern_United_States"
-			value="#{mapBean.assignTroops}"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Western_United_States')}"
 			styleClass="round-button" />
-		<h:commandButton id="bQuebec" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bQuebec" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Quebec')}"
 			styleClass="round-button" />
 		<h:commandButton id="bEastern_United_States"
-			value="#{mapBean.assignTroops}"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Eastern_United_States')}"
 			styleClass="round-button" />
-		<h:commandButton id="bCentral_America" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bCentral_America"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Central_America')}"
 			styleClass="round-button" />
-		<h:commandButton id="bVenezuela" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bVenezuela" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Venezuela')}"
 			styleClass="round-button" />
-		<h:commandButton id="bPeru" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bPeru" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Peru')}" styleClass="round-button" />
-		<h:commandButton id="bBrazil" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bBrazil" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Brazil')}"
 			styleClass="round-button" />
-		<h:commandButton id="bArgentina" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bArgentina" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Argentina')}"
 			styleClass="round-button" />
-		<h:commandButton id="bGreenland" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bGreenland" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Greenland')}"
 			styleClass="round-button" />
-		<h:commandButton id="bIceland" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bIceland" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Iceland')}"
 			styleClass="round-button" />
-		<h:commandButton id="bGreat_Britain" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bGreat_Britain"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Great_Britain')}"
 			styleClass="round-button" />
-		<h:commandButton id="bNorthern_Europe" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bNorthern_Europe"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Northern_Europe')}"
 			styleClass="round-button" />
-		<h:commandButton id="bScandinavia" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bScandinavia" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Scandinavia')}"
 			styleClass="round-button" />
-		<h:commandButton id="bWestern_Europe" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bWestern_Europe"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Western_Europe')}"
 			styleClass="round-button" />
-		<h:commandButton id="bSouthern_Europe" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bSouthern_Europe"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Southern_Europe')}"
 			styleClass="round-button" />
-		<h:commandButton id="bUkraine" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bUkraine" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Ukraine')}"
 			styleClass="round-button" />
-		<h:commandButton id="bUral" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bUral" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Ural')}" styleClass="round-button" />
-		<h:commandButton id="bMiddle_East" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bMiddle_East" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Middle_East')}"
 			styleClass="round-button" />
-		<h:commandButton id="bAfghanistan" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bAfghanistan" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Afghanistan')}"
 			styleClass="round-button" />
-		<h:commandButton id="bChina" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bChina" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('China')}"
 			styleClass="round-button" />
-		<h:commandButton id="bIndia" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bIndia" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('India')}"
 			styleClass="round-button" />
-		<h:commandButton id="bSiam" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bSiam" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Siam')}" styleClass="round-button" />
-		<h:commandButton id="bSiberia" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bSiberia" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Siberia')}"
 			styleClass="round-button" />
-		<h:commandButton id="bMongolia" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bMongolia" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Mongolia')}"
 			styleClass="round-button" />
-		<h:commandButton id="bIrkutsk" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bIrkutsk" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Irkutsk')}"
 			styleClass="round-button" />
-		<h:commandButton id="bYakursk" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bYakursk" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Yakursk')}"
 			styleClass="round-button" />
-		<h:commandButton id="bKamchatka" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bKamchatka" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Kamchatka')}"
 			styleClass="round-button" />
-		<h:commandButton id="bJapan" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bJapan" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Japan')}"
 			styleClass="round-button" />
-		<h:commandButton id="bIndonesia" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bIndonesia" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Indonesia')}"
 			styleClass="round-button" />
-		<h:commandButton id="bNew_Guinea" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bNew_Guinea" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('New_Guinea')}"
 			styleClass="round-button" />
 		<h:commandButton id="bEastern_Australia"
-			value="#{mapBean.assignTroops}"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Eastern_Australia')}"
 			styleClass="round-button" />
 		<h:commandButton id="bWestern_Australia"
-			value="#{mapBean.assignTroops}"
+			value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Western_Australia')}"
 			styleClass="round-button" />
-		<h:commandButton id="bNorth_Africa" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bNorth_Africa" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('North_Africa')}"
 			styleClass="round-button" />
-		<h:commandButton id="bCongo" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bCongo" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Congo')}"
 			styleClass="round-button" />
-		<h:commandButton id="bEgypt" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bEgypt" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Egypt')}"
 			styleClass="round-button" />
-		<h:commandButton id="bEast_Africa" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bEast_Africa" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('East_Africa')}"
 			styleClass="round-button" />
-		<h:commandButton id="bSouth_Africa" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bSouth_Africa" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('South_Africa')}"
 			styleClass="round-button" />
-		<h:commandButton id="bMadagascar" value="#{mapBean.assignTroops}"
+		<h:commandButton id="bMadagascar" value="#{mapBean.tropasAsignadas}"
 			action="#{mapBean.changeTerritory('Madagascar')}"
 			styleClass="round-button" />
 	</h:form>
 	<h:form>
 		<div class="popup" id="control">
-			<h2>Turn of:#{mapBean.currentPlayer}</h2>
-			<c:if test="#{mapBean.phase.equals('Phase 1: Reinforce')}">
-				<h2>Phase 1: Reinforce</h2>
-				<p>Number of troops:#{mapBean.troopsObtained}</p>
+			<h2>Turno de:#{mapBean.jugadorActual}</h2>
+			<c:if test="#{mapBean.fase.equals('Fase 1: Refuerzos')}">
+				<h2>Fase 1: Refuerzos</h2>
+				<p>Numero de tropas:#{mapBean.tropasObtenidas}</p>
 				<c:choose>
-					<c:when test="#{mapBean.troopsObtained == 0}">
-						<p>Your troops are finished, end phase.</p>
+					<c:when test="#{mapBean.tropasObtenidas == 0}">
+						<p>Tus tropas, han acabado, terminar fase.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
 					<c:when test="#{mapBean.error1}">
-						<p>Please select a territory of yours.</p>
+						<p>Por favor selecciona un territorio tuyo.</p>
 					</c:when>
-					<c:when test="#{mapBean.selectedTerritory==null}">
-						<p>Select the territory you want to fortify.</p>
+					<c:when test="#{mapBean.territorioSeleccionado==null}">
+						<p>Selecciona el territorio que quieres fortificar.</p>
 					</c:when>
-					<c:when test="#{mapBean.selectedTerritory!=null}">
-						<p>Territory to fortify:#{mapBean.selectedTerritory.name}</p>
-						<p:spinner id="minMax" value="#{mapBean.troopsCommand}" min="0"
-							max="#{mapBean.troopsObtained}" />
+					<c:when test="#{mapBean.territorioSeleccionado!=null}">
+						<p>Territorio a
+							fortificar:#{mapBean.territorioSeleccionado.nombre}</p>
+						<p:spinner id="minMax" value="#{mapBean.comandoTropas}" min="0"
+							max="#{mapBean.tropasObtenidas}" />
 						<h:commandButton value="Reinforce"
 							action="#{mapBean.reinforceTerritory}"
 							styleClass="btn btn-success" />
 					</c:when>
 				</c:choose>
 			</c:if>
-			<c:if test="#{mapBean.phase.equals('Phase 2: Attack')}">
-				<h2>Phase 2: Attack</h2>
+			<c:if test="#{mapBean.fase.equals('Fase 2: Ataque')}">
+				<h2>Fase 2: Ataque</h2>
 				<c:choose>
 					<c:when test="#{mapBean.error1==true}">
-						<p>Select a territory with more than one troop</p>
+						<p>Selecciona un territorio con mas de una tropa</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
 					<c:when test="#{mapBean.error2==true}">
-						<p>You cannot attack from this territory select another.</p>
+						<p>No puedes atacar desdde este territorio, selecciona otro.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
-					<c:when test="#{mapBean.selectedTerritory==null}">
-						<p>Select the territory from which you are going to attack.
-							Select a territory of your own and with more than one troop.</p>
+					<c:when test="#{mapBean.territorioSeleccionado==null}">
+						<p>Selecciona el territorio del cual vas a atacar. Selecciona
+							un territorio propio con mas de una tropa.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
 					<c:when
-						test="#{mapBean.selectedTerritory!=null &amp;&amp; mapBean.targetTerritory!=null}">
-						<p>My Territory: #{mapBean.selectedTerritory.name}</p>
-						<p>Territory to attack: #{mapBean.targetTerritory.name}</p>
+						test="#{mapBean.territorioSeleccionado!=null &amp;&amp; mapBean.territorioFichado!=null}">
+						<p>Mi Territorio: #{mapBean.territorioSeleccionado.nombre}</p>
+						<p>Territorio a atacar: #{mapBean.territorioFichado.nombre}</p>
 						<div class="row">
 							<div class="col-md-6">
 								<h:commandButton value="Attack" styleClass="btn btn-success"
@@ -592,68 +599,71 @@
 						</div>
 					</c:when>
 					<c:when test="#{mapBean.enemiesTarget.getSize()>0}">
-						<p>Select the territory to attack. The territories you can are
-							marked with red.</p>
+						<p>Selecciona el territorio a atacar, los territorios
+							permitidos estan marcados en rojo.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
 				</c:choose>
 			</c:if>
-			<c:if test="#{mapBean.phase.equals('Phase 2: Dices')}">
-				<h2>Phase 2: Attack</h2>
-				<p style="justify-content: space-between;">You and the enemy
-					choose how many dice to roll.If your die is higher, the defender
-					loses a troop.If the defender's die is higher or equal, you lose a
-					troop.If there are more dice, compare the next highest and repeat.</p>
+			<c:if test="#{mapBean.fase.equals('Fase 2: Dados')}">
+				<h2>Fase 2: Ataque</h2>
+				<p style="justify-content: space-between;">Tú y el enemigo
+					eligens cuántos dados tirar. Si tu dado es más alto, el defensor
+					pierde una tropa. Si el dado del defensor es más alto o igual, tú
+					pierdes una tropa. Si hay más dados, comparan el siguiente más alto
+					y repiten.</p>
 			</c:if>
-			<c:if test="#{mapBean.phase.equals('Phase 2: Conquest')}">
-				<h2>Phase 2: Attack</h2>
-				<p>Select how many troops to send.</p>
-				<p>My Territory: #{mapBean.selectedTerritory.name}</p>
-				<p>Conquered territory: #{mapBean.targetTerritory.name}</p>
-				<p:spinner id="conquist" value="#{mapBean.troopsCommand}"
-					min="#{mapBean.minTroops}" max="#{mapBean.maxTroops}" />
+			<c:if test="#{mapBean.fase.equals('Fase 2: Conquista')}">
+				<h2>Fase 2: Ataque</h2>
+				<p>Selecciona cuantas tropas quieres mandar.</p>
+				<p>Mi Territorio: #{mapBean.territorioSeleccionado.nombre}</p>
+				<p>Conquistado territorio: #{mapBean.territorioFichado.nombre}</p>
+				<p:spinner id="conquist" value="#{mapBean.comandoTropas}"
+					min="#{mapBean.minTropas}" max="#{mapBean.maxTropas}" />
 				<h:commandButton value="Send troops" styleClass="btn btn-success"
 					action="#{mapBean.addTroopsAfterConquist}" />
 			</c:if>
-			<c:if test="#{mapBean.phase.equals('Phase 3: Strengthen')}">
-				<h2>Phase 3: Strengthen</h2>
+			<c:if test="#{mapBean.fase.equals('Fase 3: Fortificacion')}">
+				<h2>Fase 3: Fortificacion</h2>
 				<c:choose>
-					<c:when test="#{mapBean.reforzed==true}">
-						<p>You can no longer reinforce territories. End phase to pass
-							the turn.</p>
+					<c:when test="#{mapBean.reforzado==true}">
+						<p>No puedes fortificar mas territorios. Termina la fase para
+							pasar turno.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
 					<c:when test="#{mapBean.error1==true}">
-						<p>Select a territory that belongs to you.</p>
+						<p>Selecciona un territorio que te pertenezca.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
 					<c:when test="#{mapBean.error2==true}">
-						<p>Cannot fortify from a territory with only 1 troop.</p>
+						<p>No puedes fotificar desde un territorio con una sola tropa.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
-					<c:when test="#{mapBean.selectedTerritory==null}">
-						<p>Select the territory from which you want to fortify. You
-							can only reinforce one territory in this phase</p>
+					<c:when test="#{mapBean.territorioSeleccionado==null}">
+						<p>Selecciona el territorio al cual quieres fortificar. Solo
+							puedes fortificar uno en esta fase.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
-					<c:when test="#{mapBean.targetTerritory==null}">
-						<p>Select what you want to fortify. The territories you can
-							select are marked with gray.</p>
+					<c:when test="#{mapBean.territorioFichado==null}">
+						<p>Selecciona que quieres reforzar.Los territorios que se
+							pueden estan marcados en gris.</p>
 						<h:commandButton value="End phase" styleClass="btn btn-success"
 							action="#{mapBean.changePhase}" />
 					</c:when>
 					<c:when
-						test="#{mapBean.selectedTerritory!=null &amp;&amp; mapBean.targetTerritory!=null}">
-						<p>Select number of troops to send.</p>
-						<p>Selected territory: #{mapBean.selectedTerritory.name}</p>
-						<p>Territory to be fortified: #{mapBean.targetTerritory.name}</p>
-						<p:spinner id="strengthen" value="#{mapBean.troopsCommand}"
-							min="1" max="#{mapBean.maxTroops}" />
+						test="#{mapBean.territorioSeleccionado!=null &amp;&amp; mapBean.territorioSeleccionado!=null}">
+						<p>Selecciona el numero de tropas a mandar.</p>
+						<p>Territorio seleccionado:
+							#{mapBean.territorioSeleccionado.nombre}</p>
+						<p>Territory a reforzar:
+							#{mapBean.territorioSeleccionado.nombre}</p>
+						<p:spinner id="strengthen" value="#{mapBean.comandoTropas}"
+							min="1" max="#{mapBean.maxTropas}" />
 						<div class="row">
 							<div class="col-md-6">
 								<h:commandButton value="Send" styleClass="btn btn-success"
@@ -668,10 +678,9 @@
 				</c:choose>
 			</c:if>
 		</div>
-		<c:if test="#{mapBean.phase.equals('Winner')}">
+		<c:if test="#{mapBean.fase.equals('Ganador')}">
 			<div class="container-dice" id="wdice">
-				<h4>Congratulations #{mapBean.currentPlayer} you have won the
-					game.</h4>
+				<h4>Felicidades #{mapBean.jugadorActual} has ganado el juego.</h4>
 				<div class="row">
 					<div class="col-md-6">
 						<p:commandButton id="bendgame" value="End game"
@@ -696,7 +705,7 @@
 			</div>
 		</c:if>
 	</h:form>
-	<c:if test="#{mapBean.phase.equals('Phase 2: Dices')}">
+	<c:if test="#{mapBean.fase.equals('Fase 2: Dados')}">
 		<c:choose>
 			<c:when
 				test="#{mapBean.selectedDices==0 || mapBean.selectedEDices==0}">
@@ -704,7 +713,7 @@
 					<div class="container-dice" id="ndice">
 						<div class="row">
 							<div class="col-md-6">
-								<h2>#{mapBean.currentPlayer}</h2>
+								<h2>#{mapBean.jugadorActual}</h2>
 								<div class="ui-fluid formgrid grid">
 									<div class="field col-12 md:col-1">
 										<h:panelGrid columns="1" cellpadding="10">
@@ -718,7 +727,7 @@
 								</div>
 							</div>
 							<div class="col-md-6">
-								<h2>#{mapBean.enemyPlayer}</h2>
+								<h2>#{mapBean.jugadorEnemigo}</h2>
 								<div class="ui-fluid formgrid grid">
 									<div class="field col-12 md:col-1">
 										<h:panelGrid columns="1" cellpadding="10">
@@ -758,7 +767,7 @@
 				<div class="container-dice" id="cdice">
 					<h:form id="fdices">
 						<div class="border-dice">
-							<h2>#{mapBean.currentPlayer}</h2>
+							<h2>#{mapBean.jugadorActual}</h2>
 							<h:panelGrid columns="#{mapBean.selectedDices}" cellpadding="10"
 								styleClass="mb-3">
 								<c:if test="#{mapBean.selectedDices>=1}">
@@ -794,7 +803,7 @@
 							</h:panelGrid>
 						</div>
 						<div class="border-dice">
-							<h2>#{mapBean.enemyPlayer}</h2>
+							<h2>#{mapBean.jugadorEnemigo}</h2>
 							<h:panelGrid columns="#{mapBean.selectedEDices}" cellpadding="10"
 								styleClass="mb-3">
 								<c:if test="#{mapBean.selectedEDices>=1}">
@@ -821,13 +830,13 @@
 						</div>
 					</h:form>
 					<h:form>
-						<c:if test="#{mapBean.textWinner ne ''}">
+						<c:if test="#{mapBean.textGanador ne ''}">
 							<script>showWinner()</script>
 							<div class="row"
 								style="display: flex; justify-content: center; align-items: center;">
 								<div class="col-md-12">
 									<p id="win">
-										#{mapBean.textWinner}<br /> #{mapBean.textLosser}
+										#{mapBean.textGanador}<br /> #{mapBean.textPerdedor}
 									</p>
 								</div>
 							</div>
@@ -835,14 +844,14 @@
 						<div class="row"
 							style="display: flex; justify-content: center; align-items: center;">
 							<c:if
-								test="#{mapBean.textWinner ne '' &amp;&amp; mapBean.winner==0}">
+								test="#{mapBean.textGanador ne '' &amp;&amp; mapBean.ganador==0}">
 								<div class="col-md-6">
 									<h:commandButton id="baccept" value="Continue"
 										styleClass="btn btn-success"
 										action="#{mapBean.resetBattleRound}" />
 								</div>
 							</c:if>
-							<c:if test="#{mapBean.textWinner.equals('')}">
+							<c:if test="#{mapBean.textGanador.equals('')}">
 								<div class="col-md-6">
 									<p:commandButton id="bdice" value="RollDice"
 										styleClass="rounded-button ui-button-help"

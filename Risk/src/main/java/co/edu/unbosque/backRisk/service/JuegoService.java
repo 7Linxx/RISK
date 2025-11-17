@@ -145,4 +145,38 @@ public class JuegoService implements CRUDOperation<JuegoDTO> {
 	public boolean exist(Long id) {
 		return juegoRepo.existsById(id);
 	}
+
+	public MyDoubleLinkedList<String> getAllHashCode() {
+		MyDoubleLinkedList<String> hashCodes = new MyDoubleLinkedList<>();
+		boolean add;
+		for (Juego juego : juegoRepo.findAll()) {
+			add = true;
+			for (String hash : hashCodes) {
+				if (hash.equals(juego.getHashCode())) {
+					add = false;
+					break;
+				}
+			}
+			if (add) {
+				hashCodes.insert(juego.getHashCode());
+			}
+		}
+		return hashCodes;
+	}
+
+	public boolean existHashCode(String searchHash) {
+		for (String hash : getAllHashCode()) {
+			if (hash.equals(searchHash))
+				return true;
+		}
+		return false;
+	}
+
+	public int deleteByHashCode(String hashCode) {
+		if (existHashCode(hashCode)) {
+			juegoRepo.deleteByHashCode(hashCode);
+			return 0;
+		}
+		return 1;
+	}
 }

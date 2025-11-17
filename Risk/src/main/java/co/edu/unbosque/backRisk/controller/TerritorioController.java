@@ -1,5 +1,11 @@
 package co.edu.unbosque.backRisk.controller;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.unbosque.backRisk.dto.TerritorioDTO;
+import co.edu.unbosque.backRisk.model.Territorio;
 import co.edu.unbosque.backRisk.service.TerritorioService;
 import co.edu.unbosque.backRisk.util.MyDoubleLinkedList;
 
@@ -144,5 +151,89 @@ public class TerritorioController {
 	@GetMapping(path = "/exist/{id}")
 	public ResponseEntity<Boolean> existe(@PathVariable Long id) {
 		return new ResponseEntity<>(territorioServ.exist(id), HttpStatus.OK);
+	}
+	@GetMapping(path = "/getbyhash/{hash}")
+	public ResponseEntity<String> getByHashCode(@PathVariable String hash) {
+		if (!territorioServ.existHashCode(hash)) {
+			return new ResponseEntity<String>("Hash not found", HttpStatus.NOT_FOUND);
+		}
+		MyDoubleLinkedList<Territorio> territorio = territorioServ.getAll();
+		if (territorio.getSize() <= 0) {
+			return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
+		}
+		StringBuffer buf = new StringBuffer();
+		for (Territorio current : territorio) {
+			if (hash.equals(current.getHashCode())) {
+				buf.append(current.getId()+",");
+				buf.append(current.getName()+",");
+				buf.append(current.getColor()+",");
+				buf.append(current.getCantidadTropas()+",");
+				buf.append(current.getJugador()+";");
+				break;
+			}
+		}
+		return new ResponseEntity<String>(buf.toString(), HttpStatus.ACCEPTED);
+	}
+
+	@GetMapping(path = "/getallhashcode")
+	public ResponseEntity<String> getAllHashCode() {
+		MyDoubleLinkedList<String> allHashCode = territorioServ.getAllHashCode();
+		if (allHashCode.getSize() <= 0) {
+			return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
+		}
+		StringBuffer buf = new StringBuffer();
+		for (String hash : allHashCode) {
+			buf.append(hash + ",");
+		}
+		return new ResponseEntity<String>(buf.substring(0, buf.length() - 1), HttpStatus.ACCEPTED);
+	}
+
+	/**
+	 * If the specified hascode exists.
+	 * 
+	 * @param hash The hascode to verify
+	 * @return true if it exists, false if it does not
+	 */
+	@GetMapping(path = "/existhash/{hash}")
+	public ResponseEntity<String> existHash(@PathVariable String hash) {
+		return new ResponseEntity<String>(territorioServ.existHashCode(hash) ? "Yes" : "No", HttpStatus.ACCEPTED);
+	}
+
+	/**
+	 * Generate a hashcode for a game
+	 * 
+	 * @param password Password needed to generate the hash
+	 * @return Game hashcode
+	 */
+	@GetMapping(path = "/generatehash/{password}")
+	public ResponseEntity<String> generateHash(@PathVariable int password) {
+		String texto = Integer.toString(password);
+		String hashCode = "";
+		do {
+			try {
+				MessageDigest digest = MessageDigest.getInstance("SHA-256");
+				byte[] hash = digest.digest(texto.getBytes(StandardCharsets.UTF_8));
+				String generated = Base64.getUrlEncoder().encodeToString(hash);
+				if (generated.length() >= 12) {
+					hashCode = generated.substring(0, 12);
+				}
+			} catch (NoSuchAlgorithmException e) {
+				hashCode = "AE3456";
+			}
+			if (territorioServ.existHashCode(hashCode)) {
+				SecureRandom sr = new SecureRandom();
+				texto = sr.nextInt(10) + texto;
+			}
+		} while (territorioServ.existHashCode(hashCode));
+		return new ResponseEntity<String>(hashCode, HttpStatus.OK);
+	}
+
+	@DeleteMapping(path = "/deletebyhash/{hash}")
+	public ResponseEntity<String> deleteByHashCode(@PathVariable String hash) {
+		int status = territorioServ.deleteByHashCode(hash);
+		if (status == 1) {
+			return new ResponseEntity<String>("Hash not found.", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<String>("Delete successfully.", HttpStatus.ACCEPTED);
 	}
 }

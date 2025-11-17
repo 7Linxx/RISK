@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import co.edu.unbosque.backRisk.dto.JugadorDTO;
 import co.edu.unbosque.backRisk.model.Jugador;
+import co.edu.unbosque.backRisk.model.Jugador;
 import co.edu.unbosque.backRisk.repository.JugadorRepository;
 import co.edu.unbosque.backRisk.util.MyDoubleLinkedList;
 
@@ -156,4 +157,37 @@ public class JugadorService implements CRUDOperation<JugadorDTO> {
 		return jugadorRepo.existsById(id);
 	}
 
+	public MyDoubleLinkedList<String> getAllHashCode() {
+		MyDoubleLinkedList<String> hashCodes = new MyDoubleLinkedList<>();
+		boolean add;
+		for (Jugador jugador : jugadorRepo.findAll()) {
+			add = true;
+			for (String hash : hashCodes) {
+				if (hash.equals(jugador.getHashCode())) {
+					add = false;
+					break;
+				}
+			}
+			if (add) {
+				hashCodes.insert(jugador.getHashCode());
+			}
+		}
+		return hashCodes;
+	}
+
+	public boolean existHashCode(String searchHash) {
+		for (String hash : getAllHashCode()) {
+			if (hash.equals(searchHash))
+				return true;
+		}
+		return false;
+	}
+
+	public int deleteByHashCode(String hashCode) {
+		if (existHashCode(hashCode)) {
+			jugadorRepo.deleteByHashCode(hashCode);
+			return 0;
+		}
+		return 1;
+	}
 }

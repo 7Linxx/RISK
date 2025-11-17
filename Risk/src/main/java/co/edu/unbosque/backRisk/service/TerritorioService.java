@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import co.edu.unbosque.backRisk.dto.TerritorioDTO;
 import co.edu.unbosque.backRisk.model.Territorio;
+import co.edu.unbosque.backRisk.model.Territorio;
 import co.edu.unbosque.backRisk.repository.TerritorioRepository;
 import co.edu.unbosque.backRisk.util.MyDoubleLinkedList;
 
@@ -159,5 +160,39 @@ public class TerritorioService implements CRUDOperation<TerritorioDTO> {
 	@Override
 	public boolean exist(Long id) {
 		return territorioRepo.existsById(id);
+	}
+
+	public MyDoubleLinkedList<String> getAllHashCode() {
+		MyDoubleLinkedList<String> hashCodes = new MyDoubleLinkedList<>();
+		boolean add;
+		for (Territorio territorio : territorioRepo.findAll()) {
+			add = true;
+			for (String hash : hashCodes) {
+				if (hash.equals(territorio.getHashCode())) {
+					add = false;
+					break;
+				}
+			}
+			if (add) {
+				hashCodes.insert(territorio.getHashCode());
+			}
+		}
+		return hashCodes;
+	}
+
+	public boolean existHashCode(String searchHash) {
+		for (String hash : getAllHashCode()) {
+			if (hash.equals(searchHash))
+				return true;
+		}
+		return false;
+	}
+
+	public int deleteByHashCode(String hashCode) {
+		if (existHashCode(hashCode)) {
+			territorioRepo.deleteByHashCode(hashCode);
+			return 0;
+		}
+		return 1;
 	}
 }
